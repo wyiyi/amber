@@ -7,8 +7,7 @@ categories:
 mathjax: true 
 ---
 
-[微信官方文档](https://developers.weixin.qq.com/doc/offiaccount/Custom_Menus/Creating_Custom-Defined_Menu.html)
-中提供添加自定义菜单接口，可以通过**代码方式**实现自定义菜单。
+[微信官方文档](https://developers.weixin.qq.com/doc/offiaccount/Custom_Menus/Creating_Custom-Defined_Menu.html) 中提供添加自定义菜单接口，可以通过**代码方式**实现自定义菜单。
 
 在微信公众平台可以通过页面**增加菜单按钮方式**实现自定义菜单，如图：![](https://wyiyi.github.io/amber/contents/gzh/img.png)
 
@@ -38,7 +37,7 @@ mathjax: true
 
 按照网上办法尝试，不起作用，联系了客服，没有回复，什么情况？
 
-## 如何是好？
+## 如何是好呢？
 
 在 `+ 新的功能` - `自定义菜单` - `详情` ，点击 `开启` 即可。
 
