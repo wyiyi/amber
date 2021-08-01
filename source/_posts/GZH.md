@@ -9,9 +9,8 @@ mathjax: true
 
 在微信公众平台，维护了自定义菜单，配置服务器后并启用，服务生效后，发现手机端自定义的菜单却不见了？
 
-![](https://wyiyi.github.io/amber/contents/gzh/img_1.png)
-
 根据之前的成功案例，自定义菜单和服务器可以同时使用：
+
 - 禁用服务器配置 
 
 - 修改菜单 
@@ -21,6 +20,8 @@ mathjax: true
 - `+添加功能插件` 的自定义菜单，启用
 
 由于微信公众平台更新导致 `+添加功能插件` 按钮消失了，此方法不在适用。
+
+![](https://wyiyi.github.io/amber/contents/gzh/img_1.png)
 
 不能同时用吗？
 
