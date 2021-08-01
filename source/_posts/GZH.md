@@ -1,5 +1,5 @@
 ---
-title: 微信公众号服务器配置启用，自定义菜单消失？
+title: 微信公众号自定义菜单消失？
 date: 2021.07.31 
 tags: Wechat_gzh
 categories: 
@@ -9,7 +9,7 @@ mathjax: true
 
 在微信公众平台，维护了自定义菜单，配置服务器后并启用，服务生效后，发现手机端自定义的菜单却不见了？
 
-![img_1.png](img_1.png)
+![](https://wyiyi.github.io/amber/contents/gzh/img_1.png)
 
 根据之前的成功案例，自定义菜单和服务器可以同时使用：
 - 禁用服务器配置 
@@ -30,8 +30,8 @@ mathjax: true
 
 在 `+ 新的功能` - `自定义菜单` - `详情` ，点击 `开启` 即可。
 
-![img_2.png](img_2.png)
-![img_3.png](img_3.png)
+![](https://wyiyi.github.io/amber/contents/gzh/img_2.png)
+![](https://wyiyi.github.io/amber/contents/gzh/img_3.png)
 
 WAIT A MOMENT！
 
