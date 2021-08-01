@@ -1,3 +1,13 @@
+---
+title: 微信公众号服务器配置启用，自定义菜单消失？
+date: 2021.07.31 
+tags: Others
+categories: 
+  - Technology
+mathjax: true 
+---
+
+
 # 微信公众号服务器配置启用，自定义菜单消失？
 
 ## 微信后台自定义的菜单不见了？
