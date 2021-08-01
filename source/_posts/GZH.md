@@ -1,16 +1,12 @@
 ---
 title: 微信公众号服务器配置启用，自定义菜单消失？
 date: 2021.07.31 
-tags: Others
+tags: Wechat_gzh
 categories: 
   - Technology
 mathjax: true 
 ---
 
-
-# 微信公众号服务器配置启用，自定义菜单消失？
-
-## 微信后台自定义的菜单不见了？
 在微信公众平台，维护了自定义菜单，配置服务器后并启用，服务生效后，发现手机端自定义的菜单却不见了？
 
 ![img_1.png](img_1.png)
