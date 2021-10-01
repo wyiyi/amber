@@ -1,6 +1,11 @@
-## Servlet之Filter 
+---
+title: Servlet之Filter 
+date: 2021.10.01 
+tags: Servlet
+categories: Technology  
+mathjax: true 
+---
 
-### 定义
  Servlet 作为Java Web 的基础，在 Servlet API 中提供了一个 Filter 接口，Filter，又称过滤器。 
  所谓过滤器顾名思义是用来过滤的，可以从客户端向服务端发送请求进行过滤，也可以对服务器返回响应进行处理。
  
