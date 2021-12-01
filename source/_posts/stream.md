@@ -1,5 +1,5 @@
 ---
-title: 优雅的使用 Java 8 Stream 找出重复数据
+title: 使用 Java 8 Stream 优雅的找出重复数据
 date: 2021.11.30 
 tags: Java8
 categories: Technology   
