@@ -87,7 +87,7 @@ Stream 将要处理的元素集合看作一种流，由于`java.util.stream.Stre
  List<String> strings = Arrays.asList("abc", "", "bc", "efg", "abcd", "", "jkl");
  List<String> count = strings.stream().filter(string -> string.isEmpty()).collect(Collectors.toList());
  System.out.println(count.size()); // 2    
- ```   
+ ```
 3.reduce 用于对stream中元素进行聚合求值，操作函数 accumulator 接受两个参数x,y返回r
     
 4.anyMatch()、allMatch()、noneMatch() 接收参数Predicate，返回boolean。
@@ -98,7 +98,7 @@ Stream 将要处理的元素集合看作一种流，由于`java.util.stream.Stre
 我们以 Employee 为实体，对比 获取重复code值的 写法：
 
 Employee 实体：
- ``` 
+ ```
 public class Employee extends Model<Employee> {
     @ApiModelProperty(value = "ID")
     @TableField("ID")
@@ -131,7 +131,8 @@ Stream 写法：
  ```
     
 for 写法：
- ```   
+
+ ```
  List<String> duplicate_code = new ArrayList<>();
  List<Employee> employeeList = fromDB();
  if (employeeList.size() > 0) {
