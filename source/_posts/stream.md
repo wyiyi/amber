@@ -118,18 +118,7 @@ public class Employee extends Model<Employee> {
     ...  
 }	
  ```
-
-Stream 写法：
-
- ```
- List<Employee> employeeList = fromDB();
- Map<Object, Long> map = employeeList.stream().collect(Collectors.groupingBy(employee -> employee.getCode(), Collectors.counting()));
- Stream<Object> stringStream = map.entrySet().stream().filter(entry -> entry.getValue() > 1).map(entry -> entry.getKey());
- stringStream.forEach(str -> {
-    System.out.print("重复数据："+ str);
- });
- ```
-    
+  
 for 写法：
 
  ```
@@ -147,7 +136,19 @@ for 写法：
      }
  }
  ```
-    
+ 
+ Stream 写法：
+
+ ```
+ List<String> duplicate_code = new ArrayList<>();
+ List<Employee> employeeList = fromDB();
+ Map<Object, Long> map = employeeList.stream().collect(Collectors.groupingBy(employee -> employee.getCode(), Collectors.counting()));
+ Stream<Object> stringStream = map.entrySet().stream().filter(entry -> entry.getValue() > 1).map(entry -> entry.getKey());
+ stringStream.forEach(str -> {
+    duplicate_code.add(String.valueOf(str));
+ });
+ ```
+  
 由此可见，使用Java 8 的 Stream 流方式获取到集合中某一属性值重复数据的问题更方便、简洁！
 
 **了解更多有关 Java8 Stream 流的相关信息，请参考 [Stream Javadoc 阅读官方文档](https://docs.oracle.com/javase/8/docs/api/)。**
