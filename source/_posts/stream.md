@@ -98,7 +98,7 @@ Stream 将要处理的元素集合看作一种流，由于`java.util.stream.Stre
 我们以 Employee 为实体，对比 获取重复code值的 写法：
 
 Employee 实体：
-``` 
+ ``` 
 public class Employee extends Model<Employee> {
     @ApiModelProperty(value = "ID")
     @TableField("ID")
@@ -117,21 +117,21 @@ public class Employee extends Model<Employee> {
     private Integer age;
     ...  
 }	
-```
+ ```
 
 Stream 写法：
 
-``` 
+ ```
  List<Employee> employeeList = fromDB();
  Map<Object, Long> map = employeeList.stream().collect(Collectors.groupingBy(employee -> employee.getCode(), Collectors.counting()));
  Stream<Object> stringStream = map.entrySet().stream().filter(entry -> entry.getValue() > 1).map(entry -> entry.getKey());
  stringStream.forEach(str -> {
     System.out.print("重复数据："+ str);
  });
-```     
+ ```
     
 for 写法：
-```    
+ ```   
  List<String> duplicate_code = new ArrayList<>();
  List<Employee> employeeList = fromDB();
  if (employeeList.size() > 0) {
@@ -145,7 +145,7 @@ for 写法：
          }
      }
  }
-``` 
+ ```
     
 由此可见，使用Java 8 的 Stream 流方式获取到集合中某一属性值重复数据的问题更方便、简洁！
 
