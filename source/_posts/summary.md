@@ -2,20 +2,24 @@
 title:  2021年度总结与经验分享
 date: 2021.12.24 
 tags: 2021
-categories: 总结 
+categories:  总结 
 mathjax: true 
 ---
+
 ![](https://wyiyi.github.io/amber/contents/summary/ppt1.png)
 ## 2021年度总结与经验分享 
 
 和大家分享我的2021年的经历与经验，
 ppt分为三部分：回顾过往、与你分享、加油2022
 ![](https://wyiyi.github.io/amber/contents/summary/ppt2.png)
+
 ### 回顾过往
+
 ![](https://wyiyi.github.io/amber/contents/summary/ppt3.png)
 
 #### 一、核心
 ![](https://wyiyi.github.io/amber/contents/summary/ppt4.png)
+
 对于核心的工作：新增了7模块、维护51个模块、改动代码量前台2w多、后台1w多
 - 门诊方面：我主要是门诊挂号、收费明细汇总、期初导入收费项目
 - 住院方面：出入院以及入院修改
