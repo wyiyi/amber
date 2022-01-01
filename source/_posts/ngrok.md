@@ -8,8 +8,6 @@ mathjax: true
 
 原文地址：https://alphahinex.github.io/2021/02/06/ngrok/
 
- ![](https://wyiyi.github.io/amber/contents/ngrok/ngrok.png)
-
 提到内网穿透，首先想到的可能是花生壳，但很多年前的一次使用经历，感觉不是一般的费劲。
 
 如果有类似的需求，可以试试 [ngrok][ngrok] 。
