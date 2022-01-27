@@ -6,8 +6,6 @@ categories: Technology
 mathjax: true 
 ---
 
-原文地址：https://alphahinex.github.io/2021/02/06/ngrok/
-
 提到内网穿透，首先想到的可能是花生壳，但很多年前的一次使用经历，感觉不是一般的费劲。
 
 如果有类似的需求，可以试试 [ngrok][ngrok] 。
@@ -36,6 +34,8 @@ Forwarding                    https://e9f8c28f1c08.ngrok.io -> http://localhost:
 除了 Console UI 外，还可以通过服务启动后提示的 Web Interface 地址，访问自带的 Web 界面，如 http://127.0.0.1:4040 。在界面中，可以查看更多请求信息，以及进行请求的重放等。
 
 更多用法，可参见 [官方文档][docs] 。
+
+原文地址：https://alphahinex.github.io/2021/02/06/ngrok/
 
 [ngrok]:https://ngrok.com/
 [download]:https://ngrok.com/download
