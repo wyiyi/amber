@@ -44,11 +44,14 @@
 
 在微信开发者工具中体验你的第一个小程序，Hello World !。
 
+![](https://wyiyi.github.io/amber/contents/gzh/miniprogram.png)
+
 四、编译预览
 
 点击工具上的编译按钮，可以在工具的左侧模拟器界面看到这个小程序的效果；
 也可以点击预览按钮的二维码预览或者自动预览，
 通过微信的扫一扫或者自动连接在手机上体验你的第一个小程序。
+![](https://wyiyi.github.io/amber/contents/gzh/miniprogram2.png)
 
 
 ## 参考资料
