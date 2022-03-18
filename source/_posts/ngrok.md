@@ -3,7 +3,9 @@ title: 内网穿透？试试 ngrok
 date: 2022.01.01 
 tags: Ngrok
 categories: Technology  
-mathjax: true 
+mathjax: true
+comments: true
+description: 提到内网穿透，首先想到的可能是花生壳，但很多年前的一次使用经历，感觉不是一般的费劲。如果有类似的需求，可以试试 ngrok。
 ---
 
 提到内网穿透，首先想到的可能是花生壳，但很多年前的一次使用经历，感觉不是一般的费劲。

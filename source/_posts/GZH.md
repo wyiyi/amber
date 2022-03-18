@@ -1,10 +1,15 @@
 ---
 title: 微信公众号自定义菜单消失？
 date: 2021.07.31 
-tags: Wechat
+tags: 
+    - Wechat
+    - 公众号
 categories: 
   - Technology
 mathjax: true 
+comments: true
+toc: true
+description:
 ---
 
 [微信官方文档](https://developers.weixin.qq.com/doc/offiaccount/Custom_Menus/Creating_Custom-Defined_Menu.html) 中提供添加自定义菜单接口，可以通过**代码方式**实现自定义菜单。

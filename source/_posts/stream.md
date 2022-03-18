@@ -1,9 +1,14 @@
 ---
 title: 使用 Java 8 Stream 优雅的找出重复数据
 date: 2021.11.30 
-tags: Java8
+tags: 
+   - Java8
+   - Stream
 categories: Technology   
 mathjax: true 
+comments: true
+toc: true
+description: 最近经常遇到问题：要获取到集合中某一属性值重复的数据，除了for 循环，还有更简单得处理方式？先来引入 Stream 流的概念。
 ---
 
 
@@ -30,7 +35,7 @@ Stream 将要处理的元素集合看作一种流，由于`java.util.stream.Stre
 
  可以从各种数据源中创建 Stream 流，其中以 Collection 集合最为常见。
  如 List 和 Set 均支持 stream() 方法来创建顺序流 stream() 或者是并行流 parallelStream()。
-### 一、常用创建 Stream 流方法 
+### 常用创建 Stream 流方法 
 1.使用 Collection 下的 stream() 和 parallelStream() 方法来创建 Stream
  ```
  List<String> list = new ArrayList<>();
@@ -64,7 +69,7 @@ Stream 将要处理的元素集合看作一种流，由于`java.util.stream.Stre
  BufferedReader.lines();
  Random.ints();
  ``` 
-### 二、中间操作 Stream 流
+### 中间操作 Stream 流
 1.filter：用于通过设置的条件过滤出元素，其中`java.util.Objects`提供了空元素的过滤
   
 2.映射 map 方法用于映射每个元素到对应的结果
@@ -77,7 +82,7 @@ Stream 将要处理的元素集合看作一种流，由于`java.util.stream.Stre
 
 6.limit(n)：用于获取指定数量的流...
 
-### 三、终端操作 Stream 流
+### 终端操作 Stream 流
 1.forEach()  迭代流中的每个元素，`java.util.function.Consumer`接受参数没有返回值
  ```
  Stream.of(1,2,3,4,5).forEach(System.out::println);

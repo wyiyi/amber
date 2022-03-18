@@ -1,10 +1,13 @@
 ---
 title: JS 中保留固定位数以及四舍五入
 date: 2021.03.25 
-tags: Others
+tags: JS
 categories: 
   - Technology
-mathjax: true 
+mathjax: true
+comments: true
+toc: true
+description: 在保留有效数字的时候我们经常会使用到toFixed()函数，但发现这个方法会存在一些奇怪的问题。
 ---
 
 

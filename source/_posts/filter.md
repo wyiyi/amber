@@ -1,9 +1,12 @@
 ---
 title: Servlet之Filter 
 date: 2021.10.01 
-tags: Servlet
+tags: Servlet，Filter
 categories: Technology  
 mathjax: true 
+comments: true
+toc: true
+description: Servlet 作为Java Web 的基础，在 Servlet API 中提供了一个 Filter 接口，Filter，又称过滤器。
 ---
 
  Servlet 作为Java Web 的基础，在 Servlet API 中提供了一个 Filter 接口，Filter，又称过滤器。 
@@ -34,7 +37,7 @@ public class AFilter implements Filter {
     public void destroy() {}
 }
  ```
- #### 一、注册 Filter 方式
+ #### 注册 Filter 方式
  1、通过传统的 web.xml 方式注册。
  ```
     <filter>
@@ -54,7 +57,7 @@ public class AFilter implements Filter {
 }
 ```
  
- #### 三、FilterChain 的 chain.doFilter
+ #### FilterChain 的 chain.doFilter
  ![](https://wyiyi.github.io/amber/contents/flow/filterChain.png)
  
 1、在 chain.doFilter 中使用 `@WebFilter` 注解，会按照类名的字典顺序执行

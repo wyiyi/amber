@@ -4,6 +4,9 @@ date: 2021.04.06
 tags: Git
 categories: Technology  
 mathjax: true 
+comments: true
+toc: true
+description: 工欲善其事，必先利其器。Git是实现分布式版本控制的一个工具，所以Git完全可以在没有网络的情况下使用，每个人的开发机都可以作为一个独立的版本库存在，开发者可以在自己的开发机管理代码版本，而不依赖于远程版本库。
 ---
 
 工欲善其事，必先利其器

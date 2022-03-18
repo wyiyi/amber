@@ -4,6 +4,9 @@ date: 2021.03.06
 tag: Encoding
 categories: Technology  
 mathjax: true 
+comments: true
+toc: true
+description: 来了解微信经常用到的表情、朋友圈文案和零宽字符有着什么密切关系？
 ---
 
 大家都熟悉的 Unicode（万国码）几乎包含 [所有符号](https://unicode-table.com/)：

@@ -1,12 +1,18 @@
 ---
-title: Byte-Order Mark
+title: 都是 “编码格式” 惹得祸 
 date: 2021.01.13
-tag: Encoding
+tag: 
+   - Encoding
+   - BOM 
+   - Unicode
 categories: Technology  
-mathjax: true 
+mathjax: true
+comments: true
+toc: true
+description: 遇到的问题：在单元测试中执行sql文件，sql的内容是正确的，但是执行报错。扎心。重现该场景。
 ---
 
-### 都是 “编码格式” 惹得祸
+### 
 遇到的问题：在单元测试中执行sql文件，sql的内容是正确的，但是执行报错。扎心。
 重现该场景，关键代码如下：完整实例可见[仓库](https://github.com/wyiyi/bronze) 
 ~~~~
@@ -195,7 +201,7 @@ UTF-8 BOM  是文本流（0xEF、0xBB、0xBF） 开始时的字节序列，允�
 根据嵌入式语言的特点， 这串字符将被直接执行（显示）出来。 
 由于页面的 `top padding` 为0， 导致无法让整个网页紧贴浏览器顶部。
 
- ##### 2.6 Encoding Schemes
+ #### 2.6 Encoding Schemes
  ~~~~
  ... Use of a BOM  is neither required nor recommended for UTF-8, but may be encountered in contexts where UTF-8 data is converted from other encoding forms that use a BOM  or where the BOM  is used as a UTF-8 signature.
  See the "Byte Order Mark" subsection in Section 16.8, Specials, for more information.
