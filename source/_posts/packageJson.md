@@ -1,4 +1,16 @@
-# npm 规则：版本号的符号含义
+---
+title: npm 规则：版本号的符号含义
+date: 2022.06.01
+tags: 
+   - NodeJs
+   - npm
+categories: Technology   
+mathjax: true 
+comments: true
+toc: true
+description: 最近常遇到因依赖版本不同导致开发环境和测试环境出现种种问题。
+---
+
 
 ## 起因
 最近常遇到因依赖版本不同导致开发环境和测试环境出现种种问题。
