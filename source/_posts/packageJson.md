@@ -24,8 +24,8 @@ description: 最近常遇到因依赖版本不同导致开发环境和测试环�
 
 ![](https://wyiyi.github.io/amber/contents/node/chunk-js.png)
 
-根据图中提示的 `chunk-cafbd270.1652944515763.js` 文件，匹配到 match 方法提示引用文件的标识：`r("d22a")` ，
-在 `app.xxx.js` 文件里全文检索 `d22a` 的定义，然后在 `d22a` 里发现 match 的 `function(n)` 方法只有一个参数，不是两个参数。
+在 Js 文件夹中找到图中提示的 `chunk-cafbd270.1652944515763.js` 文件，匹配到 match 方法提示引用文件的标识：`r("d22a")` ，
+在 `app.xxx.js` 文件里全文检索 `d22a` 的定义，发现 match 的 `function(n)` 方法只有一个参数，而不是两个参数。
 才会导致图中报错且测试环境不生效的问题。
 
 ## 解决
