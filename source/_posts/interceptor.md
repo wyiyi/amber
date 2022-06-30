@@ -6,8 +6,7 @@ categories: Technology
 mathjax: true 
 comments: true
 toc: true
-description: 在 Spring Web MVC 中，拦截器（Interceptor）同 [Servlet 中的过滤器（Filter）](https://wyiyi.github.io/amber/2021/10/01/filter/) 类似，
-都可以实现对用户的请求做出相应的处理。
+description: 在 Spring Web MVC 中，拦截器（Interceptor）同 Servlet 中的过滤器（Filter） 类似，都可以实现对用户的请求做出相应的处理。
 ---
 
 ### 什么是拦截器
