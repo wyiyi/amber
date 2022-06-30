@@ -1,11 +1,14 @@
 ---
 title: Spring之Interceptor 
 date: 2022.07.01 
-tags: Spring MVC，Interceptor
-categories: Technology  
+tags: 
+    - Spring MVC
+    - Interceptor
+categories:  
+    - Technology
+toc: true
 mathjax: true 
 comments: true
-toc: true
 description: 在 Spring Web MVC 中，拦截器（Interceptor）同 Servlet 中的过滤器（Filter） 类似，都可以实现对用户的请求做出相应的处理。
 ---
 
@@ -109,7 +112,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
 ![](https://wyiyi.github.io/amber/contents/interceptor/127001.png)
 
-![](https://wyiyi.github.io/amber/contents/interceptor/log.png)
+![](https://wyiyi.github.io/amber/contents/interceptor/logs.png)
 
 ### 参考资料
 
