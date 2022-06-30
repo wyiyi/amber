@@ -112,7 +112,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
 ![](https://wyiyi.github.io/amber/contents/interceptor/127001.png)
 
-![](https://wyiyi.github.io/amber/contents/interceptor/log.png)
+![](https://wyiyi.github.io/amber/contents/interceptor/logs.png)
 
 ### 参考资料
 
