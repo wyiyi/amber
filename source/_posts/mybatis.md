@@ -112,7 +112,7 @@ mybatis-plus:
 
 ## 方案三：使用 UpdateWrapper (3.x) 更新
 mp 提供了 UpdateWrapper 类简化更新的操作，
-针对方法级进行操作，只需操作其更新方法，相比较方法一和方法二影响范围较小。
+针对方法级进行操作，只需操作其更新方法，相比较方案一和方案二影响范围较小。
 
 由于 BaseMapper 的继承 Mapper ，在 [BaseMapper](https://github.com/baomidou/mybatis-plus/blob/3.0/mybatis-plus-core/src/main/java/com/baomidou/mybatisplus/core/mapper/BaseMapper.java#L143)
 的源码中写道：
