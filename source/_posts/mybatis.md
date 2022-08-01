@@ -29,9 +29,9 @@ FieldStrategy 字段策略的3个使用场景：
 ### 1、updateStrategy（字段验证策略之 update）
 
 #### 1.1 当执行更新操作时，该字段拼接set语句时的策略：
-* IGNORED: update table_a set column=#{columnProperty}, 属性为null/空string都会被set进去
-* NOT_NULL: update table_a set <if test="columnProperty != null">column=#{columnProperty}</if>
-* NOT_EMPTY: update table_a set <if test="columnProperty != null and columnProperty!=''">column=#{columnProperty}</if> 如果针对的是非 CharSequence 类型的字段则效果等于 NOT_NULL
+* IGNORED: `update table_a set column=#{columnProperty}`, 属性为null/空string都会被set进去
+* NOT_NULL: `update table_a set <if test="columnProperty != null">column=#{columnProperty}</if>`
+* NOT_EMPTY: `update table_a set <if test="columnProperty != null and columnProperty!=''">column=#{columnProperty}</if>` 如果针对的是非 CharSequence 类型的字段则效果等于 NOT_NULL
 
 #### 1.2 FieldStrategy 有三种策略：
 - IGNORED：忽略
@@ -62,8 +62,8 @@ private Date enddate;
 
 #### 2.1 在 @tablefield 注解中有属性：`fill` ，字段自动填充策略。
 
-`fill` 自动填充指的是某些字段只有在特定的场景下才会赋值，例如表里的数据：create_time （创建时间）和 update_time（更新时间）, 
-创建时间是在数据插入的时候赋值的，而更新时间是在这条数据被更新时赋值的，如下代码所示，fill 自动填充可以很好的实现这个。
+`fill` 自动填充指的是某些字段只有在特定的场景下才会被填充，例如表里的数据：create_time （创建时间）和 update_time（更新时间）, 
+创建时间是在数据插入的时候会被填充的，而更新时间是在这条数据被更新时填充的，如下代码所示，fill 注解自动填充可以很好的实现这个。
 
 ```
 @TableField(value = "create_time",fill = FieldFill.INSERT)
@@ -81,9 +81,9 @@ private Date updateTime;
 |    UPDATE     |  更新时填充字段   |
 | INSERT_UPDATE | 插入和更新时填充字段 |
 
-- 当 fill = FieldFill.INSERT 表示在执行 INSERT 语句时，该字段才会被赋值。
+- 当 fill = FieldFill.INSERT 表示在执行 INSERT 语句时，该字段才会被填充。
 
-- 当 fill = FieldFill.INSERT_UPDATE 表示在执行 INSERT、UPDATE 语句时，该字段才会被赋值。
+- 当 fill = FieldFill.INSERT_UPDATE 表示在执行 INSERT、UPDATE 语句时，该字段才会被填充。
 
 - ...
 
@@ -112,7 +112,7 @@ mybatis-plus:
 
 ## 方案三：使用 UpdateWrapper (3.x) 更新
 mp 提供了 UpdateWrapper 类简化更新的操作，
-针对方法级进行操作，只需操作其更新方法，相比较方案一和方案二影响范围较小。
+针对方法级进行操作，只需操作其更新方法，相比较方案一和方案二，方案三影响范围较小。
 
 由于 BaseMapper 的继承 Mapper ，在 [BaseMapper](https://github.com/baomidou/mybatis-plus/blob/3.0/mybatis-plus-core/src/main/java/com/baomidou/mybatisplus/core/mapper/BaseMapper.java#L143)
 的源码中写道：
@@ -131,10 +131,10 @@ int update(@Param(Constants.ENTITY) T entity, @Param(Constants.WRAPPER) Wrapper<
 ### 1、将需要更新的字段，设置到 entity 中
 ```
 mapper.update(
-new User().setName("mp").setAge(3),
-Wrappers.<User>lambdaUpdate()
-.set(User::getEmail, null)
-.eq(User::getId, 2)
+   new User().setName("mp").setAge(3),
+   Wrappers.<User>lambdaUpdate()
+           .set(User::getEmail, null) //把email设置成null
+           .eq(User::getId, 2)
 );
 ```
 
@@ -145,7 +145,7 @@ mapper.update(
     Wrappers.<User>lambdaUpdate()
        .set(User::getAge, 3)
        .set(User::getName, "mp")
-       .set(User::getEmail, null)
+       .set(User::getEmail, null) //把email设置成null
        .eq(User::getId, 2)
 );
 ```
