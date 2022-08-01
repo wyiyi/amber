@@ -9,7 +9,7 @@ description: 解决Mybatis-Plus更新对象时字段更新为空值的问题
 ---
 
 ## 问题：
-mybatis-plus（简称：mp）执行更新操作，将某些字段值置为 空 或者 null，持久层执行后，需要更新为空值的字段仍然保持原本的值。 
+mybatis-plus（简称：mp）执行更新操作，将某些字段值置为 空 或者 null，持久层执行后，需要更新为空值的字段仍然保持原本的值。
 显然和我们预期的结果不一致。
 
 **我们可以参照以下三种方案处理 mp 执行更新操作空值的情况。**
@@ -46,7 +46,7 @@ private Date enddate;
 ```
 
 #### 1.3 注意
-在 [官方文档中给出的 “方式二：调整字段验证注解”](https://www.mybatis-plus.com/guide/faq.html#%E6%8F%92%E5%85%A5%E6%88%96%E6%9B%B4%E6%96%B0%E7%9A%84%E5%AD%97%E6%AE%B5%E6%9C%89-%E7%A9%BA%E5%AD%97%E7%AC%A6%E4%B8%B2-%E6%88%96%E8%80%85-null) 
+在 [官方文档中给出的 “方式二：调整字段验证注解”](https://www.mybatis-plus.com/guide/faq.html#%E6%8F%92%E5%85%A5%E6%88%96%E6%9B%B4%E6%96%B0%E7%9A%84%E5%AD%97%E6%AE%B5%E6%9C%89-%E7%A9%BA%E5%AD%97%E7%AC%A6%E4%B8%B2-%E6%88%96%E8%80%85-null)
 的 `@TableField(strategy=FieldStrategy.NOT_EMPTY)` ，其写法在 `3.1.2` 版本后 `strategy` 方法被弃用，更新为 `insertStrategy`、`updateStrategy` 和 `whereStrategy` 。
 
 >     /**
@@ -62,7 +62,7 @@ private Date enddate;
 
 #### 2.1 在 @tablefield 注解中有属性：`fill` ，字段自动填充策略。
 
-`fill` 自动填充指的是某些字段只有在特定的场景下才会被填充，例如表里的数据：create_time （创建时间）和 update_time（更新时间）, 
+`fill` 自动填充指的是某些字段只有在特定的场景下才会被填充，例如表里的数据：create_time （创建时间）和 update_time（更新时间）,
 创建时间是在数据插入的时候会被填充的，而更新时间是在这条数据被更新时填充的，如下代码所示，fill 注解自动填充可以很好的实现这个。
 
 ```
@@ -87,13 +87,13 @@ private Date updateTime;
 
 - ...
 
-#### 2.3 FieldStrategy 与 FieldFill 
+#### 2.3 FieldStrategy 与 FieldFill
 对于 FieldStrategy 和 FieldFill，
 [判断注入的 insert 和 update 的 sql 脚本是否在对应情况下忽略掉字段的 if 标签生成，
 FieldFill 优先级是高于 FieldStrategy 的。](https://github.com/baomidou/mybatis-plus/blob/3.0/mybatis-plus-annotation/src/main/java/com/baomidou/mybatisplus/annotation/FieldFill.java#L24)
 
 ## 方案二：全局配置
-根据方案一中，FieldStrategy 的三种策略：IGNORED、NOT_NULL、NOT_EMPTY，
+根据方案一，FieldStrategy 的三种策略：IGNORED、NOT_NULL、NOT_EMPTY，
 可以在 application.yml 配置文件中注入配置 GlobalConfiguration 属性 update-strategy，
 将 update-strategy 策略调整为 IGNORED，即忽略判断策略。即可调整全局的验证策略。
 如下所示：
@@ -126,7 +126,7 @@ mp 提供了 UpdateWrapper 类简化更新的操作，
 int update(@Param(Constants.ENTITY) T entity, @Param(Constants.WRAPPER) Wrapper<T> updateWrapper);
 ```
 
-可看出，实体对象可以 set 条件值且为可以为 null，说明有两种方法可以实现更新操作（采用 lambda 表达式）：
+可看出，实体对象可以 set 条件值且可以为 null，说明有两种方法可以实现更新操作（采用 lambda 表达式）：
 
 ### 1、将需要更新的字段，设置到 entity 中
 ```
