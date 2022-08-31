@@ -21,7 +21,7 @@ MapStruct 是一个代码生成器，在不同的对象模型（例如 实体 �
 
 MapStruct 是一个 Java注释处理器，用于生成类型安全、高性能和无依赖关系的 bean 映射代码。
 
-与其他映射框架相比，MapStruct 在编译时生成 bean 映射，这确保了高性能，允许快速的开发人员反馈和彻底的错误检查。
+与其他映射框架相比，MapStruct 在编译时生成 bean 映射，这确保了高性能，允许开发人员快速的反馈和彻底的错误检查。
 
 ## 引用
 - [Maven](https://mapstruct.org/documentation/stable/reference/html/#_apache_maven) - pom.xml
@@ -111,7 +111,7 @@ public interface CarMapper {
 - 当一个属性与其对应的目标实体同名时，它将被隐式映射。
 - 当一个属性在目标实体中具有不同的名称时，可以通过 @Mapping 注解指定其名称
 
-@Mapper注释使 MapStruct 代码生成器 CarMapper 在构建时创建接口的实现（在 target 目录下对应的路径下）。示例三：
+@Mapper 使 MapStruct 代码生成器 CarMapper 在构建时创建接口的实现（在 target 目录下对应的路径下）。示例三：
 ```
 // GENERATED CODE
 public class CarMapperImpl implements CarMapper {
@@ -154,13 +154,13 @@ MapStruct 在许多情况下会自动处理类型转换。生成的代码考虑�
 目前自动应用以下转换：
 
 - 在所有 Java 原始数据类型和它们对应的包装器类型之间，例如：int，Integer and boolean 等 Boolean。
-生成的代码是有 null 意识的，即当将包装器类型转换为相应的原始类型时，null 将执行检查。
+  生成的代码是有 null 意识的，即当将包装器类型转换为相应的原始类型时，null 将执行检查。
 - 在所有 Java 原始数字类型和包装类型之间，例如：int、long 或 byte、Integer。
 - 在所有 Java 原始类型（包括它们的包装器）和 String 之间，例如：在 int 和 String 或 Boolean 和 String。
-java.text.DecimalFormat 可以指定被理解的格式字符串。
+  java.text.DecimalFormat 可以指定被理解的格式字符串。
 - 在 Enum类型 和 String 之间。
 - 在大数字类型（java.math.BigInteger, java.math.BigDecimal）和 Java 原始类型（包括它们的包装器）以及字符串之间。
-java.text.DecimalFormat可以指定被理解的格式字符串。
+  java.text.DecimalFormat可以指定被理解的格式字符串。
 - 在 java.util.Date/XMLGregorianCalendar 和 String 之间。java.text.SimpleDateFormat 可以通过选项指定格式字符串。
 - ...
 
@@ -223,7 +223,7 @@ carToCarDto() 方法的生成代码将调用 personToPersonDto() 用于映射 dr
 - 如果源属性类型和目标属性类型不同，请检查是否存在**其他映射方法**，其参数类型为源属性类型，返回类型为目标属性类型。如果存在这样的方法，它将在生成的映射实现中调用。
 - 如果不存在这样的方法，MapStruct 将查看属性的源和目标类型的**内置转换是否存在**。如果是这种情况，生成的映射代码将应用此转换。
 - 如果不存在这样的方法，MapStruct 将应用**复杂**的转换：
-a.映射方法，映射方法映射的结果，像这样：target = method1( method2( source ) )
+  a.映射方法，映射方法映射的结果，像这样：target = method1( method2( source ) )
 
 b.内置转换，通过映射方法映射的结果，如下所示：target = method( conversion( source ) )
 
@@ -232,7 +232,7 @@ c.映射方法，内置转换映射的结果，如下所示：target = conversio
 - 如果没有找到这样的方法，MapStruct 将尝试生成一个自动子映射方法，该方法将在源属性和目标属性之间进行映射。
 - 如果 MapStruct 无法创建基于名称的映射方法，则会在构建时引发错误，指示不可映射的属性及其路径。
 
-映射控件 ( MappingControl) 可以在所有级别 ( @MapperConfig, @Mapper, @BeanMapping, @Mapping) 上定义，后者优先于前者。
+映射控件 ( MappingControl) 可以在所有级别 ( @MapperConfig, @Mapper, @BeanMapping, @Mapping) 上定义。
 
 3、源对象 和 目标对象 同为 集合类型 进行转换，也就是 [映射集合：](https://mapstruct.org/documentation/stable/reference/html/#mapping-collections)
 
