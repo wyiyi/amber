@@ -1,14 +1,17 @@
 ---
 title: MapStruct - Java bean 映射，简单的方法！
 date: 2022.09.01 
-tags: Java，MapStruct
+tags: Java，Filter
 categories: Technology  
 mathjax: true 
 comments: true
 toc: true
-description: 应用程序通常需要在不同的对象模型（例如实体和 DTO）之间进行映射，
-如：在前后台传输过程中，持久层定义的实体类 经常需要映射到 其它的对象模型 进行相互转换。
+description: 应用程序通常需要在不同的对象模型（例如实体和 DTO）之间进行映射，如：在前后台传输过程中，持久层定义的实体类 经常需要映射到 其它的对象模型 进行相互转换。
 ---
+
+
+应用程序通常需要在不同的对象模型（例如实体和 DTO）之间进行映射，
+如：在前后台传输过程中，持久层定义的实体类 经常需要映射到 其它的对象模型 进行相互转换。
 
 ![](https://wyiyi.github.io/amber/contents/logo/mapstruct.png)
 
