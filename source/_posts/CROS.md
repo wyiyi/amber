@@ -154,12 +154,3 @@ source.registerCorsConfiguration("/**", config);
 
 CorsFilter filter = new CorsFilter(source);
 ````
-
-## 参考资料
-_mvc-cors：https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#mvc-cors_
-
-_annotation-CrossOrigin: https://docs.spring.io/spring-framework/docs/5.3.23/javadoc-api/org/springframework/web/bind/annotation/CrossOrigin.html_
-
-_Cross-Origin Resource Sharing（CORS）：https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS_
-
-_CorsFilter：https://docs.spring.io/spring-framework/docs/5.3.23/javadoc-api/org/springframework/web/filter/CorsFilter.html_
