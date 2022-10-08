@@ -81,22 +81,27 @@ dependencies {
 从基本开始，假设我们有一个代表汽车的类 `Car`（例如一个JPA 实体）和一个数据传输对象 `CarDto`（DTO）。 示例一：
 ```
 public class Car {
-    private String manufacturer;
+    private String make;
     private int numberOfSeats;
+    private CarType type;
     private int price;
+    ......
 ```
 
 ```
 public class CarDto {
-    private String make;
+    private String manufacturer;
     private int seatCount;
+    private String type;
     private String price;
+    ......
 ```
 
 定义映射器的接口，只需在定义的接口上使用注解：`org.mapstruct.Mapper`，示例二：
 ```
 @Mapper
 public interface CarMapper {
+    CarMapper INSTANCE = Mappers.getMapper( CarMapper.class );
 
     @Mapping(target = "manufacturer", source = "make")
     @Mapping(target = "seatCount", source = "numberOfSeats")
@@ -111,7 +116,28 @@ public interface CarMapper {
 - 当一个属性与其对应的目标实体同名时，它将被隐式映射。
 - 当一个属性在目标实体中具有不同的名称时，可以通过 @Mapping 注解指定其名称
 
-@Mapper 使 MapStruct 代码生成器 CarMapper 在构建时创建接口的实现（在 target 目录下对应的路径下）。示例三：
+一个接口中可以有多个映射方法，所有这些方法的实现都将由 MapStruct 生成。
+可以从 Mappers 类中检索接口实现的实例。
+接口声明一个成员实例 INSTANCE，为客户端提供对映射器实现的访问。示例三：
+```
+// CarMapperTest.java
+@Test
+public void shouldMapCarToDto() {
+    //given
+    Car car = new Car( "Morris", 5, CarType.SEDAN );
+ 
+    //when
+    CarDto carDto = CarMapper.INSTANCE.carToCarDto( car );
+ 
+    //then
+    assertThat( carDto ).isNotNull();
+    assertThat( carDto.getMake() ).isEqualTo( "Morris" );
+    assertThat( carDto.getSeatCount() ).isEqualTo( 5 );
+    assertThat( carDto.getType() ).isEqualTo( "SEDAN" );
+}
+```
+
+@Mapper 使 MapStruct 代码生成器 CarMapper 在构建时创建接口的实现（在 target 目录下对应的路径下）。示例四：
 ```
 // GENERATED CODE
 public class CarMapperImpl implements CarMapper {
@@ -147,7 +173,7 @@ public class CarMapperImpl implements CarMapper {
 ```
 编译后的代码，看起来像自己写的代码，特别是，这意味着通过普通的 getter/setter 调用而不是反射或类似方法将值从源复制到目标。
 
-MapStruct 在许多情况下会自动处理类型转换。生成的代码考虑了通过指定的任何名称映射 @Mapping。
+MapStruct 在许多情况下会自动处理类型转换。生成的代码考虑了通过 @Mapping 指定的任何名称映射
 
 1、源对象 和 目标对象 不同的类型，也就是 [隐式类型转换：](https://mapstruct.org/documentation/stable/reference/html/#implicit-type-conversions)
 
@@ -164,7 +190,7 @@ MapStruct 在许多情况下会自动处理类型转换。生成的代码考虑�
 - 在 java.util.Date/XMLGregorianCalendar 和 String 之间。java.text.SimpleDateFormat 可以通过选项指定格式字符串。
 - ...
 
-示例四：从 int 到 String 的转换
+示例五：从 int 到 String 的转换
 ```
 @Mapper
 public interface CarMapper {
@@ -176,7 +202,7 @@ public interface CarMapper {
     List<String> prices(List<Integer> prices);
 }
 ```
-示例五：从 BigDecimal 到 String 的转换
+示例六：从 BigDecimal 到 String 的转换
 ```
 @Mapper
 public interface CarMapper {
@@ -186,7 +212,7 @@ public interface CarMapper {
 
 }
 ```
-示例六：从 Date 到 String 的转换
+示例七：从 Date 到 String 的转换
 ```
 @Mapper
 public interface CarMapper {
@@ -204,7 +230,7 @@ public interface CarMapper {
 通常，一个对象不仅具有原始属性，而且还引用其他对象。
 例如，Car 类可以包含对 Person 应该映射到该类引用的对象的对象（代表汽车的驾驶员）的 PersonDto 引用 CarDto。
 
-在这种情况下，只需为引用的对象类型定义一个映射方法，示例七：
+在这种情况下，只需为引用的对象类型定义一个映射方法，示例八：
 ```
 @Mapper
 public interface CarMapper {
@@ -232,12 +258,12 @@ c.映射方法，内置转换映射的结果，如下所示：target = conversio
 - 如果没有找到这样的方法，MapStruct 将尝试生成一个自动子映射方法，该方法将在源属性和目标属性之间进行映射。
 - 如果 MapStruct 无法创建基于名称的映射方法，则会在构建时引发错误，指示不可映射的属性及其路径。
 
-映射控件 ( MappingControl) 可以在所有级别 ( @MapperConfig, @Mapper, @BeanMapping, @Mapping) 上定义。
+<!-- 映射控件 ( MappingControl) 可以在所有级别 ( @MapperConfig, @Mapper, @BeanMapping, @Mapping) 上定义。 -->
 
 3、源对象 和 目标对象 同为 集合类型 进行转换，也就是 [映射集合：](https://mapstruct.org/documentation/stable/reference/html/#mapping-collections)
 
 集合类型（List Set 等）的映射与映射 bean 类型的方式相同，即通过在映射器接口中定义具有所需源和目标类型的映射方法。
-MapStruct 支持 Java 集合框架中的各种可迭代类型。示例八：
+MapStruct 支持 Java 集合框架中的各种可迭代类型。示例九：
 ```
 @Mapper
 public interface CarMapper {
@@ -249,8 +275,9 @@ public interface CarMapper {
     CarDto carToCarDto(Car car);
 }
 ```
-生成的实现为每个元素执行从到 integerSetStringSet 的转换，而生成的方法为每个包含的元素调用方法，
-如示例九所示：
+生成的integerSetToStringSet 实现实现对每个元素从 Integer 到 String 执行，
+而生成的 carsToCarDtos() 方法调用 carsToCarDtos() 方法中每个元素。
+如示例十所示：
 ```
 //GENERATED CODE
 @Override
@@ -287,7 +314,7 @@ public List<CarDto> carsToCarDtos(List<Car> cars) {
 4、源枚举 中的每个常量都 映射 到 目标枚举类型 中同名的常量。[映射值：](https://mapstruct.org/documentation/stable/reference/html/#_mapping_enum_to_enum_types)
 
 @ValueMapping 如果需要，可以在注释的帮助下 将源枚举 中的 常量 映射到 具有另一个名称的常量。
-源枚举中的几个常量可以映射到目标类型中的同一个常量。示例十：
+源枚举中的几个常量可以映射到目标类型中的同一个常量。示例十一：
 ```
 @Mapper
 public interface OrderMapper {
@@ -302,7 +329,7 @@ public interface OrderMapper {
     ExternalOrderType orderTypeToExternalOrderType(OrderType orderType);
 }
 ```
-生成的代码。示例十一：
+生成的代码。示例十二：
 ```
 / GENERATED CODE
 public class OrderMapperImpl implements OrderMapper {
@@ -335,7 +362,7 @@ public class OrderMapperImpl implements OrderMapper {
 ```
 
 5、[多个源参数的映射：](https://mapstruct.org/documentation/stable/reference/html/#mappings-with-several-source-parameters)
-例如：将几个实体 组合成 一个数据传输对象。示例十二：
+例如：将几个实体 组合成 一个数据传输对象。示例十三：
 ````
 @Mapper
 public interface AddressMapper {
