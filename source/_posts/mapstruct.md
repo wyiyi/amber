@@ -420,4 +420,4 @@ public interface CarMapper {
 
 Mapstruct 提供了大量的功能和配置，使我们能够以安全优雅、简单快捷的方式创建从简单到复杂的映射器，减少转换代码。
 
-本文中所介绍到的只是基础常见用法，还有很多强大的功能文中没有提到，想要探索更多、更详细的使用方式可以参考 [官方文档](https://mapstruct.org/documentation/stable/reference/html/)。
+本文中所介绍到的只是基础常见用法，还有很多强大的功能文中没有提到，想要探索更多、更详细的使用方式可以参考 [官方文档](https://mapstruct.org/
