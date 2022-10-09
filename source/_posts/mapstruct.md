@@ -81,6 +81,7 @@ dependencies {
 ```
 
 ## 冰山一角 - 基本映射
+
 从基本开始，假设我们有一个代表汽车的类 `Car`（例如一个JPA 实体）和一个数据传输对象 `CarDto`（DTO）。 示例一：
 
 ```java
@@ -90,6 +91,7 @@ public class Car {
     private CarType type;
     private int price;
     ......
+}
 ```
 
 ```java
@@ -99,6 +101,7 @@ public class CarDto {
     private String type;
     private String price;
     ......
+}
 ```
 
 定义映射器的接口，只需在定义的接口上使用注解：`org.mapstruct.Mapper`，示例二：
@@ -121,10 +124,7 @@ public interface CarMapper {
 - 当一个属性与其对应的目标实体同名时，它将被隐式映射。
 - 当一个属性在目标实体中具有不同的名称时，可以通过 @Mapping 注解指定其名称
 
-一个接口中可以有多个映射方法，所有这些方法的实现都将由 MapStruct 生成。
-映射接口的实现可以从 Mappers 类中检出。为便于使用，在接口中声明了一个 INSTANCE 成员实例，供调用者直接访问接口实例。
-
-示例三：
+一个接口中可以有多个映射方法，所有这些方法的实现都将由 MapStruct 生成。映射接口的实现可以从 Mappers 类中检出。为便于使用，在接口中声明了一个 INSTANCE 成员实例，供调用者直接访问接口实例。示例三：
 
 ```java
 // CarMapperTest.java
@@ -182,14 +182,13 @@ public class CarMapperImpl implements CarMapper {
 
 编译后的代码，看起来像自己写的代码，特别是，这意味着将值从源复制到目标是通过普通的 getter/setter 调用，而不是反射或类似方法。
 
-MapStruct 在许多情况下会自动处理类型转换。生成的代码考虑了通过 @Mapping 指定的任何名称映射：
+MapStruct 在许多情况下会自动处理类型转换。生成的代码考虑了通过 @Mapping 指定的任何名称映射。
 
-1、源对象 和 目标对象 不同的类型，也就是隐式类型转换。
+## 隐式类型转换
 
-目前自动应用以下转换：
+源对象和目标对象类型不同的隐式类型转换，目前自动应用以下转换：
 
-- 在所有 Java 原始数据类型和它们对应的包装器类型之间，例如：int，Integer、boolean 等 Boolean。
-  生成的代码是有 null 意识的，即当将包装器类型转换为相应的原始类型时，将执行 null 检查。
+- 在所有 Java 原始数据类型和它们对应的包装器类型之间，例如：int，Integer、boolean 等 Boolean。生成的代码是有 null 意识的，即当将包装器类型转换为相应的原始类型时，将执行 null 检查。
 - 在所有 Java 原始数字类型和包装类型之间，例如：int 和 long 或 byte 和 Integer。
 - 在所有 Java 原始类型（包括它们的包装器）和 String 之间，例如：在 int 和 String 或 Boolean 和 String。还可以指定能够被 java.text.DecimalFormat 解析的格式化字符串。
 - 在 Enum 类型 和 String 之间。
@@ -238,7 +237,9 @@ public interface CarMapper {
 }
 ```
 
-2、源对象 包含 引用对象 与 目标对象 的转换，也就是 [映射对象引用](https://mapstruct.org/documentation/stable/reference/html/#mapping-object-references) 。
+## 映射对象引用
+
+源对象 包含 引用对象 与 目标对象 的转换，也就是 [映射对象引用](https://mapstruct.org/documentation/stable/reference/html/#mapping-object-references) 。
 
 通常，一个对象不仅具有原始类型属性，还可能引用其他对象。例如，Car 类可以包含一个对 Person 对象的引用（代表汽车的驾驶员），这个对象应该被 CarDto 类引用，映射为 PersonDto 对象。
 
@@ -262,17 +263,15 @@ MapStruct 将为源对象和目标对象中的每个属性对按如下步骤生�
 1. 如果源属性类型和目标属性类型不同，请检查是否存在**其他映射方法**，其参数类型为源属性类型，返回类型为目标属性类型。如果存在这样的方法，它将在生成的映射实现中调用。
 1. 如果不存在这样的方法，MapStruct 将查看属性的源和目标类型的**内置转换是否存在**。如果是这种情况，生成的映射代码将应用此转换。
 1. 如果不存在这样的方法，MapStruct 将应用**复杂**的转换：
-
     a. 映射方法，再对结果使用映射方法，像这样：`target = method1( method2( source ) )`
-
     b. 内置转换，再对结果使用映射方法，如：`target = method( conversion( source ) )`
-
     c. 映射方法，再对结果使用内置转换，如：`target = conversion( method( source ) )`
-
 1. 如果没有找到这样的方法，MapStruct 将尝试生成一个自动子映射方法，该方法将在源属性和目标属性之间进行映射。
 1. 如果 MapStruct 无法创建基于名称的映射方法，则会在编译时报出错误，指示不可映射的属性及其路径。
 
-3、源对象 和 目标对象 同为 集合类型 进行转换，也就是 [映射集合](https://mapstruct.org/documentation/stable/reference/html/#mapping-collections)。
+## 映射集合
+
+源对象 和 目标对象 同为 集合类型 进行转换，也就是 [映射集合](https://mapstruct.org/documentation/stable/reference/html/#mapping-collections)。
 
 集合类型（List、Set 等）的映射与映射 bean 类型的方式相同，即通过在映射器接口中定义具有所需源和目标类型的映射方法。
 
@@ -290,9 +289,7 @@ public interface CarMapper {
 }
 ```
 
-生成的 `integerSetToStringSet` 代码实现对每个元素从 Integer 到 String 执行转换，
-而生成的 `carsToCarDtos` 方法调用 `carToCarDto` 方法转换每个元素。
-如示例十所示：
+生成的 `integerSetToStringSet` 代码实现对每个元素从 Integer 到 String 执行转换，而生成的 `carsToCarDtos` 方法调用 `carToCarDto` 方法转换每个元素。如示例十所示：
 
 ```java
 //GENERATED CODE
@@ -327,10 +324,11 @@ public List<CarDto> carsToCarDtos(List<Car> cars) {
 }
 ```
 
-4、源枚举类型中的每个常量都映射到目标枚举类型中同名的常量，即 [映射枚举类型](https://mapstruct.org/documentation/stable/reference/html/#_mapping_enum_to_enum_types)。
+## 映射枚举类型
 
-如果需要，可以在 `@ValueMapping` 注解的帮助下，将源枚举类中的常量映射到具有另一个名称的常量。
-还可以将源枚举类中的几个常量映射到目标类型中的同一个常量。示例十一：
+源枚举类型中的每个常量都映射到目标枚举类型中同名的常量，即 [映射枚举类型](https://mapstruct.org/documentation/stable/reference/html/#_mapping_enum_to_enum_types)。
+
+如果需要，可以在 `@ValueMapping` 注解的帮助下，将源枚举类中的常量映射到具有另一个名称的常量。还可以将源枚举类中的几个常量映射到目标类型中的同一个常量。示例十一：
 
 ```java
 @Mapper
@@ -381,7 +379,9 @@ public class OrderMapperImpl implements OrderMapper {
 }
 ```
 
-5、[多个源参数的映射](https://mapstruct.org/documentation/stable/reference/html/#mappings-with-several-source-parameters)，例如：将几个实体组合成一个数据传输对象。示例十三：
+## 多个源参数的映射
+
+[多个源参数的映射](https://mapstruct.org/documentation/stable/reference/html/#mappings-with-several-source-parameters)，例如：将几个实体组合成一个数据传输对象。示例十三：
 
 ````java
 @Mapper
@@ -397,7 +397,9 @@ public interface AddressMapper {
 
 如果多个源对象中有相同名称的属性，则必须使用注解指定从哪个源中读取属性，否则将会抛出异常。对于在给定源对象中唯一的属性，`source` 属性可以选择性的指定，因为其可以自动确定。
 
-6、[条件映射](https://mapstruct.org/documentation/stable/reference/html/#conditional-mapping)：条件映射属于一种 [源存在性检测](https://mapstruct.org/documentation/stable/reference/html/#source-presence-check)，不同于默认的调用 `XYZ` 属性的 `hasXYZ` 方法进行存在性检测，条件映射允许自定义检测方法，来决定是否对属性进行映射。
+## 条件映射
+
+[条件映射](https://mapstruct.org/documentation/stable/reference/html/#conditional-mapping)：条件映射属于一种 [源存在性检测](https://mapstruct.org/documentation/stable/reference/html/#source-presence-check)，不同于默认的调用 `XYZ` 属性的 `hasXYZ` 方法进行存在性检测，条件映射允许自定义检测方法，来决定是否对属性进行映射。
 
 在方法上使用 `org.mapstruct.Condition` 注解并返回 `boolean` 类型值的方法，即为自定义的条件检测方法。
 
@@ -420,4 +422,4 @@ public interface CarMapper {
 
 Mapstruct 提供了大量的功能和配置，使我们能够以安全优雅、简单快捷的方式创建从简单到复杂的映射器，减少转换代码。
 
-本文中所介绍到的只是基础常见用法，还有很多强大的功能文中没有提到，想要探索更多、更详细的使用方式可以参考 [官方文档](https://mapstruct.org/
+本文中所介绍到的只是基础常见用法，还有很多强大的功能文中没有提到，想要探索更多、更详细的使用方式可以参考 [官方文档](https://mapstruct.org/documentation/stable/reference/html/)。
