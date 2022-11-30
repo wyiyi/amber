@@ -1,4 +1,13 @@
-# Filter 中方法会执行两次？
+---
+title: Filter 中方法会执行两次？ 
+date: 2022.12.01 
+tags: Servlet，Filter
+categories: Technology  
+mathjax: true 
+comments: true
+toc: true
+description: Filter 中方法会执行两次？
+---
 
 ## 一、1 次 init()，2 次 doFilter()
 ### 1、现象：
@@ -86,7 +95,7 @@ public void doFilter(ServletRequest request, ServletResponse response, FilterCha
 ### 3、方案：
 这样我们就知道走了两次 doFilter() 方法的原因，就可以在拦截器中判断请求路径做处理即可。
 
-## 现象二：2 次 init()，2 次 doFilter()
+## 二：2 次 init()，2 次 doFilter()
 ### 1、现象：
 在示例一中：同时使用 `@WebFilter` 和 `@Component` 在启动日志，发起一个请求时发现：
 
@@ -120,8 +129,8 @@ public class AFilter implements Filter {
 ````
 
 ### 2、原因：
-[文章中](https://blog.csdn.net/weixin_38152047/article/details/121244269)
-@WebFilter 用于将一个类声明为过滤器，该注解将会在部署时候被容器处理，容器将根据具体的属性配置将相应的类部署为过滤器。
+在[文章中](https://blog.csdn.net/weixin_38152047/article/details/121244269)@WebFilter 
+用于将一个类声明为过滤器，该注解将会在部署时候被容器处理，容器将根据具体的属性配置将相应的类部署为过滤器。
 `value = "/api/amber/*"` 属性等价于 `urlPatterns` 属性。
 
 ① @WebFilter （示例四）
@@ -174,12 +183,10 @@ public class BronzeApplication {
 }
 ````
 
-访问的 url 为 /index/* 或者 /product/* 的时候，该过滤器也执行了！ 也就是说，WebFilter 注解配置的 urlPatterns 没有起作用。
+访问的 url 为 /index/* 或者 /product/* 的时候，该过滤器也执行了！ 也就是说，WebFilter 注解配置的 urlPatterns 没有起作用。所以 doFilter() 执行两次，其中包含 /favicon.ico 路径。
 
 // TODO 在查看容器启动日志的时候，发现WebAuthFilter被两次注册，两次映射，分别为WebAuthFilter和webAuthFilter
 ....文中内容。
-
-
 
 ### 3、方案：
 #### a. @WebFilter
