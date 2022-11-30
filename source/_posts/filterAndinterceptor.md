@@ -43,7 +43,7 @@ ApplicationFilterChain 是它的实现类，在实现类内部有 doFilter() 方
 
   如 [Servlet之Filter](https://wyiyi.github.io/amber/2021/10/01/filter/) 文章 FilterChain 的执行顺序：
  
-![](https://wyiyi.github.io/amber/contents/filterAndInter/filterAndInter.png)
+![](https://wyiyi.github.io/amber/contents/filterAndInter/applicationFilterChain.png)
   
 示例一：
 ````java
