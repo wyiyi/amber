@@ -10,9 +10,9 @@ description: 注解 @@WebFilter ? @Component ? @WebFilter + @Component ?
 ---
 
 
-## 一、 @WebFilter (javax.servlet.annotation.WebFilter)
+## 一、@WebFilter
 
-Filter 上加 @WebFilter，指定 value，启动类加 @ServletComponentScan
+Filter 上加 @WebFilter (javax.servlet.annotation.WebFilter)，指定 value，启动类加 @ServletComponentScan
 
 【注意】：[@ServletComponentScan 这个注解仅对内嵌的 tomcat 生效，如果使用单独的 tomcat，这种方式无效](https://docs.spring.io/spring-boot/docs/2.0.9.RELEASE/reference/htmlsingle/#boot-features-embedded-container-servlets-filters-listeners-scanning)。
 
@@ -212,8 +212,7 @@ public class AFilter implements Filter {
 
 其中：
 
-- 当访问的 url 为 `/index/*` 或者 `/product/*` 的时候，该过滤器也执行了！也就是说，WebFilter 注解配置的 urlPatterns 没有起作用。
-【注意】：@WebFilter 中的 value 属性等价于 urlPatterns 属性，但是两个不应该同时使用。
+- 当访问的 url 为 `/index/*` 或者 `/product/*` 的时候，该过滤器也执行了！也就是说，WebFilter 注解配置的 urlPatterns 没有起作用。【注意】：@WebFilter 中的 value 属性等价于 urlPatterns 属性，但是两个不应该同时使用。
 
 - `@WebFilter(filterName = "aFilter", value = "/api/amber/*")` 中的 value（或者 urlPatterns）属性，
 也可以通过 @Component + FilterRegistrationBean 进行实例注册方式：`filterRegistrationBean.addUrlPatterns("/*");` 解决。
