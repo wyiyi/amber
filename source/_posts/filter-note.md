@@ -6,7 +6,7 @@ categories: Technology
 mathjax: true 
 comments: true
 toc: true
-description:  @WebFilter ? @Component ? @WebFilter + @Component ?
+description: @WebFilter ? @Component ? @WebFilter + @Component ?
 ---
 
 ## 一、 @WebFilter (javax.servlet.annotation.WebFilter)
