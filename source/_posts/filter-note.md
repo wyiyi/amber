@@ -117,7 +117,7 @@ public class ComponentFilterOrderConfig {
     public FilterRegistrationBean filterBeanOne(AFilter aFilter) {
         FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
         filterRegistrationBean.setFilter(aFilter);
-        filterRegistrationBean.addUrlPatterns("/*");
+        filterRegistrationBean.addUrlPatterns("/api/amber/*");
         filterRegistrationBean.setName("aFilter");
         return filterRegistrationBean;
     }
@@ -205,16 +205,20 @@ public class AFilter implements Filter {
 
 ![](https://wyiyi.github.io/amber/contents/flow/jietu.png)
 
-访问的 url 为 /index/* 或者 /product/* 的时候，该过滤器也执行了！ 也就是说，WebFilter 注解配置的 urlPatterns 没有起作用。
+### @WebFilter + @Component 同时使用需注意
+两个方法全部都一起用是没问题的，会覆盖，切忌的是，
+只用 @WebFilter + @Component，不用 @ServletComponentScan 和 FilterRegistrationBean，
+这时如果 webFilter 配置的是非全局的过滤器，就会被 @Component 注解再注册一个全局的过滤器了。
 
-@WebFilter 用于将一个类声明为过滤器，该注解将会在部署时候被容器处理，容器将根据具体的属性配置将相应的类部署为过滤器。
+其中：
 
-【注意】：@WebFilter 中的 value 属性等价于 urlPatterns 属性，但是两个不应该同时使用
+- 当访问的 url 为 `/index/*` 或者 `/product/*` 的时候，该过滤器也执行了！也就是说，WebFilter 注解配置的 urlPatterns 没有起作用。
+【注意】：@WebFilter 中的 value 属性等价于 urlPatterns 属性，但是两个不应该同时使用。
 
-### 切莫 @WebFilter + @Component 同时使用
-`@WebFilter(filterName = "aFilter", value = "/api/amber/*")` 中的 value（或者 urlPatterns）属性，
-也可以通过 @Component + FilterRegistrationBean 进行实例注册方式，
-以 `filterRegistrationBean.addUrlPatterns("/*");` 解决。
+- `@WebFilter(filterName = "aFilter", value = "/api/amber/*")` 中的 value（或者 urlPatterns）属性，
+也可以通过 @Component + FilterRegistrationBean 进行实例注册方式：`filterRegistrationBean.addUrlPatterns("/*");` 解决。
+
+
 
 ### 小插曲：
 当浏览器访问 `http://localhost:8080/index` 发现日志输出了两次， doFilter() 方法执行了两次。
@@ -293,3 +297,4 @@ public void doFilter(ServletRequest request, ServletResponse response, FilterCha
 2022-12-01 00:11:11.449  INFO 13616 --- [nio-8080-exec-6] com.amber.common.filter.AFilter          : USER 信息：User(screen_name=amber, text=今天星期三, created_at=Thu Dec 01 00:11:11 CST 2022)
 2022-12-01 00:11:11.450  INFO 13616 --- [nio-8080-exec-6] com.amber.common.filter.AFilter          : /favicon.ico
 ````
+#### 小插曲是因为浏览器会自动发一个获取网站图标的请求，而过滤器配置的是全局过滤器，所以就会走两次
