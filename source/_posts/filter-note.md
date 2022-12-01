@@ -1,13 +1,14 @@
 ---
-title: 为非全局路径配置 Filter 的两种方法
+title: 为非全局路径配置 Filter 的两种方法 
 date: 2022.12.01 
 tags: Servlet，Filter
 categories: Technology  
 mathjax: true 
 comments: true
 toc: true
-description: @WebFilter ? @Component ? @WebFilter + @Component ?
+description: 注解 @@WebFilter ? @Component ? @WebFilter + @Component ?
 ---
+
 
 ## 一、 @WebFilter (javax.servlet.annotation.WebFilter)
 
