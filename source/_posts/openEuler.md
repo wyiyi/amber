@@ -16,7 +16,7 @@ description: openEuler 社区人才认证考试
 
 ![](https://wyiyi.github.io/amber/contents/openEuler/title.jpeg)
 
-## 01 系统安装概述
+## 系统安装概述
 1. 通常在少量安装时，采用U盘、光盘或者虚拟光驱的方式安装；在批量安装时，采用 PXE 引导的方式安装。
 2. 针对不同的架构，openEuler 提供的启动模式也不同。X86 架构包含 Legacy 和 UEFI 模式，而 ARM 架构目前只包含 UEFI 模式
 3. 在安装引导界面，按 “e” 进入已选选项的参数编辑界面，按 “c” 进入命令行模式。
@@ -24,7 +24,7 @@ description: openEuler 社区人才认证考试
 5. https://docs.openeuler.org/zh/docs/22.03_LTS/docs/Installation/installation.html
 
 
-## 02 物理存储及逻辑卷管理
+## 物理存储及逻辑卷管理
 ### 磁盘存储挂载与使用
 1. 扩展分区与逻辑分区是为了突破分区表中只能保存4个分区的限制而出现的，扩展分区不能直接使用，需要在扩展分区内划分一个或多个逻辑分区后才能使用。
 2. 前4个分区(主分区或扩展分区)用数字1到4，逻辑分区从5开始，例如：`/dev/hda3`，是第一个 IDE 磁盘上第三个主分区或扩展分区；`/dev/sdb6` 是第二个 SCSI 硬盘上的第二个逻辑分区
@@ -98,7 +98,7 @@ $ lvremove /dev/vg1/lv1
 ``` 
 
 
-## 03 系统服务的配置和管理
+## 系统服务的配置和管理
 ### 系统服务基本概念
 1. 所有的可用systemd unit类型，可在如下表所示的路径下查看
   
@@ -190,7 +190,7 @@ $ jobs
 10. 如果使用 nohup 命令提交作业，那么在缺省情况下该作业的所有输出都被重定向到一个名 为 nohup.out 的文件中，除非另外指定了输出文件: `nohup command > myout.file 2>&1`
 
 
-## 04 操作系统网络管理和防火墙
+## 操作系统网络管理和防火墙
 1. 通过 nmcli 配置网络
 ```bash
 # 显示NetworkManager状态: 
@@ -265,7 +265,7 @@ $ firewall-cmd --set-default-zone=external
 ```
 
 
-## 05 操作系统进程管理
+## 操作系统进程管理
 1. 进程(Process) 是计算机中已运行程序的实体，是程序的一个具体实现。当程序被系统调用 到内存以后，系统会给程序分配一定的资源(内存，设备等等)然后进行一系列的复杂操作， 使程序变成进程以供系统调用。
    进程除包含程序的静态代码(text)，还包含堆(heap)、栈 (stack)、数据(data)段，堆用来在进程正在运行时分配所需的内存，栈用来保存临时数 据(如函数参数、返回地址、局部变量)，数据段用来保存已初始化的变量。
 2. Linux 上进程有五种状态：
@@ -292,7 +292,7 @@ $ ps -l
 ![](https://wyiyi.github.io/amber/contents/openEuler/05-3.png)
 
 
-## 06 文件和文件系统
+## 文件和文件系统
 ### Linux 文件系统
 1. 机械硬盘
    - 扇区是硬盘上存储的最小物理单位
@@ -349,7 +349,7 @@ $ blkid /dev/vg1/lv1
 3. 输入重定向: <
 
 
-## 07 用户和群组
+## 用户和群组
 ### 管理用户和组
 1. 每个用户都会分配一个特有的id号-uid。
 2. 用户在登录系统时是通过UID来区分用户，而不是通过用户名来区分
@@ -395,7 +395,7 @@ $ blkid /dev/vg1/lv1
   * sudo:此命令可以允许普通用户执行管理员账户才能执行的命令。
 
 
-## 08 操作系统日志管理
+## 操作系统日志管理
 1. 常用系统日志
    - dmesg：记录系统在开机时内核检测过程所产生的信息
    - /var/log/wtmp or /var/log/faillog：记录正确(wtmp)与错误(faillog)登陆系统者的账户信息, last命令就是读取wtmp文件来获取的
@@ -445,7 +445,7 @@ $ blkid /dev/vg1/lv1
 13. linux中一般使用logrotate服务把旧文件删除或压缩备份，并创建新的日志文件，达到日志转储的目的
 
 
-## 09 常见故障定界定位
+## 常见故障定界定位
 ```bash
 # 查看系统版本信息
 $ uname -a
@@ -468,14 +468,14 @@ $ sar -n DEV 1
 3. **kdump 日志**：触发panic的情况下，在/var/crash目录下会生成以**问题发生时间点命名**的文件夹，其下有**vmcore文件**(即kdump) 以及vmcore-dmesg.txt文件。vmcore-dmesg文件包含calltrace信息，可用于基本的问题定界。
 
 
-## 10 SSH 管理及安全
+## SSH 管理及安全
 1. SSH配置文件目录存放于/etc/ssh，SSH服务端主要的配置文件有sshd_config
 2. /usr/bin/ssh是SSH远程登录客户端
 3. /usr/bin/scp是远程文件拷贝程序，用于非交互模式文件拷贝
 4. /usr/bin/sftp是远程安全文件传输程序，常用于交互模式文件传输
 
 
-## 11 shell 脚本
+## shell 脚本
 1. 默认的 Shell 可以在 /bin/sh 查看，在/etc/passwd 中修改
 ```bash
 # 查看系统支持的shell: 
@@ -575,13 +575,13 @@ done
 22. echo $? 显示上一个命令的退出码
 
 
-## 12 操作系统启动管理
+## 操作系统启动管理
 1. Linux 下查看系统引导方式：查看linux下是否有 “/sys/firmware/efi”目录，如果不存在，则说明启动方式是 Legacy ( BIOS )；如果存在，则说明启动方式是UEFI
 ![](https://wyiyi.github.io/amber/contents/openEuler/07-2.png)
 2. MBR 是不属于任何一个操作系统， 可以通过dd命令进行 MBR的读取、写入、删除等操作。
 
 # 随堂测试
-## 01 系统安装概述 
+## 系统安装概述 
 1. openEuler的网络方式安装依赖PXE和Kickstart() **B** <br>
 A、对 <br>
 B、错 <br>
@@ -605,7 +605,7 @@ C、容器镜像 <br>
 D、嵌入式镜像 <br>
 E、Repo源 <br> 
 
-## 02 物理存储及逻辑卷管理
+## 物理存储及逻辑卷管理
 1. 磁盘分区有以下哪几种类型? (多选题) **ABC** <br>
 A. 主分区 <br>
 B. 扩展分区 <br>
@@ -626,7 +626,7 @@ D. makefile -t ext4 /dev/hdb6 <br>
 A. 对 <br>
 B. 错 <br>
 
-## 03 系统服务的配置和管理
+## 系统服务的配置和管理
 1. 所有的可用systemd unit类型有以下哪些路径?(多选题) **ABD**  <br>
 A. /usr/lib/systemd/system/  <br>
 B. /run/systemd/system/  <br>
@@ -657,7 +657,7 @@ D. bg <br>
 A. 对 <br>
 B. 错 <br>
 
-## 04 操作系统网络管理和防火墙
+## 操作系统网络管理和防火墙
 1. nmcli 配置网络通常包括以下几个步骤(多选题)  **BC** <br>
 A. 连接网络设备 <br>
 B. 设置IP <br>
@@ -696,9 +696,9 @@ B. transient <br>
 C. dynamic <br>
 D. pretty <br>
 
-8. hostnamectl修改主机名后直接生效。(判断题)  **A**
-A. 对
-B. 错
+8. hostnamectl修改主机名后直接生效。(判断题)  **A** <br>
+A. 对 <br>
+B. 错 <br>
 
 9. 系统中防火墙的默认区域是(多选题) **B** <br>
 A. drop <br>
@@ -710,7 +710,7 @@ D. internal <br>
 A. 对 <br>
 B. 错 <br>
 
-## 05 操作系统进程管理
+## 操作系统进程管理
 1. 以下进程状态正确的是(多选题)  **ABCD** <br>
 A. TASK_RUNNING <br>
 B. TASK_INTERRUPTIBLE <br>
@@ -757,7 +757,7 @@ D. month <br>
 A. 对 <br>
 B. 错 <br>
 
-## 06 文件和文件系统
+## 文件和文件系统
 1. 下列关于 inode 的描述正确的是? (多选题)  **ACD** <br>
 A. 在 Linux 中，文件系统中管理的每个对象(文件或目录)表示为一个 inode <br>
 B. 1个 inode 中包含1个指针 <br>
@@ -825,7 +825,7 @@ B. chmod <br>
 C. clear <br>
 D. chage <br>
 
-## 08 操作系统日志管理
+## 操作系统日志管理
 1. dmesg命令可以查看系统开机过程中产生的信息? （判断题）  **A** <br>
 A. 对 <br>
 B. 错 <br>
@@ -848,7 +848,7 @@ B. UDP <br>
 C. ICMP <br>
 D. SMT <br>
 
-## 09 常见故障定界定位
+## 常见故障定界定位
 1. 查看网卡发包速率使用哪个命令? （单选题）  **B** <br>
 A. ethtool <br>
 B. sar <br>
@@ -871,7 +871,7 @@ B. ps aux <br>
 C. iotop <br>
 D. free <br>
 
-## 10 SSH管理及安全
+## SSH管理及安全
 1. 下面哪个套件不是搭建SSH服务必须的：（单选题）  **B** <br>
 A、openssh; <br>
 B、openssh-askpass; <br>
@@ -890,7 +890,7 @@ B、/etc/ssh/ssh_config; <br>
 C、~/.ssh/config <br>
 D、/etc/ssh/ssh_config.d/05-redhat.con <br>
 
-## 11 shell脚本
+## shell脚本
 1. Shell的功能包含：（多选题） **ABC** <br>
 A.用户界面，提供用户与内核交互接口 <br>
 B.命令解释器 <br>
@@ -946,7 +946,7 @@ E. 在整个脚本中通篇使用一致的格式 <br>
 A. 对 <br>
 B. 错  <br>
 
-## 12 操作系统启动管理
+## 操作系统启动管理
 1. 在openEuler中查看系统引导方式？ **ABC** <br>  
 A. 查看linux下是否有 “/sys/firmware/efi”目录 <br>
 B. 如果不存在，则说明启动方式是Legacy ( BIOS ) <br>
