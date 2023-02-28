@@ -1,16 +1,13 @@
 ---
 title: openEuler 社区人才认证考试
 date: 2023.03.01
-tag:
-    - openEuler
-    - 随堂测试
-  categories: Technology  
-  mathjax: true
-  comments: true
-  toc: true
-  description: openEuler 社区人才认证考试
+tag: openEuler
+categories: Technology  
+mathjax: true
+comments: true
+toc: true
+description: openEuler 社区人才认证考试
 ---
-
 
 # openEuler 社区人才认证考试
 
