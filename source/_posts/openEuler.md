@@ -152,11 +152,13 @@ $ systemctl isolate name.target
 6. systemd 通过 `systemctl` 命令可以对系统进行关机、重启、休眠等一系列操作。当前仍兼容部分 Linux 常用管 理命令，对应关系如下表。建议用户使用 systemctl 命令进行操作。
 
 | Linux常用管理命令      | systemctl命令        | 描述   |
-  |--------------------|------|----------------------  |
+|--------------------|------|----------------------  |
 | halt  | systemctl halt     | 关闭系统 |
 | poweroff    | systemctl poweroff | 关闭电源      |
 | reboot   |  systemctl reboot     | 重启  |
+
 7. 使用 systemctl 关闭或重启系统会给当前所有的登录用户发送一条提示消息。如果不想让 systemd 发送该消息，您可以添加 “--no-wall” 参数
+
 ```bash
 # 使系统待机，在root权限下执行如下命令: 
 $ systemctl suspend 
@@ -231,6 +233,7 @@ $ ip addr show dev enp3s0
     - static: 静态主机名，可由用户自行设置，并保存在 /etc/hostname 文件中。
     - transient: 动态主机名，由内核维护，初始是 static 主机名，默认值为 “localhost”。可由 DHCP 或 mDNS 在运行时更改。
     - pretty: 灵活主机名，允许使用自由形式(包括特殊/空白字符)进行设置。静态/动态主机名遵从域名的通用限制。
+
 ```bash
 # 查看当前的主机名，使用如下命令: 
 $ hostnamectl status 
@@ -243,6 +246,7 @@ $ hostnamectl set-hostname "" [option...]
 # 远程更改主机名，在远程系统中运行hostnamectl命令时，要使用-H，--host 选项，在root权限下使用如下命令: 
 $ hostnamectl set-hostname -H [username]@hostname new_hostname 
 ```
+
 ```bash
 # 激活开机启动防火墙服务: 
 $ systemctl enable firewalld
@@ -286,7 +290,7 @@ $ ps -l
 6. **进程的 nice 值不是进程的优先级，但是可以通过调整 nice 值可以影响进程的优先值。**
 ![](https://wyiyi.github.io/amber/contents/openEuler/05-2.png)
 ![](https://wyiyi.github.io/amber/contents/openEuler/05-3.png)
-7. 对执行的命令 输出结果可以通过在 crontab 定时任务中都会在未尾带增加 >/dev/null 2>&1，来避免以上问题。
+7. **对执行的命令 输出结果可以通过在 crontab 定时任务中都会在未尾带增加 >/dev/null 2>&1，来避免以上问题。**
 ![](https://wyiyi.github.io/amber/contents/openEuler/05-4.png)
 
 
@@ -576,7 +580,7 @@ done
 
 ## 12 操作系统启动管理
 1. Linux 下查看系统引导方式：查看linux下是否有 “/sys/firmware/efi”目录，如果不存在，则说明启动方式是 Legacy ( BIOS )；如果存在，则说明启动方式是UEFI
-   ![](https://wyiyi.github.io/amber/contents/openEuler/07-2.png)
+   ![](https://wyiyi.github.io/amber/contents/openEuler/12-1.png)
 2. MBR 是不属于任何一个操作系统， 可以通过dd命令进行 MBR的读取、写入、删除等操作。
 
 # 随堂测试
