@@ -1,0 +1,35 @@
+name: Deploy to github pages
+
+on:
+  push:
+    branches: [ "develop" ]
+
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GH_REF: github.com/wyiyi/amber
+
+jobs:
+  build-and-deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js 13
+      uses: actions/setup-node@v3
+      with:
+        node-version: 13.x
+    - run: npm install
+    - run: npm audit fix
+    - run: cd themes/maupassant-hexo && npm install
+    - run: npm install hexo-cli -g
+    - run: hexo clean
+    - run: hexo g
+    - run: |
+        cd ./public
+        git init
+        git config user.name "wyiyi"
+        git config user.email "1084896032@qq.com"
+        git add .
+        git commit -m "Update docs"
+        git push --force "https://$GH_TOKEN@$GH_REF" master:master
