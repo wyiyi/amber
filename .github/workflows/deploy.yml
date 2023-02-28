@@ -26,7 +26,7 @@ jobs:
     - run: hexo clean
     - run: hexo g
     - run: |
-        # cd ./public
+        cd ./public
         git init
         git config user.name "wyiyi"
         git config user.email "1084896032@qq.com"
