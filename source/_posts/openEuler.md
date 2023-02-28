@@ -576,7 +576,9 @@ done
 
 
 ## 12 操作系统启动管理
-
+1. Linux 下查看系统引导方式：查看linux下是否有 “/sys/firmware/efi”目录，如果不存在，则说明启动方式是 Legacy ( BIOS )；如果存在，则说明启动方式是UEFI
+![](https://wyiyi.github.io/amber/contents/openEuler/07-2.png)
+2. MBR 是不属于任何一个操作系统， 可以通过dd命令进行 MBR的读取、写入、删除等操作。
 
 # 随堂测试
 ## 01 系统安装概述 
@@ -958,4 +960,4 @@ D. systemctl rescue <br>
 
 3. 系统的rsyslog服务是否随开机自启动。（判断题）  **A** <br>
 A. 对 <br>
-B. 错  <br>
+B. 错 <br>
