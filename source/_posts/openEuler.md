@@ -945,7 +945,10 @@ A. 对 <br>
 B. 错  <br>
 
 ## 12 操作系统启动管理
-1. 在openEuler中查看系统引导方式？ <br>
+1. 在openEuler中查看系统引导方式？ **ABC** <br>  
+A. 查看linux下是否有 “/sys/firmware/efi”目录 <br>
+B. 如果不存在，则说明启动方式是Legacy ( BIOS ) <br>
+C. 如果存在，则说明启动方式是UEFI <br>
 
 2. 如何设置系统从救援模式启动？（多选题）  **AD** <br>
 A. systemctl isolate rescue.target <br>
@@ -953,6 +956,6 @@ B. systemctl isolate emergency.target <br>
 C. systemctl emergency <br>
 D. systemctl rescue <br>
 
-3. 系统的rsyslog服务是否随开机自启动。（判断题）  **B** <br>
+3. 系统的rsyslog服务是否随开机自启动。（判断题）  **A** <br>
 A. 对 <br>
 B. 错  <br>
