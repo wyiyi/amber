@@ -100,10 +100,11 @@ $ lvremove /dev/vg1/lv1
 1. 所有的可用systemd unit类型，可在如下表所示的路径下查看
 
 | 路径                        | 描述                         |
-  |---------------------------|----------------------------     |
+|---------------------------|----------------------------     |
 | /usr/lib/systemd/system/  | 随安装的RPM产生的systemd units。   |
 | /run/systemd/system/      | 在运行时创建systemd units。       |
 | /etc/systemd/system/      | 由系统管理员创建和管理的systemd units。 |
+
 2. systemd 提供按需启动能力
 3. systemd 采用 cgroup 特性跟踪和管理进程的生命周期
 4. 启动挂载点和自动挂载的管理
@@ -276,6 +277,7 @@ $ firewall-cmd --set-default-zone=external
     - **僵死(TASK_ZOMBIE):** 进程已终止， 但进程描述符存在， 直到父进程调用 wait4() 系统调用后释放。
     - **停止(TASK_STOPED):** 进程收到 SIGSTOP， SIGSTP， SIGTIN， SIGTOU信号后停止运行运行。
 3. 进程状态变化
+
 ![](https://wyiyi.github.io/amber/contents/openEuler/05-1.png)
 
 ```bash
@@ -285,6 +287,7 @@ $ ps -l
  0 S 0 2465648 2465645 0 80 0 - 1905 - pts/2 00:00:00 bash 
  4 R 0 2472951 2465648 0 80 0 - 2249 - pts/2 00:00:00 ps 
 ```
+
 4. **PRI，即进程的优先级，表示程序被CPU执行的先后顺序，值越小进程的优先级别越高。**
 5. **NI，即 nice 值 ，表示进程可被执行的优先级的修正数值，可理解为“谦让度”。**
 6. **进程的 nice 值不是进程的优先级，但是可以通过调整 nice 值可以影响进程的优先值。**
@@ -300,7 +303,9 @@ $ ps -l
     - 扇区是硬盘上存储的最小物理单位
     - 簇是此文件系统中 的最小存储单位
     - 柱面是系统分区的最小单位
+
 ![](https://wyiyi.github.io/amber/contents/openEuler/06-1.png)
+
 2. Linux 的文件类型
     - 普通文件（-）
     - 目录文件（d, directory file）
@@ -310,11 +315,14 @@ $ ps -l
     - 套接字（s, socket）
 3. 文件系统的种类众多，而操作系统希望对用户提供一个统一的接口，于是在用户层与文件系统层引入 了中间层，这个中间层就称为虚拟文件系统(Virtual File System，VFS)。
 4. VFS 定义了一组所有文件系统都支持的数据结构和标准接口，这样程序员不需要了解文件系统的工作 原理，只需要了解 VFS 提供的统一接口即可。
+
 ![](https://wyiyi.github.io/amber/contents/openEuler/06-2.png)
+
 5. 在 Linux 系统中， 一个文件可以分成几个数据块存储在分区内。为了搜集各数据块，我们需要该文件对应的inode。每个文件对 应一个 inode。这个 inode 中包含多个指针，指向属于该文件各个数据块。当操作系统需要读取文件时，只 需要找到对应 inode，收集分散的数据块，就可以收获我们的文件了。
 6. inode既可以表示普通文件，也可以表示目录，那么肯定 要有一种方法来区分它到底是普通文件还是目录。这个就 是通过inode中的数据块来区分的。
 7. 普通文件的inode的数据块是指向普通文件自己的数据的
 8. 目录的inode的数据块是指向位于该目录下的目录项的
+
 ```bash
 # 获取inode中的信息:stat 文件名 
 $ stat zabbix
@@ -325,6 +333,7 @@ $ ls -i zabbix/
 ```
 
 ### 管理 Linux 文件系统
+
 ```bash
 # 查看文件系统的磁盘空间占用情况 
 $ df -h
@@ -342,6 +351,7 @@ $ mount /dev/vg1/lv1 /mnt/data
 $ blkid /dev/vg1/lv1 
 # 
 ```
+
 1. fsck命令检查文件系统并尝试修复错误
 2. tune2fs命令允许系统管理员调整“ext2/ext3”文件系统中的可该参数
 3. 手动挂载的文件系统仅在当时有效，一旦操作系统重启则会不存在
@@ -378,14 +388,19 @@ $ blkid /dev/vg1/lv1
 15. **groupdel** 可用来删除用户组，但若是用户组中包含一些用户，需先删除掉用户后再 删除用户组
 16. **gpasswd** 可以用来添加或删除用户到组中。
 17. /etc/passwd文件每一行由七个字段的数据组成，且字段之间用“:”隔开
-    ![](https://wyiyi.github.io/amber/contents/openEuler/07-1.png)
+
+![](https://wyiyi.github.io/amber/contents/openEuler/07-1.png)
+
 18. /etc/shadow文件只有超级用户(root用户)具有读权限，其他用户均没有权限，从而保证了用户密码的安全性。
-    ![](https://wyiyi.github.io/amber/contents/openEuler/07-2.png)
+
+![](https://wyiyi.github.io/amber/contents/openEuler/07-2.png)
 
 ### 文件权限管理
 1. 在Linux中，每个文件或目录都有一组共有9个基础权限位，每三位字符分为一组， 它们分别是所属用户权限位，用户组权限位，其他用户权限位。
-   ![](https://wyiyi.github.io/amber/contents/openEuler/07-3.png)
-   ![](https://wyiyi.github.io/amber/contents/openEuler/07-4.png)
+
+![](https://wyiyi.github.io/amber/contents/openEuler/07-3.png)
+![](https://wyiyi.github.io/amber/contents/openEuler/07-4.png)
+
 2. chmod命令:修改文件权限。 使用权限:文件所有者。
 3. chown命令:修改文件属主属组(只允许管理员)。
 4. chgrp命令:修改文件属组。 使用权限:管理员(root用户)。
@@ -422,16 +437,17 @@ $ blkid /dev/vg1/lv1
     * 可将日志写入到数据库
 5. Facility(产生日志的设施，从功能和程序上对日志收集进行分类)在rsyslog中指定了产生日志消息的子系 统 ，severity代表日志的严重级别：
 
-   | Numerical code | Severity                 |    
-      |--------------------------|----------------------|
-   | 0              | Emergency: 会导致系统不可用的严重信息 |
-   | 1              | Alert: 必须马上处理的警告信息       |
-   | 2              | Critical: 比较严重的信息        |
-   | 3              | Error: 错误信息              |
-   | 4              | Warning: 警告信息       |
-   | 5              | Notice: 不影响正常功能，需要注意的信息        |
-   | 6              | Info: 一般信息             |
-   | 7              | Debug: 程序或系统调试信息 |
+| Numerical code | Severity                 |    
+|--------------------------|----------------------|
+| 0              | Emergency: 会导致系统不可用的严重信息 |
+| 1              | Alert: 必须马上处理的警告信息       |
+| 2              | Critical: 比较严重的信息        |
+| 3              | Error: 错误信息              |
+| 4              | Warning: 警告信息       |
+| 5              | Notice: 不影响正常功能，需要注意的信息        |
+| 6              | Info: 一般信息             |
+| 7              | Debug: 程序或系统调试信息 |
+
 6. rsyslog 特性：
     * **属性替代**：常用的属性有：msg（消息体）、hostname、pri（消息等级和类别）、time（时间 相关），属性以$开头的是从本地系统获得的变量、不带$是从消息中获得的变量。语法格式：%propname:fromChar:toChar:options:fieldname%
     * **模板** template：模板的功能是定义输出格式，或者定义omfile模块的动态路径、动态文件。语法格式：$template t_msg, “%msg\n%”
@@ -449,6 +465,7 @@ $ blkid /dev/vg1/lv1
 
 
 ## 09 常见故障定界定位
+
 ```bash
 # 查看系统版本信息
 $ uname -a
@@ -466,6 +483,7 @@ $ ethtool -i enp125s0f0
 # 显示每块网卡收发包状态 
 $ sar -n DEV 1
 ```
+
 1. **messages 日志**：messages日志位于/var/log路径下，其中messages是记录当前系统日志的文件， 其他形如messages-YYYYMMDD的文件是历史日志信息。一般通过系统**异常的时间点**或者**关键字**在messages日志中查找相关信息进行分析。
 2. **dmesg 日志**：dmesg日志只记录本次启动之后的信息，但较messages更详细。内核或应用软件bug发生的情况下大多有如下形式的calltrace(栈回溯信息)记录，可用于问题定位
 3. **kdump 日志**：触发panic的情况下，在/var/crash目录下会生成以**问题发生时间点命名**的文件夹，其下有**vmcore文件**(即kdump) 以及vmcore-dmesg.txt文件。vmcore-dmesg文件包含calltrace信息，可用于基本的问题定界。
@@ -480,6 +498,7 @@ $ sar -n DEV 1
 
 ## 11 shell 脚本
 1. 默认的 Shell 可以在 /bin/sh 查看，在/etc/passwd 中修改
+
 ```bash
 # 查看系统支持的shell: 
 $ cat /etc/shells 
@@ -488,16 +507,20 @@ $ echo $SHELL
 # 查看当前的shell 
 $ echo $0
 ```
+
 2. Shell 脚本只是静态的代码，若要输出结果，还需要解释器的参与。一般在脚本的第一行，指定执行此脚本的解释器。如果不指定解释器，脚本也能在默认的解释器中正常运行，但出于规范和安全的考虑，建议 指定如下:
+
 ```bash
 #!/bin/bash 
 
 #!/bin/csh
 ```
+
 3. 有时候一些脚本执行时间较长，命令行界面会被占用，因此可以采取后台运行脚本:  `./my_script.sh &`。这种方法在退出 Shell 后，脚本进程会随之终止，为了保证脚本一直运行，可以采用:  nohup `./my_script.sh &` 脚本的的标准输出和标准错误会重定向到 nohup.out 文件里
 4. Linux 的每个进程启动时，会打开三个文本流的端口:标准输入、标准输出、标准错误。这三个端口对应着一个程序的输入、输出和异常的抛出
 5. 输入重定向格式: `command < inputfile` 将右边的文件作为标准输入，然后传入左边的命令。例: `wc -l < /dev/null`
 6. 内联输入重定向格式: `command << maker`。输入重定向需要文件，而内联输入重定向可以使用即时输入的文本作为标准输入，传入左边的命令。右边的字符“maker”作为标志，表示标准输入的开始和结束，自身不包含在标准输入里。
+
 ```bash
 [root@openEuler ~]# less << EOF 
 > item 1
@@ -509,6 +532,7 @@ item 2
 item 3
 (END) 
 ```
+
 7. 管道实际上是进程间通信(IPC)的一种方式
 8. Shell 中的变量是无类型的
 9. 在 Linux Shell 中，变量主要有两大类: 环境变量、用户定义变量
@@ -517,6 +541,7 @@ item 3
 12. 在 .bash_profile 或 .bashrc 中添加 export 语句，永久修改变量
 13. Shell 运算符 **：求幂
 14. If then else 语句格式：
+
 ```bash
 if [ 条件 ] 
 then 命令 
@@ -533,8 +558,10 @@ elif [ 条件 ]; then
 else 命令 
 fi 
 ```
+
 15. Bash Shell 会先执行 if 后面的语句，如果其退出状态码为 0，则会继续执行 then 部分的命 令，否则会执行脚本中的下一个命令
 16. case 语法：
+
 ```bash
 # case命令会将指定的变量与不同模式进行比较，如果变量和模式是匹配的，那么shell会执行该模式下的命令
 case variable in
@@ -547,7 +574,9 @@ case variable in
 # esac作为case语句结束符 
 esac
 ```
+
 17. for 语法
+
 ```bash
 # Shell 风格
 for var in list 
@@ -571,6 +600,7 @@ do
     echo “Hello”
 done 
 ```
+
 18. while命令判断测试命令返回， 只有测试命令返回的值为0，循环体中命令才会执行，否则while循环退出。
 19. until命令和while命令工作的方式完全相反。until命令测试命令返回非0， bash shell才会执行循环中的命令。一旦测试命令返回0，循环就结束了。
 20. 脚本上激活调试模式,请向脚本第一行中的命令解释器中添加 -x 选项，如 #!/bin/bash -x
@@ -580,8 +610,10 @@ done
 
 ## 12 操作系统启动管理
 1. Linux 下查看系统引导方式：查看linux下是否有 “/sys/firmware/efi”目录，如果不存在，则说明启动方式是 Legacy ( BIOS )；如果存在，则说明启动方式是UEFI
-   ![](https://wyiyi.github.io/amber/contents/openEuler/12-1.png)
-2. MBR 是不属于任何一个操作系统， 可以通过dd命令进行 MBR的读取、写入、删除等操作。
+
+![](https://wyiyi.github.io/amber/contents/openEuler/12-1.png)
+
+3. MBR 是不属于任何一个操作系统， 可以通过dd命令进行 MBR的读取、写入、删除等操作。
 
 # 随堂测试
 ## 01 系统安装概述
