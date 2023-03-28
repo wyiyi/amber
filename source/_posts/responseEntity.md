@@ -1,4 +1,4 @@
-
+<!-- 
 
 # ResponseEntity.BodyBuilder 
 
@@ -59,4 +59,4 @@ public ResponseEntity<String> hello() {
 ```
 
 ## ResponseEntity.BodyBuilder 好处
-使用 ResponseEntity.BodyBuilder builder 可以帮助我们更加灵活的控制响应的各个部分。此外，使用 builder 还可以使代码更加简洁和易于维护。
+使用 ResponseEntity.BodyBuilder builder 可以帮助我们更加灵活的控制响应的各个部分。此外，使用 builder 还可以使代码更加简洁和易于维护。 -->
