@@ -36,7 +36,6 @@ Builder 模式可以通过使用另一个对象（生成器）来构造对象来
 注意访问修饰符声明为 private，因为不希望外不能直接访问这个类，
 构造函数也是私有的，只有分配给此类的生成器才能访问它。
 构造函数中设置的所有属性都是从我们作为参数提供的构建器对象中提取的。
-
 ````java
 @Data
 public class Car {
@@ -118,7 +117,6 @@ CarBuilder 内部类似乎有点繁琐，使用 `lombok` 的 `@Builder` 注解�
 lombok 的 @Builder 注解是一种实现 builder 设计模式的方式。
 
 lombok 的 @Builder 注解可以生成一个构造器类，通过这个类使用链式调用的方式就可以初始化该对象。
-
 ````java
 import lombok.Builder;
 import lombok.Data;
@@ -133,7 +131,6 @@ public class Car {
     private int price;
 }
 ````
-
 ````java
 public static void main(String[] args) {
     Car car =  Car.builder()
@@ -169,13 +166,11 @@ public static void main(String[] args) {
 根据请求的不同情况来设置不同的状态码和响应体，以及添加不同的头信息，并使用 builder.build() 方法来构建最终的 ResponseEntity 对象。
 
 1. 创建一个 HTTP 状态码为 200 的响应体
-
 ```java
 ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
 ```
 
 2.  使用 builder 对象来设置响应体的内容，使用`builder.body()`方法来设置响应体的主体内容
-
 ```java
 builder.body("Hello World");
 ```
@@ -186,7 +181,6 @@ builder.header("Content-Type", "text/plain");
 ```
 
 4. builder.build() 方法来构建最终的 ResponseEntity 对象。构建一个 HTTP 状态码为 200、响应体为 `"Hello World"` 、自定义响应头 `"Content-Type", "text/plain"` 的响应体：
-
 ```java
 @GetMapping("/hello")
 public ResponseEntity<String> hello() {
