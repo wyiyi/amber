@@ -9,7 +9,7 @@ toc: true
 description: Builder 设计模式是一种创建型设计模式，它允许您创建不同类型和表示的对象，同时避免构造函数污染和过多的可选参数。在本文中，我们将深入探讨 Builder 设计模式的概念、实现和使用场景。
 ---
 
-# Builder Pattern
+# Builder Pattern 
 
 ## Builder Pattern ？
 Builder 设计模式是一种创建型设计模式，旨在处理相对复杂的对象的构造。也称 **建造者模式**。
@@ -29,8 +29,6 @@ Builder 模式可以通过使用另一个对象（生成器）来构造对象来
 ### 结构
 ![](https://wyiyi.github.io/amber/contents/2023/builder.png)
 
-### 经典模式
-
 - Product：表示被构造的复杂对象；包含定义组成部件的类，包括将这些部件装配成最终产品的接口。
 
 - Builder：为创建一个 Product 对象的各个部件指定抽象接口。如：制造商、发动机、颜色、轮子、价格属性。
@@ -42,9 +40,7 @@ Builder 模式可以通过使用另一个对象（生成器）来构造对象来
   它包含一个负责组装的方法 void Construct(Builder builder)，
   在这个方法中调用 builder 的方法，并进行设置 builder，
   就可以通过 builder的 getProduct() 方法获得最终的产品。
-
-当然，在大部分实例中的 Builder 模式，是省略掉了 Director 的，这样结构更加简单。
-所以在很多框架源码中，涉及到 Builder 模式时，大多都不是经典的 Builder 模式，而是省略后的。
+  通过实现 Builder 接口中 定义 Product 类，
 
 ## Builder Pattern 实现
 1. 当前汽车类 Car 是由制造商、发动机、颜色、轮子、价格组成。
@@ -161,7 +157,7 @@ public static void main(String[] args) {
 ````
 使用注解可以看到编译后的代码，输出日志与手写一致，均能获得到汽车相关信息。
 
-## [Spring—ResponseEntity.BodyBuilder](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/ResponseEntity.BodyBuilder.html)
+## [Spring—ResponseEntity.BodyBuilder](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/ResponseEntity.BodyBuilder.html "Spring—ResponseEntity.BodyBuilder")
 在 Spring 中 Builder 的设计模式也有体现，在 `ResponseEntity`
 类中提供了 BodyBuilder 接口，用于构建 HTTP 响应，包括：状态码 status()、头信息 header() 和 响应体 body() 等。
 
@@ -194,12 +190,12 @@ public ResponseEntity<String> hello() {
   }
 ```
 
-###  好处
-使用 ResponseEntity.BodyBuilder builder 可以帮助我们更加灵活的控制响应的各个部分。此外，使用 builder 还可以使代码更加简洁和易于维护。
-
 ## 参考文档
-[设计模式-可复用面向对象软件的基础](https://book.douban.com/subject/34262305/)
 
-[Builder Design Pattern](https://www.baeldung.com/creational-design-patterns#builder)
+[1]Spring—ResponseEntity.BodyBuilder: https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/ResponseEntity.BodyBuilder.html
 
-[ResponseEntity.BodyBuilder](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/ResponseEntity.BodyBuilder.html)
+[2]设计模式-可复用面向对象软件的基础: https://book.douban.com/subject/34262305/
+
+[3]Builder Design Pattern: https://www.baeldung.com/creational-design-patterns#builder
+
+[4]ResponseEntity.BodyBuilder: https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/ResponseEntity.BodyBuilder.html
