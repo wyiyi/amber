@@ -191,11 +191,8 @@ public ResponseEntity<String> hello() {
 ```
 
 ## 参考文档
+[设计模式-可复用面向对象软件的基础](https://book.douban.com/subject/34262305/)
 
-[1]Spring—ResponseEntity.BodyBuilder: https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/ResponseEntity.BodyBuilder.html
+[Builder Design Pattern](https://www.baeldung.com/creational-design-patterns#builder)
 
-[2]设计模式-可复用面向对象软件的基础: https://book.douban.com/subject/34262305/
-
-[3]Builder Design Pattern: https://www.baeldung.com/creational-design-patterns#builder
-
-[4]ResponseEntity.BodyBuilder: https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/ResponseEntity.BodyBuilder.html
+[ResponseEntity.BodyBuilder](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/ResponseEntity.BodyBuilder.html)
