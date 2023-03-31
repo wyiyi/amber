@@ -19,7 +19,7 @@ Builder 模式可以通过使用另一个对象（生成器）来构造对象来
 
 这样就可以使用相同的构建过程来创建不同类型和表示的对象。
 
-**摘自 [设计模式-可复用面向对象软件的基础](https://www.baeldung.com/creational-design-patterns#builder)**
+**摘自 [baeldung](https://www.baeldung.com/creational-design-patterns#builder)**
 > When the complexity of creating object increases, the Builder pattern can separate out the instantiation process by using another object (a builder) to construct the object.
 
 ## Builder Pattern 使用场景
@@ -33,10 +33,9 @@ Builder 模式可以通过使用另一个对象（生成器）来构造对象来
 ## Builder Pattern 实现
 1. 当前汽车类 Car 是由制造商、发动机、颜色、轮子、价格组成。
 
-注意访问修饰符声明为 private，因为不希望外不能直接访问这个类，
+注意访问修饰符声明为 private，因为不希望外部能直接访问这个类，
 构造函数也是私有的，只有分配给此类的生成器才能访问它。
 构造函数中设置的所有属性都是从我们作为参数提供的构建器对象中提取的。
-
 ````java
 @Data
 public class Car {
@@ -161,7 +160,7 @@ public static void main(String[] args) {
 
 ## ResponseEntity.BodyBuilder
 在 Spring 中 Builder 的设计模式也有体现，在 `ResponseEntity`
-类中提供了 [BodyBuilder]((https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/ResponseEntity.BodyBuilder.html)) 接口，用于构建 HTTP 响应，包括：状态码 status()、头信息 header() 和 响应体 body() 等。
+类中提供了 [BodyBuilder](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/ResponseEntity.BodyBuilder.html) 接口，用于构建 HTTP 响应，包括：状态码 status()、头信息 header() 和 响应体 body() 等。
 
 ### 如何构建
 根据请求的不同情况来设置不同的状态码和响应体，以及添加不同的头信息，并使用 builder.build() 方法来构建最终的 ResponseEntity 对象。
@@ -199,5 +198,3 @@ public ResponseEntity<String> hello() {
 [Builder Design Pattern](https://www.baeldung.com/creational-design-patterns#builder)
 
 [ResponseEntity.BodyBuilder](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/ResponseEntity.BodyBuilder.html)
-
-
