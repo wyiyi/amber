@@ -216,11 +216,11 @@ console.log(greeting);
    `@{/user/details(userId=${user.id})}` 表达式生成一个带有参数的链接。
    `${user.id}` 是一个变量表达式，表示用户的 ID。生成的链接将包含用户 ID 作为查询参数，例如： "/user/details?userId=123"。
 
-3. 生成URI片段链接：
+3. 生成 URI 片段链接：
     ```html
    <a th:href="@{#section-1}">Go to Section 1</a>
     ```
-   链接表达式 `@{#section-1}`，可以直接跳转到具有 ID 为 "section-1" 的页面片段。
+   直接跳转到具有 ID 为 "section-1" 的页面片段。
 
 【注意】：
 - 链接表达式只能在 HTML 标签的属性中使用，用于生成正确的链接。
