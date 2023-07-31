@@ -12,8 +12,6 @@ toc: true
 description: Thymeleaf 是一种用于在服务器端和客户端之间渲染 HTML、XML、JavaScript、CSS 和文本的 Java 模板引擎。它的目标是为 Web 和独立环境下的现代开发提供自然模板处理功能。
 ---
 
-![](https://wyiyi.github.io/amber/contents/2023/thymeleaf.png)
-
 Thymeleaf 是一种用于在服务器端和客户端之间渲染 HTML、XML、JavaScript、CSS 和文本的 Java 模板引擎。
 它的目标是为 Web 和独立环境下的现代开发提供自然模板处理功能。
 
