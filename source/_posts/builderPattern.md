@@ -40,7 +40,6 @@ Builder 模式可以通过使用另一个对象（生成器）来构造对象来
   它包含一个负责组装的方法 void Construct(Builder builder)，
   在这个方法中调用 builder 的方法，并进行设置 builder，
   就可以通过 builder的 getProduct() 方法获得最终的产品。
-  通过实现 Builder 接口中 定义 Product 类，
 
 ## Builder Pattern 实现
 1. 当前汽车类 Car 是由制造商、发动机、颜色、轮子、价格组成。
