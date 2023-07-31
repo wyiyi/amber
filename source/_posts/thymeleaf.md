@@ -60,7 +60,7 @@ Thymeleaf 是一个功能强大且易于使用的模板引擎，它的目标是�
   </dependencies>
   ```
 - Gradle 依赖
-  ```properties
+  ```
   dependencies {
       implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
   }
@@ -133,10 +133,13 @@ Thymeleaf 提供了许多 th 属性，用于评估表达式并将这些属性的
 // 语法等同于 foreach
 <li th:each="book : ${books}" th:text="${book.title}">En las Orillas del Sar</li>
 
-<form th:action="@{/createOrder}">
-
+// 提交表单时，浏览器将向 /createOrder 发送POST请求 
+<form th:action="@{/createOrder}" method="post">
+    
+// 使用表达式 #{form.submit} 的求值结果作为按钮的值
 <input type="button" th:value="#{form.submit}" />
 
+// 跳转到 /admin/users 地址
 <a th:href="@{/admin/users}">
 ...
 ```
@@ -147,25 +150,32 @@ Thymeleaf 提供了许多 th 属性，用于评估表达式并将这些属性的
 
 包含以下五种类型：
 
-#### 2.1 \${...} : Variable expressions.
+#### 2.1 ${...} : Variable expressions.
 
-变量表达式是 OGNL 表达式（或者 Spring EL），
-当 Thymeleaf 与 Spring 集成时，在上下文变量上执行
-在 Spring 术语中也称为 模型属性。
+变量表达式用于在模板中访问和显示变量的值。
+变量可以是通过控制器传递给模板的模型属性、请求参数、会话属性等。
 
-```html
-// 上下文变量
-${session.user.name}
+1. 访问模型属性：
+    ```html
+    <p th:text="${user.name}"></p>
+    ```
+    `${user.name}` 表达式用于访问模型中名为 "user" 的属性，并将其值插入到 `<p>` 元素中。
 
-// （在 OGNL 和 SpringEL 中）等同于 ((Book)context.getVariable("book")).getAuthor().getName()
-<span th:text="${book.author.name}">
+2. 访问请求参数：
+    ```html
+        <p th:text="${param.email}"></p>
+    ```
+    `${param.email}` 表达式用于获取名为 "email" 的请求参数的值，并将其插入到 `<p>` 元素中。
 
-// 复杂的处理，如条件、迭代....
-<li th:each="book : ${books}">
-...
-```
+3. 访问会话属性：
+    ```html
+    ${session.user}
+    ```
+    ${session.user} 表达式用于获取会话中名为 "user" 的属性的值，并将其插入到 `<p>` 元素中。
 
-#### 2.2 \*{...} : Selection expressions.
+【注意】：${...} 变量表达式在模板中只能读取变量的值，不能修改变量的值。如果修改，使用 Thymeleaf 的内联表单处理或链接处理功能。
+
+#### 2.2 *{...} : Selection expressions.
 
 选择表达式与变量表达式一样，将在选定的对象上执行，而不是在整个上下文变量映射上执行。
 
@@ -174,98 +184,80 @@ ${session.user.name}
    <p th:text="${user.name}"></p>
    <p th:text="*{age}"></p>
 </div>
-...
 ```
-
 ${user} 是一个对象绑定到上下文变量中的用户对象。th:object 指令会将该对象设置为当前选择对象。
 然后，我们可以使用选择表达式 user.name 或 \*{age} 来获取对象的属性值。
 
-选择表达式有两种不同的语法 \*{...} 和 \${...}，但它们的作用是相同的，都用于引用当前选择对象的属性或方法。
-
-通过选择表达式，你可以在 Thymeleaf 模板中更方便地操作和展示特定对象的属性和方法。
-这对于处理表单数据、回显对象属性等场景非常有用。
+【注意】：选择表达式有两种不同的语法 \*{...} 和 \${...}，但它们的作用是相同的，都用于引用当前选择对象的属性或方法。
 
 #### 2.3 #{...} : Message (i18n) expressions.
 
-消息表达式（通常称为文本外部化、国际化或 i18n）允许我们从外部来源（.properties 文件）中检索与特定区域设置相关的消息，
-通过键引用它们，并（可选地）应用一组参数。
+#{...} 是一种用于国际化（i18n）的消息表达式。它的主要目的是在软件中支持多语言的消息处理。
 
-Spring 框架可以在运行时根据当前的语言环境和上下文变量值来获取相应的消息，实现多语言支持和国际化功能。
-
-```html
- // 从消息源中获取名为 main.title 的消息，并在模板中显示该消息的内容
- #{main.title}
-
- // 调用名为entrycreated的消息，并将entryId参数传递给该消息
- #{message.entrycreated(${entryId})}
-
- // 使用消息表达式指定表头（header）的内容为 header.address.city 对应的消息内容
- <table>
-     <th th:text="#{header.address.city}">...</th>
-     <th th:text="#{header.address.country}">...</th>
-  </table>
-
- // 使用变量表达式和消息表达式的组合，根据 config.adminWelcomeKey 的值动态确定消息键，并使用 session.user.name 作为参数传递给该消息
- #{${config.adminWelcomeKey}(${session.user.name})}
-
-...
+```JS
+const name = 'Alice';
+const greeting = `Hello, #{name}!`;
+console.log(greeting);
 ```
+`#{name}` 表达式用来将变量 name 的值动态地插入到问候消息中，生成适当的本地化文本。
 
 #### 2.4 @{...} : Link (URL) expressions.
 
-链接表达式用于构建 URL 并向其添加有用的上下文和会话信息（通常称为 URL 重写）。
-对于部署在 Web 服务器的 /myapp 上下文中的 Web 应用程序，
+@{...} 表达式是链接表达式（Link Expressions），用于生成动态链接（URL）。
 
-在基于 Servlet 的 Web 应用程序中，对于每个输出的 URL（上下文相对的、相对的、绝对的...），Thymeleaf 在显示 URL 之前始终调用 HttpServletResponse.encodeUrl(...)机制。
-如下面的表达式所示：
+可以轻松地处理路由和参数传递，而无需手动构建URL。
 
-```html
- <a th:href="@{/order/list}">...</a>
- // 可以转换为以下形式：
+1. 生成相对路径链接：
+    ```html
+     <a th:href="@{/home}">Home</a>
+    ```
+    `@{/home}` 表达式将生成一个相对于当前上下文路径的链接，指向 "home" 路径。当用户点击链接时，将导航到 "/home" 页面。
 
- <a href="/myapp/order/list">...</a>
- <a href="/myapp/order/list;jsessionid=23fa31abd41ea093">...</a>
+2. 生成带参数的链接：
+    ```html
+    <a th:href="@{/user/details(userId=${user.id})}">View Details</a>
+    ```
+   `@{/user/details(userId=${user.id})}` 表达式生成一个带有参数的链接。
+   `${user.id}` 是一个变量表达式，表示用户的 ID。生成的链接将包含用户 ID 作为查询参数，例如： "/user/details?userId=123"。
 
- // URL 带参数
- <a th:href="@{/order/details(id=${orderId},type=${orderType})}">...</a>
- // 注意：标签属性中的&符号应进行HTML转义
- <a href="/myapp/order/details?id=23&amp;type=online">...</a>
+3. 生成URI片段链接：
+    ```html
+   <a th:href="@{#section-1}">Go to Section 1</a>
+    ```
+   @{#section-1} 表达式生成一个链接，可以直接跳转到具有 ID 为 "section-1" 的页面片段。
 
- // 相对的链接表达式
- <a th:href="@{../documents/report}">...</a>
-
- // 相对于服务器的链接表达式
- <a th:href="@{~/contents/main}">...</a>
-
- // 协议相关的链接表达式
- <a th:href="@{//static.mycompany.com/res/initial}">...</a>
-
- // 绝对的链接表达式
- <a th:href="@{http://www.mycompany.com/main}">...</a>
- ...
-```
+【注意】：
+- 链接表达式只能在 HTML 标签的属性中使用，用于生成正确的链接。
+- 片段表达式在 `Thymeleaf 3.0` 及更高版本中引入。
 
 #### 2.5 ~{...} : Fragment expressions.
 
-片段表达式是一种简单的方式，用于表示标记片段并在模板中移动它们。
-通过这些表达式，片段可以复制、传递到其他模板作为参数等。
+~{...} 表达式是片段表达式（Fragment Expressions），用于引入和使用模板片段，重用可独立使用的模块或组件。
+通过引入和参数化片段，在不同的地方使用相同的代码片段，提高了模板的可维护性和重用性。
 
 最常见的用法是使用 th:insert 或 th:replace 进行片段插入：
+1. 引入片段：
+    ```html
+    <div th:insert="~{fragment :: myFragment}"></div>
+    ```
+   `~{fragment :: myFragment}` 表达式用于引入名为 myFragment 的模板片段，并将其插入到 `<div>` 元素中。
+2. 参数化片段：
+    ```html
+    <div th:replace="~{fragment :: myFragment(param1='value1', param2=42)}"></div>
+    ```
+    `~{fragment :: myFragment(param1='value1', param2=42)}` 表达式引入 myFragment 模板片段，并为其传递参数。在模板片段中可以通过 `${param1}` 和 `${param2}` 来获取参数的值。
+3. 引入片段：
+    ```html
+    <div th:replace="~{:: myFragment}"></div>
+    ```
+   `~{:: myFragment}` 表达式用于引入当前模板中名为 myFragment 的片段。
 
-```html
- <div th:insert="~{commons :: main}">...</div>
-
- // 带参数
- <div th:with="frag=~{footer :: #main/text()}">
-   <p th:insert="${frag}">
- </div>
- ...
-```
+【注意】：片段表达式在 `Thymeleaf 3.0` 及更高版本中引入。
 
 #### 2.6 Literals and operations
 
-也包含许多类型的文字和操作：
-
+在Thymeleaf模板引擎中，字面量（Literals）和表达式操作（Operations）用于在模板中进行数据处理和计算。
+这些表达式可以用于文本替换、条件判断、循环迭代等操作，从而使模板更具动态性和灵活性。
 - 文字：
     - 文本文字：'一段文字'，'另一个！'，...
     - 数字文字：0，34，3.0，12.3，...
@@ -289,20 +281,97 @@ Spring 框架可以在运行时根据当前的语言环境和上下文变量值�
     - If-then-else: (if) ? (then) : (else)
     - Default: (value) ?: (defaultvalue)
 
+示例：
+1. 字符串字面量：
+    ```html
+    <p th:text="'Hello, Thymeleaf!'"></p>
+    ```
+    `'Hello, Thymeleaf!'` 是一个字符串字面量，可以在 `<p>` 元素中显示文本 "Hello, Thymeleaf!"。
+
+2. 数字字面量：
+     ```html
+    <p th:text="42"></p>
+    ```
+    `42` 是一个数字字面量，可以在 `<p>` 元素中显示数字 42。
+
+3. 变量引用：
+     ```html
+    <p th:text="${username}"></p>
+    ```
+    `${username}` 是一个变量引用，通过该表达式可以获取名为 "username" 的变量的值，并在 `<p>` 元素中显示。
+     
+4. 算术操作：
+     ```html
+    <p th:text="${number1 + number2}"></p>
+    ```
+    `${number1 + number2}`是一个算术操作，通过该表达式可以对 number1 和 number2 变量进行加法运算，并在 `<p>` 元素中显示结果。
+
+5. 逻辑操作：
+    ```html
+    <p th:if="${age >= 18}">You are an adult.</p>
+    ```
+    `${age >= 18}` 是一个逻辑操作，通过该表达式可以判断 age 变量是否大于或等于 18，如果条件满足，则显示 "You are an adult."。
+
 #### 2.7 Expression preprocessing
 
-表达式预处理允许在表达式评估之前动态生成部分表达式。它由 "\_\_" 符号表示。
+表达式预处理（Expression Preprocessing）是一种用于对表达式进行预处理和修改的机制。可以使用预处理器在表达式求值之前对其进行操作和转换。
+预处理器提供了一些特殊语法和功能，可以扩展表达式的功能并提供更好的灵活性和可读性。
 
-```html
- #{selection.__${sel.code}__}
-```
+预处理的具体用法：
+1. 转义表达式：
+    ```html
+    <p th:text="|Hello, \${name}!|"></p>
+    ```
+    `|\${name}|` 是一个转义表达式，通过在表达式外添加竖线字符 "|"，可以防止表达式被求值，而直接显示为文本 "Hello, ${name}!"。
 
-表达式 #{selection.\${sel.code}} 包含两个部分：
+2. 默认值设置：
+   ```html
+    <p th:text="${username} ?: 'Guest'"></p>
+    ```
+   `${username} ?: 'Guest'` 是一个默认值设置，如果 username 变量为空或不存在，将使用默认值 "Guest"。
 
-1. 变量表达式：\${sel.code}
-    - 此部分首先进行评估，并应返回一个值。在这种情况下，假设该值为 "ALL"。
-2. 预处理表达式：selection.ALL
-    - 将变量表达式的结果（\${sel.code}）插入 "\_\_" 符号之间，生成最终要评估的表达式。
-    - 在本例中，生成的表达式为 selection.ALL。
+3. 集合选择：
+   ```html
+    <ul>
+        <li th:each="item : ${items}" th:text="${item.name}"></li>
+    </ul>
+    ```
+   `${item.name}` 是一个集合选择表达式，用于从 items 集合中选取每个元素的 name 属性并显示在列表项中。
+4. 字符串拼接：
+   ```html
+    <p th:text="'Hello ' + ${name}"></p>
+    ```
+   `'Hello ' + ${name}` 是一个字符串拼接表达式，可将字符串 "Hello " 和 name 变量的值进行拼接。
 
-最终的表达式 selection.ALL 通常在国际化等场景中使用，可以根据变量的值动态构建消息查找的键。
+【注意】：片段表达式在 `Thymeleaf 3.0` 及更高版本中引入。
+
+
+## 遇到的问题
+Java Web 开发过程中，遇到了些问题（建议先查看官网，避免走弯路）。
+
+### 情景一：获取跳转的路径的部分值
+
+1. 需求： 跳转路径为：`https://xxx.com/wechat/memberInfoIndex/wx9e24xxx443` ， 
+`wx9e24xxx443` 为appid，需要获取访问的路径中的 appid 的值。
+2. 解决方案：
+     ```html
+     <input id="requestURI" th:value="${#request.requestURI}"/>
+    
+     // 显示在 Console 中：
+     <input id="requestURI" value="/wechat/memberInfoIndex/wx9e24xxx443"/>
+     ```
+3.分析：`${#request.requestURI}` 的写法可以获取到访问路径，经过处理（拆分、正则或其它方式）即可得到 appid。
+
+### 情景二：页面动态获取 title
+1. 需求：页面中的 title 不固定，需要根据接口返回的值，显示到 title 上。
+
+2. 解决方案：
+   ```html
+    $('title').html($('#comname').val());
+    ```
+3. 分析：正常 Html 中直接写：`<title>Amazing！</title>` ，通过 Jquery 获取标签元素即可动态更改 title 值。
+   
+4. 请求后跳转页面也如此。
+   ```html
+    $('#container').html(res);
+    ```
