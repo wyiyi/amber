@@ -9,14 +9,27 @@ categories: Technology
 mathjax: true 
 comments: true
 toc: true
-description: Thymeleaf 是一种用于在服务器端和客户端之间渲染 HTML、XML、JavaScript、CSS 和文本的 Java 模板引擎。它的目标是为 Web 和独立环境下的现代开发提供自然模板处理功能。
+description: Thymeleaf 是一种用于在服务器端和客户端之间渲染 HTML、XML、JavaScript、CSS 和文本的 Java 模板引擎。
 ---
 
 Thymeleaf 是一种用于在服务器端和客户端之间渲染 HTML、XML、JavaScript、CSS 和文本的 Java 模板引擎。
-它的目标是为 Web 和独立环境下的现代开发提供自然模板处理功能。
 
-Thymeleaf 是一个功能强大且易于使用的模板引擎，它的目标是为现代化的 Java Web 开发提供灵活的模板处理功能。
-相比于传统的 JSP 或类似技术，Thymeleaf 提供了更自然的模板语法，使得模板文件易于编写和理解。
+模板引擎在 Web 领域的主要作用：让网站实现界面和数据分离，这样大大提高了开发效率，提供自然、灵活的模板处理功能，让代码重用更加容易。
+
+# Springboot 官方推荐的模板引擎：Thymeleaf
+- 官方支持：Spring Boot 提供对 Thymeleaf 的官方支持，做了很多默认配置，开发者只需编写对应 html 即可，大大减轻了上手难度和配置复杂度。
+
+- 动静分离：Thymeleaf 选用 html 作为模板页，通过一些特定标签语法代表其含义，但并未破坏 html 结构，即使无网络、不通过后端渲染也能在浏览器成功打开，大大方便界面的测试和修改。
+
+- 开箱即用：Thymeleaf 提供标准和 Spring 标准两种方言，可以直接套用模板实现 JSTL、 OGNL 表达式效果，避免每天套模板、改 JSTL、改标签的困扰。同时开发人员也可以扩展和创建自定义的方言。
+
+- 强大的表达式功能: Thymeleaf 支持强大的表达式语言（SpEL），可以在模板中执行复杂的表达式操作，如变量赋值、条件判断、迭代循环等。
+
+- 易于集成：与 Spring Boot 框架紧密集成，提供了许多与 Spring Boot 相关的特性和扩展。它可以与 Spring MVC、Spring Security 等框架无缝集成。
+
+- 应用广泛：Thymeleaf 是目前应用广泛的模板引擎之一，拥有活跃的社区和丰富的生态系统。它被广泛用于开发各种类型的 Web 应用和邮件模板。
+
+从 Thymeleaf 2.0 （基于 xml 实现）—> Thymeleaf 3.0（基于 html ），Thymelaf 3.0 在方言、独立于 Java Servlet API、重构核心API、片段表达等方面有着巨大提升和改善。
 
 # Thymeleaf 的特点
 
@@ -67,6 +80,8 @@ Thymeleaf 是一个功能强大且易于使用的模板引擎，它的目标是�
    创建一个以 .html 为后缀的模板文件，在其中使用 Thymeleaf 的模板语法。
 
    通过使用 Thymeleaf 的标签和表达式，我们可以插入动态数据、进行条件判断、循环迭代等操作。
+   
+   示例：引入 `www.thymeleaf.org` `<p>` 中 `th:text="'Hello, ' + ${name} + '!'"` 为 Thymeleaf 语法。
 
    ```html
     <!DOCTYPE HTML>
@@ -81,7 +96,7 @@ Thymeleaf 是一个功能强大且易于使用的模板引擎，它的目标是�
     </html>
    ```
 
-3. **控制器中使用 Thymeleaf**
+5. **控制器中使用 Thymeleaf**
 
    在 Spring MVC 的控制器中，参数的值将添加到 Model 对象，传递给 Thymeleaf 模板。
    Thymeleaf 会自动根据模板中的表达式来渲染数据，并生成最终的 HTML 页面。
@@ -184,7 +199,7 @@ Thymeleaf 提供了许多 th 属性，用于评估表达式并将这些属性的
 ${user} 是一个对象绑定到上下文变量中的用户对象。th:object 指令会将该对象设置为当前选择对象。
 然后，我们可以使用选择表达式 user.name 或 \*{age} 来获取对象的属性值。
 
-【注意】：选择表达式有两种不同的语法 \*{...} 和 \${...}，但它们的作用是相同的，都用于引用当前选择对象的属性或方法。
+【注意】：选择表达式有两种不同的语法 `\*{...}` 和 `\${...}`，但它们的作用是相同的，都用于引用当前选择对象的属性或方法。
 
 ### #{...} : Message (i18n) expressions.
 
@@ -356,10 +371,10 @@ Java Web 开发过程中，遇到了些问题（建议先查看官网，避免�
      // 显示在 Console 中：
      <input id="requestURI" value="/wechat/memberInfoIndex/wx9e24xxx443"/>
      ```
-3.分析：表达式 `${#request.requestURI}` 的写法可以获取到访问路径，经过处理（拆分、正则或其它方式）即可得到 appid。
+3.分析：${#request.requestURI} 的写法可以获取到访问路径，经过处理（拆分、正则或其它方式）即可得到 appid。
 
 ## 情景二：页面动态获取 title
-1. 需求：页面中的 title 不固定，需要根据接口返回的值，显示到 title 上。
+1. 需求：页面中的 title 需要根据接口返回值动态显示到页面上。
 
 2. 解决方案：
    ```html
@@ -371,3 +386,13 @@ Java Web 开发过程中，遇到了些问题（建议先查看官网，避免�
    ```html
     $('#container').html(res);
     ```
+
+问题：
+1. ~~第一段第二段内容有重复的~~
+2. ~~maven gradle 可不可以不加版本号直接用~~
+3. ~~2.编写模板文件哪属于 thymeleaf 的模板语法~~
+4. *{...} 和 ${...}，但它们的作用是相同的
+5. 片段表达式 不够清晰
+6. 情景一：${#request.requestURI} 上边没提
+7. 情景二：没写明白
+
