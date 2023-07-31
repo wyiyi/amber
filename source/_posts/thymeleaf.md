@@ -220,7 +220,7 @@ console.log(greeting);
     ```html
    <a th:href="@{#section-1}">Go to Section 1</a>
     ```
-   `@{#section-1}` 表达式生成一个链接，可以直接跳转到具有 ID 为 "section-1" 的页面片段。
+   链接表达式 `@{#section-1}`，直接跳转到具有 ID 为 "section-1" 的页面片段。
 
 【注意】：
 - 链接表达式只能在 HTML 标签的属性中使用，用于生成正确的链接。
