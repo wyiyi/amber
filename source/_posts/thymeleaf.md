@@ -115,7 +115,7 @@ Thymeleaf 是一个功能强大且易于使用的模板引擎，它的目标是�
 还要注意的是，一个模板引擎可以同时设置多个方言，从而允许处理包含所有指定方言特性的模板（把方言视为一种类似 JSP 标签库的增强功能）。
 其中一些方言可以共享前缀，实际上充当一个聚合方言的作用。
 
-## 1. 基本属性
+## 基本属性
 
 Thymeleaf 提供了许多 th 属性，用于评估表达式并将这些属性的值设置为其结果。
 它们的名称与它们所设置的属性的名称相似，用来对应不同的 XHTML 和 HTML5 属性。
@@ -140,13 +140,13 @@ Thymeleaf 提供了许多 th 属性，用于评估表达式并将这些属性的
 ...
 ```
 
-## 2. Thymeleaf 标准表达式
+## Thymeleaf 标准表达式
 
 大多数 Thymeleaf 属性允许将其值设置为或包含表达式，由于它们使用的方言，我们将其称为标准表达式。
 
 包含以下五种类型：
 
-### 2.1 ${...} : Variable expressions.
+### ${...} : Variable expressions.
 
 变量表达式用于在模板中访问和显示变量的值。
 变量可以是通过控制器传递给模板的模型属性、请求参数、会话属性等。
@@ -171,7 +171,7 @@ Thymeleaf 提供了许多 th 属性，用于评估表达式并将这些属性的
 
 【注意】：${...} 变量表达式在模板中只能读取变量的值，不能修改变量的值。如果修改，使用 Thymeleaf 的内联表单处理或链接处理功能。
 
-### 2.2 *{...} : Selection expressions.
+### *{...} : Selection expressions.
 
 选择表达式与变量表达式一样，将在选定的对象上执行，而不是在整个上下文变量映射上执行。
 
@@ -186,7 +186,7 @@ ${user} 是一个对象绑定到上下文变量中的用户对象。th:object �
 
 【注意】：选择表达式有两种不同的语法 \*{...} 和 \${...}，但它们的作用是相同的，都用于引用当前选择对象的属性或方法。
 
-### 2.3 #{...} : Message (i18n) expressions.
+### #{...} : Message (i18n) expressions.
 
 #{...} 是一种用于国际化（i18n）的消息表达式。它的主要目的是在软件中支持多语言的消息处理。
 
@@ -197,7 +197,7 @@ console.log(greeting);
 ```
 `#{name}` 表达式用来将变量 name 的值动态地插入到问候消息中，生成适当的本地化文本。
 
-### 2.4 @{...} : Link (URL) expressions.
+### @{...} : Link (URL) expressions.
 
 @{...} 表达式是链接表达式（Link Expressions），用于生成动态链接（URL）。
 
@@ -220,13 +220,13 @@ console.log(greeting);
     ```html
    <a th:href="@{#section-1}">Go to Section 1</a>
     ```
-   `@{#section-1}` 表达式生成一个链接，可以直接跳转到具有 ID 为 "section-1" 的页面片段。
+   链接表达式 `@{#section-1}`，可以直接跳转到具有 ID 为 "section-1" 的页面片段。
 
 【注意】：
 - 链接表达式只能在 HTML 标签的属性中使用，用于生成正确的链接。
 - 片段表达式在 `Thymeleaf 3.0` 及更高版本中引入。
 
-### 2.5 ~{...} : Fragment expressions.
+### ~{...} : Fragment expressions.
 
 ~{...} 表达式是片段表达式（Fragment Expressions），用于引入和使用模板片段，重用可独立使用的模块或组件。
 通过引入和参数化片段，在不同的地方使用相同的代码片段，提高了模板的可维护性和重用性。
@@ -250,7 +250,7 @@ console.log(greeting);
 
 【注意】：片段表达式在 `Thymeleaf 3.0` 及更高版本中引入。
 
-### 2.6 Literals and operations
+### Literals and operations
 
 在Thymeleaf模板引擎中，字面量（Literals）和表达式操作（Operations）用于在模板中进行数据处理和计算。
 这些表达式可以用于文本替换、条件判断、循环迭代等操作，从而使模板更具动态性和灵活性。
@@ -308,7 +308,7 @@ console.log(greeting);
     ```
     `${age >= 18}` 是一个逻辑操作，通过该表达式可以判断 age 变量是否大于或等于 18，如果条件满足，则显示 "You are an adult."。
 
-### 2.7 Expression preprocessing
+### Expression preprocessing
 
 表达式预处理（Expression Preprocessing）是一种用于对表达式进行预处理和修改的机制。可以使用预处理器在表达式求值之前对其进行操作和转换。
 预处理器提供了一些特殊语法和功能，可以扩展表达式的功能并提供更好的灵活性和可读性。
