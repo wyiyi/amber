@@ -1,5 +1,5 @@
 ---
-title: 简化 Java Web 开发的强大模板引擎—Thymeleaf
+title: Thymeleaf—简化 Java Web 开发的强大模板引擎
 date: 2023.08.01
 tags: 
    - Java Web
@@ -356,7 +356,7 @@ Java Web 开发过程中，遇到了些问题（建议先查看官网，避免�
      // 显示在 Console 中：
      <input id="requestURI" value="/wechat/memberInfoIndex/wx9e24xxx443"/>
      ```
-3.分析：${#request.requestURI} 的写法可以获取到访问路径，经过处理（拆分、正则或其它方式）即可得到 appid。
+3.分析：表达式 `${#request.requestURI}` 的写法可以获取到访问路径，经过处理（拆分、正则或其它方式）即可得到 appid。
 
 ## 情景二：页面动态获取 title
 1. 需求：页面中的 title 不固定，需要根据接口返回的值，显示到 title 上。
