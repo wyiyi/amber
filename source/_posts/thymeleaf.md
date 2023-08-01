@@ -16,8 +16,8 @@ Thymeleaf 是一种用于在服务器端和客户端之间渲染 HTML、XML、Ja
 
 模板引擎在 Web 领域的主要作用：让网站实现界面和数据分离，这样大大提高了开发效率，提供自然、灵活的模板处理功能，让代码重用更加容易。
 
-# Springboot 官方推荐的模板引擎：Thymeleaf
-- 官方支持：Spring Boot 提供对 Thymeleaf 的官方支持，做了很多默认配置，开发者只需编写对应 html 即可，大大减轻了上手难度和配置复杂度。
+# Springboot 官方支持的模板引擎：Thymeleaf
+- 官方支持：[Spring Boot 提供对 Thymeleaf 的官方支持](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#web.servlet.spring-mvc.template-engines)，做了很多默认配置，开发者只需编写对应 html 即可，大大减轻了上手难度和配置复杂度。
 
 - 动静分离：Thymeleaf 选用 html 作为模板页，通过一些特定标签语法代表其含义，但并未破坏 html 结构，即使无网络、不通过后端渲染也能在浏览器成功打开，大大方便界面的测试和修改。
 
@@ -225,22 +225,18 @@ console.log(greeting);
 ~{...} 表达式是[片段表达式（Fragment Expressions）](https://www.thymeleaf.org/doc/tutorials/3.1/usingthymeleaf.html#template-layout)，用于引入和使用模板片段，重用可独立使用的模块或组件。
 通过引入和参数化片段，在不同的地方使用相同的代码片段，提高了模板的可维护性和重用性。
 
-在 Thymeleaf 的 Html 中经常需要包含其他模板的部分，比如页脚、页眉、菜单等，就需定义 `th:fragment` 属性 ，也被称为 `fragments`。
+通过 `th:fragment` 定义模板，然后用 th:insert 或 th:replace 使用定义的模板。
 
-最常见的用法是使用：
-- th:insert：它将简单地插⼊指定宿主标签的标签体中
-- th:replace：⽤指定的⽚段替换其宿主标签
-
-
-片段表达式的三种格式：
-- `~{templatename::selector}` ：包含应用于名为 templatename 的模板上的指定标记选择器所得到的片段。
+使用格式为：{templatename::selector}，应用于名为 templatename 的模板上的指定标记选择器所得到的片段。也可以使用：
 - `~{templatename}` ：包含名为 templatename 的完整模板。
 - `~{::selector} 或 ~{this::selector}` ：插入与选择器匹配的来自同一个模板的片段。
 
+常见属性：
+- th:insert：它将简单地插⼊指定宿主标签的标签体中
+- th:replace：⽤指定的⽚段替换其宿主标签
 
 1. 包含模板片段：
-
-代码中定义了一个名为 copy 的片段
+定义了一个名为 copy 的片段：
 ```html
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
@@ -300,11 +296,8 @@ th:insert 或 th:replace 期望一个片段表达式（~{...}），它是一个�
 <div th:replace="~{ ::myFragment (${value1},${value2}) }">...</div>
 <div th:replace="~{ ::myFragment (param1=${value1},param2=${value2}) }">...</div>
 ```
-如果没有参数，使用第二种语法（仅限于第二种语法）：
-```html
-<div th:replace="~{::myFragment (param1=${value1},param2=${value2})}">
-```
-这相当于 `th:replace` 和 `th:with` 的组合：
+
+`th:replace="~{::myFragment (param1=${value1},param2=${value2})}"` 这相当于 `th:replace` 和 `th:with` 的组合：
 ```html
 <div th:replace="~{::myFragment}" th:with="param1=${value1},param2=${value2}">
 ```
@@ -401,3 +394,7 @@ th:insert 或 th:replace 期望一个片段表达式（~{...}），它是一个�
    `'Hello ' + ${name}` 是一个字符串拼接表达式，可将字符串 "Hello " 和 name 变量的值进行拼接。
 
 【注意】：片段表达式在 `Thymeleaf 3.0` 及更高版本中引入。
+
+# 总结
+Thymeleaf 是一种 Java 模板引擎，大大提高开发效率，提高代码复用率，拥有快速开发网页能力，掌握它还是很有必要的！
+若想了解更多 Thymeleaf ，请到[Thymeleaf 官网](https://www.thymeleaf.org/doc/tutorials/3.1/usingthymeleaf.html#introducing-thymeleaf)深入学习。
