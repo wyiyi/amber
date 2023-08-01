@@ -273,7 +273,6 @@ console.log(greeting);
     &copy; 2011 The Good Thymes Virtual Grocery
 </div>
 ```
-
 ```html
 <body>
     <div th:insert="~{footer :: #copy-section}"></div>
