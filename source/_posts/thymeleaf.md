@@ -29,30 +29,6 @@ Thymeleaf 是一种用于在服务器端和客户端之间渲染 HTML、XML、Ja
 
 - 应用广泛：Thymeleaf 是目前应用广泛的模板引擎之一，拥有活跃的社区和丰富的生态系统。它被广泛用于开发各种类型的 Web 应用和邮件模板。
 
-从 Thymeleaf 2.0 （基于 xml 实现）—> Thymeleaf 3.0（基于 html ），Thymelaf 3.0 在方言、独立于 Java Servlet API、重构核心API、片段表达等方面有着巨大提升和改善。
-
-# Thymeleaf 的特点
-
-1. 自然模板语法
-
-   Thymeleaf 使用类似于 HTML 的模板语法，开发人员可以直接在模板中嵌入动态内容，并以自然的方式引用和操作模型数据。这种模板语法让开发者能够更快速地构建出富有动态性的页面。
-
-2. 完整的 HTML5 支持
-
-   Thymeleaf 与 HTML5 兼容，并提供了对 HTML5 标准元素和属性的良好支持。开发者可以充分利用最新的 HTML5 功能，如表单验证、视频和音频播放等，提升用户体验。
-
-3. 广泛的模板功能
-
-   Thymeleaf 提供了丰富的模板功能，包括条件判断、循环迭代、局部片段引入、模板布局、国际化支持等。这些功能使得模板更加灵活和可复用，能够满足各种复杂的业务需求。
-
-4. 强大的表达式语言
-
-   Thymeleaf 内置了强大的表达式语言，允许开发者在模板中动态地访问和操作模型数据。表达式语言支持各种操作符、方法调用、条件表达式等，使得模板能够进行复杂的逻辑处理和数据展示。
-
-5. [与 Spring 框架集成](https://spring.io/guides/gs/serving-web-content/ "与 Spring 框架集成")
-
-   Thymeleaf 很好地与 Spring 框架集成，为开发者提供了便捷的使用方式。它可以与 Spring MVC、Spring Boot 等框架无缝配合，实现高效的视图渲染和数据绑定。
-
 # Thymeleaf 的用法
 
 1. **添加 Thymeleaf 依赖**
@@ -61,17 +37,16 @@ Thymeleaf 是一种用于在服务器端和客户端之间渲染 HTML、XML、Ja
 
 - Maven 依赖
   ```xml
-  <dependencies>
-      <dependency>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-starter-thymeleaf</artifactId>
-      </dependency>
-  </dependencies>
+  <dependency>
+      <groupId>org.thymeleaf</groupId>
+      <artifactId>thymeleaf</artifactId>
+      <version>3.1.2.RELEASE</version>
+  </dependency>
   ```
 - Gradle 依赖
-  ```
+  ```groovy
   dependencies {
-      implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+     implementation 'org.thymeleaf:thymeleaf:3.1.2.RELEASE'
   }
   ```
 
@@ -166,19 +141,29 @@ Thymeleaf 提供了许多 th 属性，用于评估表达式并将这些属性的
 变量表达式用于在模板中访问和显示变量的值。
 变量可以是通过控制器传递给模板的模型属性、请求参数、会话属性等。
 
-1. 访问模型属性：
-    ```html
-    <p th:text="${user.name}"></p>
-    ```
-    `${user.name}` 表达式用于访问模型中名为 "user" 的属性，并将其值插入到 `<p>` 元素中。
+1. 访问自定义对象
+```html
+<p th:text="${user.name}"></p>
+```
+`${user.name}` 表达式用于访问模型中名为 "user" 的属性，并将其值插入到 `<p>` 元素中。
 
-2. 访问请求参数：
+2. 访问内置对象
+
+   ① 访问请求对象：
     ```html
-        <p th:text="${param.email}"></p>
+    <input id="requestURI" th:value="${#request.requestURI}"/>
+    ```
+    [Thymeleaf 文档](https://www.thymeleaf.org/doc/tutorials/3.1/usingthymeleaf.html#base-objects)
+    中可通过 `${#ctx.request}` 在上下文对象中获取 request，也可以通过简化形式 `${#request}` 获得到 request。
+    再通过 request 中的 requestURI 获得。
+
+   ② 访问请求参数：
+     ```html
+     <p th:text="${param.email}"></p>
     ```
     `${param.email}` 表达式用于获取名为 "email" 的请求参数的值，并将其插入到 `<p>` 元素中。
-
-3. 访问会话属性：
+   
+   ③ 访问会话属性：
     ```html
     ${session.user}
     ```
@@ -197,9 +182,7 @@ Thymeleaf 提供了许多 th 属性，用于评估表达式并将这些属性的
 </div>
 ```
 ${user} 是一个对象绑定到上下文变量中的用户对象。th:object 指令会将该对象设置为当前选择对象。
-然后，我们可以使用选择表达式 user.name 或 \*{age} 来获取对象的属性值。
-
-【注意】：选择表达式有两种不同的语法 `\*{...}` 和 `\${...}`，但它们的作用是相同的，都用于引用当前选择对象的属性或方法。
+然后，我们可以使用选择表达式 user.name 或 *{age} 来获取对象的属性值。
 
 ### #{...} : Message (i18n) expressions.
 
@@ -214,27 +197,25 @@ console.log(greeting);
 
 ### @{...} : Link (URL) expressions.
 
-@{...} 表达式是链接表达式（Link Expressions），用于生成动态链接（URL）。
-
-可以轻松地处理路由和参数传递，而无需手动构建URL。
+@{...} 表达式是链接表达式（Link Expressions），用于生成动态链接（URL）。可以轻松地处理路由和参数传递，无需手动构建 URL。
 
 1. 生成相对路径链接：
-    ```html
-     <a th:href="@{/home}">Home</a>
-    ```
-    `@{/home}` 表达式将生成一个相对于当前上下文路径的链接，指向 "home" 路径。当用户点击链接时，将导航到 "/home" 页面。
+```html
+<a th:href="@{/home}">Home</a>
+```
+`@{/home}` 表达式将生成一个相对于当前上下文路径的链接，指向 "home" 路径。当用户点击链接时，将导航到 "/home" 页面。
 
 2. 生成带参数的链接：
-    ```html
-    <a th:href="@{/user/details(userId=${user.id})}">View Details</a>
-    ```
-   `@{/user/details(userId=${user.id})}` 表达式生成一个带有参数的链接。
-   `${user.id}` 是一个变量表达式，表示用户的 ID。生成的链接将包含用户 ID 作为查询参数，例如： "/user/details?userId=123"。
+```html
+<a th:href="@{/user/details(userId=${user.id})}">View Details</a>
+```
+`@{/user/details(userId=${user.id})}` 表达式生成一个带有参数的链接。
+`${user.id}` 是一个变量表达式，表示用户的 ID。生成的链接将包含用户 ID 作为查询参数，例如： "/user/details?userId=123"。
 
 3. 生成 URI 片段链接：
-    ```html
-   <a th:href="@{#section-1}">Go to Section 1</a>
-    ```
+```html
+<a th:href="@{#section-1}">Go to Section 1</a>
+```
    直接跳转到具有 ID 为 "section-1" 的页面片段。
 
 【注意】：
@@ -243,25 +224,92 @@ console.log(greeting);
 
 ### ~{...} : Fragment expressions.
 
-~{...} 表达式是片段表达式（Fragment Expressions），用于引入和使用模板片段，重用可独立使用的模块或组件。
+~{...} 表达式是[片段表达式（Fragment Expressions）](https://www.thymeleaf.org/doc/tutorials/3.1/usingthymeleaf.html#template-layout)，用于引入和使用模板片段，重用可独立使用的模块或组件。
 通过引入和参数化片段，在不同的地方使用相同的代码片段，提高了模板的可维护性和重用性。
 
-最常见的用法是使用 th:insert 或 th:replace 进行片段插入：
-1. 引入片段：
-    ```html
-    <div th:insert="~{fragment :: myFragment}"></div>
-    ```
-   `~{fragment :: myFragment}` 表达式用于引入名为 myFragment 的模板片段，并将其插入到 `<div>` 元素中。
+在 Thymeleaf 的 Html 中经常需要包含其他模板的部分，比如页脚、页眉、菜单等，就需定义 `th:fragment` 属性 ，也被称为 `fragments`。
+
+最常见的用法是使用：
+- th:insert：它将简单地插⼊指定宿主标签的标签体中
+- th:replace：⽤指定的⽚段替换其宿主标签
+
+
+片段表达式的三种格式：
+- `~{templatename::selector}` ：包含应用于名为 templatename 的模板上的指定标记选择器所得到的片段。
+- `~{templatename}` ：包含名为 templatename 的完整模板。
+- `~{::selector} 或 ~{this::selector}` ：插入与选择器匹配的来自同一个模板的片段。
+
+
+1. 包含模板片段：
+
+代码中定义了一个名为 copy 的片段
+```html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <footer th:fragment="copy">
+        &copy; 2011 The Good Thymes Virtual Grocery
+    </footer>
+</body>
+</html>
+```
+使用 th:insert 或 th:replace 属性在页面中包含该片段：
+```html
+<body>
+  <div th:insert="~{footer :: copy}"></div>
+  <div th:replace="~{footer :: copy}"></div>
+</body>
+```
+th:insert 或 th:replace 期望一个片段表达式（~{...}），它是一个返回片段的表达式。执行结果：
+```html
+<body>
+  <div>
+    <footer>
+        &copy; 2011 The Good Thymes Virtual Grocery
+    </footer>
+  </div>
+
+  <footer>
+      &copy; 2011 The Good Thymes Virtual Grocery
+  </footer>
+</body>
+```
+借助于标记选择器的强大功能，可以不使用任何 `th:fragment` 属性的片段。通过 CSS 选择器的方式如：选择器 id 引用它。
+```html
+<div id="copy-section">
+    &copy; 2011 The Good Thymes Virtual Grocery
+</div>
+```
+
+```html
+<body>
+    <div th:insert="~{footer :: #copy-section}"></div>
+</body>
+```
+
 2. 参数化片段：
-    ```html
-    <div th:replace="~{fragment :: myFragment(param1='value1', param2=42)}"></div>
-    ```
-    `~{fragment :: myFragment(param1='value1', param2=42)}` 表达式引入 myFragment 模板片段，并为其传递参数。在模板片段中可以通过 `${param1}` 和 `${param2}` 来获取参数的值。
-3. 引入片段：
-    ```html
-    <div th:replace="~{:: myFragment}"></div>
-    ```
-   `~{:: myFragment}` 表达式用于引入当前模板中名为 myFragment 的片段。
+
+使用 `th:fragment` 属性为片段定义参数，并调用带参数的片段。
+
+代码定义了一个名为 `myFragment` 的片段，接收两个参数 `param1` 和 `param2`：
+```html
+<div th:fragment="myFragment (param1, param2)">
+    <p th:text="${param1} + ' - ' + ${param2}">...</p>
+</div>
+```
+调用带参数的片段：
+```html
+<div th:replace="~{ ::myFragment (${value1},${value2}) }">...</div>
+<div th:replace="~{ ::myFragment (param1=${value1},param2=${value2}) }">...</div>
+```
+如果没有参数，使用第二种语法（仅限于第二种语法）：
+```html
+<div th:replace="~{::myFragment (param1=${value1},param2=${value2})}">
+```
+这相当于 `th:replace` 和 `th:with` 的组合：
+```html
+<div th:replace="~{::myFragment}" th:with="param1=${value1},param2=${value2}">
+```
 
 【注意】：片段表达式在 `Thymeleaf 3.0` 及更高版本中引入。
 
@@ -355,44 +403,3 @@ console.log(greeting);
    `'Hello ' + ${name}` 是一个字符串拼接表达式，可将字符串 "Hello " 和 name 变量的值进行拼接。
 
 【注意】：片段表达式在 `Thymeleaf 3.0` 及更高版本中引入。
-
-
-# 遇到的问题
-Java Web 开发过程中，遇到了些问题（建议先查看官网，避免走弯路）。
-
-## 情景一：获取跳转的路径的部分值
-
-1. 需求： 跳转路径为：`https://xxx.com/wechat/memberInfoIndex/wx9e24xxx443` ， 
-`wx9e24xxx443` 为appid，需要获取访问的路径中的 appid 的值。
-2. 解决方案：
-     ```html
-     <input id="requestURI" th:value="${#request.requestURI}"/>
-    
-     // 显示在 Console 中：
-     <input id="requestURI" value="/wechat/memberInfoIndex/wx9e24xxx443"/>
-     ```
-3.分析：${#request.requestURI} 的写法可以获取到访问路径，经过处理（拆分、正则或其它方式）即可得到 appid。
-
-## 情景二：页面动态获取 title
-1. 需求：页面中的 title 需要根据接口返回值动态显示到页面上。
-
-2. 解决方案：
-   ```html
-    $('title').html($('#comname').val());
-    ```
-3. 分析：正常 Html 中直接写：`<title>Amazing！</title>` ，通过 Jquery 获取标签元素即可动态更改 title 值。
-   
-4. 请求后跳转页面也如此。
-   ```html
-    $('#container').html(res);
-    ```
-
-问题：
-1. ~~第一段第二段内容有重复的~~
-2. ~~maven gradle 可不可以不加版本号直接用~~
-3. ~~2.编写模板文件哪属于 thymeleaf 的模板语法~~
-4. *{...} 和 ${...}，但它们的作用是相同的
-5. 片段表达式 不够清晰
-6. 情景一：${#request.requestURI} 上边没提
-7. 情景二：没写明白
-
