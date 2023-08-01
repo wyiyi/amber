@@ -17,7 +17,7 @@ Thymeleaf 是一种用于在服务器端和客户端之间渲染 HTML、XML、Ja
 模板引擎在 Web 领域的主要作用：让网站实现界面和数据分离，这样大大提高了开发效率，提供自然、灵活的模板处理功能，让代码重用更加容易。
 
 # Springboot 官方支持的模板引擎：Thymeleaf
-- 官方支持：[Spring Boot 提供对 Thymeleaf 的官方支持](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#web.servlet.spring-mvc.template-engines "Spring Boot 提供对 Thymeleaf 的官方支持")，做了很多默认配置，开发者只需编写对应 html 即可，大大减轻了上手难度和配置复杂度。
+- 官方支持：[Spring Boot 提供对 Thymeleaf 的官方支持](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#web.servlet.spring-mvc.template-engines)，做了很多默认配置，开发者只需编写对应 html 即可，大大减轻了上手难度和配置复杂度。
 
 - 动静分离：Thymeleaf 选用 html 作为模板页，通过一些特定标签语法代表其含义，但并未破坏 html 结构，即使无网络、不通过后端渲染也能在浏览器成功打开，大大方便界面的测试和修改。
 
@@ -31,7 +31,7 @@ Thymeleaf 是一种用于在服务器端和客户端之间渲染 HTML、XML、Ja
 
 **1、添加 Thymeleaf 依赖**
 
-   在项目的构建文件中添加 Thymeleaf 的相关依赖：
+在项目的构建文件中添加 Thymeleaf 的相关依赖：
 
 - Maven 依赖
 ```xml
@@ -50,11 +50,11 @@ Thymeleaf 是一种用于在服务器端和客户端之间渲染 HTML、XML、Ja
 
 **2、编写模板文件**
 
-   创建一个以 .html 为后缀的模板文件，在其中使用 Thymeleaf 的模板语法。
+创建一个以 `.html` 为后缀的模板文件，在其中使用 Thymeleaf 的模板语法。
 
-   通过使用 Thymeleaf 的标签和表达式，我们可以插入动态数据、进行条件判断、循环迭代等操作。
+通过使用 Thymeleaf 的标签和表达式，我们可以插入动态数据、进行条件判断、循环迭代等操作。
 
-   示例：引入 `www.thymeleaf.org` `<p>` 中 `th:text="'Hello, ' + ${name} + '!'"` 为 Thymeleaf 语法。
+示例：引入 `www.thymeleaf.org` `<p>` 中 `th:text="'Hello, ' + ${name} + '!'"` 为 Thymeleaf 语法。
 
    ```html
     <!DOCTYPE HTML>
@@ -71,8 +71,8 @@ Thymeleaf 是一种用于在服务器端和客户端之间渲染 HTML、XML、Ja
 
 **3、控制器中使用 Thymeleaf**
 
-   在 Spring MVC 的控制器中，参数的值将添加到 Model 对象，传递给 Thymeleaf 模板。
-   Thymeleaf 会自动根据模板中的表达式来渲染数据，并生成最终的 HTML 页面。
+在 Spring MVC 的控制器中，参数的值将添加到 `Model` 对象，传递给 `Thymeleaf 模板`。
+Thymeleaf 会自动根据模板中的表达式来渲染数据，并生成最终的 `HTML` 页面。
 
 ```java
 package com.example.servingwebcontent;
@@ -96,16 +96,16 @@ public class GreetingController {
 
 # 如何使用标准方言
 
-如果你看过使用[标准方言](https://www.thymeleaf.org/doc/articles/sayhelloextendingthymeleaf5minutes.html "标准方言")编写的代码片段，你应该注意到可处理的属性都是以 th: 开头。
+如果你看过使用[标准方言](https://www.thymeleaf.org/doc/articles/sayhelloextendingthymeleaf5minutes.html)编写的代码片段，你应该注意到可处理的属性都是以 th: 开头。
 
-这个 th 被称为方言前缀，它意味着所有由该方言处理的标签和属性都将以这个前缀开始。每个方言可以指定自己的前缀。
+这个 `th` 被称为方言前缀，它意味着所有由该方言处理的标签和属性都将以这个前缀开始。每个方言可以指定自己的前缀。
 
 还要注意的是，一个模板引擎可以同时设置多个方言，从而允许处理包含所有指定方言特性的模板（把方言视为一种类似 JSP 标签库的增强功能）。
 其中一些方言可以共享前缀，实际上充当一个聚合方言的作用。
 
 ## 基本属性
 
-Thymeleaf 提供了许多 th 属性，用于评估表达式并将这些属性的值设置为其结果。
+Thymeleaf 提供了许多 `th` 属性，用于评估表达式并将这些属性的值设置为其结果。
 它们的名称与它们所设置的属性的名称相似，用来对应不同的 XHTML 和 HTML5 属性。
 
 标准方言中的几个最基本的属性：
@@ -147,23 +147,23 @@ Thymeleaf 提供了许多 th 属性，用于评估表达式并将这些属性的
 
 **2、访问内置对象**
 
-   ① 访问请求对象：
-    ```html
-    <input id="requestURI" th:value="${#request.requestURI}"/>
-    ```
-   [Thymeleaf 文档](https://www.thymeleaf.org/doc/tutorials/3.1/usingthymeleaf.html#base-objects) 中可通过 {`$#ctx.request`}  在上下文对象中获取 request，也可以通过简化形式  ${`#request`}  获得到 request。再通过 request 中的 requestURI 获得。
+① 访问请求对象：
+```html
+<input id="requestURI" th:value="${#request.requestURI}"/>
+```
+[Thymeleaf 文档](https://www.thymeleaf.org/doc/tutorials/3.1/usingthymeleaf.html#base-objects") 中可通过 {`$#ctx.request`} 在上下文对象中获取 request，也可以通过简化形式 ${`#request`} 获得到 request。再通过 request 中的 requestURI 获得。
 
-   ② 访问请求参数：
-     ```html
-     <p th:text="${param.email}"></p>
-    ```
-   `${param.email}` 表达式用于获取名为 "email" 的请求参数的值，并将其插入到 `<p>` 元素中。
+② 访问请求参数：
+```html
+<p th:text="${param.email}"></p>
+```
+`${param.email}` 表达式用于获取名为 "email" 的请求参数的值，并将其插入到 `<p>` 元素中。
 
-   ③ 访问会话属性：
-    ```html
-    ${session.user}
-    ```
-   ${session.user} 表达式用于获取会话中名为 "user" 的属性的值，并将其插入到 `<p>` 元素中。
+③ 访问会话属性：
+```html
+${session.user}
+```
+`${session.user}` 表达式用于获取会话中名为 "user" 的属性的值，并将其插入到 `<p>` 元素中。
 
 【注意】：${...} 变量表达式在模板中只能读取变量的值，不能修改变量的值。
 
@@ -221,12 +221,12 @@ console.log(greeting);
 
 ### ~{...} : Fragment expressions.
 
-`~{...}` 表达式是[片段表达式（Fragment Expressions）](https://www.thymeleaf.org/doc/tutorials/3.1/usingthymeleaf.html#template-layout "片段表达式（Fragment Expressions）")，用于引入和使用模板片段，重用可独立使用的模块或组件。
+`~{...}` 表达式是[片段表达式（Fragment Expressions）](https://www.thymeleaf.org/doc/tutorials/3.1/usingthymeleaf.html#template-layout")，用于引入和使用模板片段，重用可独立使用的模块或组件。
 通过引入和参数化片段，在不同的地方使用相同的代码片段，提高了模板的可维护性和重用性。
 
-通过 `th:fragment` 定义模板，然后用 th:insert 或 th:replace 使用定义的模板。
+通过 `th:fragment` 定义模板，然后用 `th:insert` 或 `th:replace` 使用定义的模板。
 
-**使用格式为：** {templatename::selector}，应用于名为 templatename 的模板上的指定标记选择器所得到的片段。也可以使用：
+**使用格式为：** `{templatename::selector}`，应用于名为 `templatename` 的模板上的指定标记选择器所得到的片段。也可以使用：
 - `~{templatename}` ：包含名为 templatename 的完整模板。
 - `~{::selector} 或 ~{this::selector}` ：插入与选择器匹配的来自同一个模板的片段。
 
@@ -236,7 +236,7 @@ console.log(greeting);
 
 **1、包含模板片段：**
 
-   定义了一个名为 copy 的片段：
+定义了一个名为 `copy` 的片段：
 ```html
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
@@ -247,7 +247,7 @@ console.log(greeting);
 </body>
 </html>
 ```
-使用 th:insert 或 th:replace 属性在页面中包含该片段：
+使用 `th:insert` 或 `th:replace` 属性在页面中包含该片段：
 ```html
 <body>
   <div th:insert="~{footer :: copy}"></div>
@@ -268,7 +268,7 @@ console.log(greeting);
   </footer>
 </body>
 ```
-借助于标记选择器的强大功能，可以不使用任何 `th:fragment` 属性的片段。通过 CSS 选择器的方式如：选择器 id 引用它。
+借助于标记选择器的强大功能，可以不使用任何 `th:fragment` 属性的片段。通过 `CSS` 选择器的方式如：选择器 `id` 引用它。
 ```html
 <div id="copy-section">
     &copy; 2011 The Good Thymes Virtual Grocery
@@ -398,5 +398,5 @@ console.log(greeting);
 【注意】：片段表达式在 `Thymeleaf 3.0` 及更高版本中引入。
 
 # 总结
-Thymeleaf 是一种 Java 模板引擎，大大提高开发效率，提高代码复用率，拥有快速开发网页能力，掌握它还是很有必要的！
-若想了解更多 Thymeleaf ，请到[Thymeleaf 官网](https://www.thymeleaf.org/doc/tutorials/3.1/usingthymeleaf.html#introducing-thymeleaf "Thymeleaf 官网")深入学习。
+`Thymeleaf` 是一种 Java 模板引擎，大大提高开发效率，提高代码复用率，拥有快速开发网页能力，掌握它还是很有必要的！
+若想了解更多 `Thymeleaf` ，请到[Thymeleaf 官网](https://www.thymeleaf.org/doc/tutorials/3.1/usingthymeleaf.html#introducing-thymeleaf)深入学习。
