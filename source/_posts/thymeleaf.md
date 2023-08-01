@@ -29,26 +29,26 @@ Thymeleaf 是一种用于在服务器端和客户端之间渲染 HTML、XML、Ja
 
 # Thymeleaf 的用法
 
-1. **添加 Thymeleaf 依赖**
+**1、添加 Thymeleaf 依赖**
 
    在项目的构建文件中添加 Thymeleaf 的相关依赖：
 
 - Maven 依赖
-  ```xml
+```xml
   <dependency>
       <groupId>org.thymeleaf</groupId>
       <artifactId>thymeleaf</artifactId>
       <version>3.1.2.RELEASE</version>
   </dependency>
-  ```
+```
 - Gradle 依赖
-  ```groovy
+```groovy
   dependencies {
      implementation 'org.thymeleaf:thymeleaf:3.1.2.RELEASE'
   }
-  ```
+```
 
-2. **编写模板文件**
+**2、编写模板文件**
 
    创建一个以 .html 为后缀的模板文件，在其中使用 Thymeleaf 的模板语法。
 
@@ -69,30 +69,30 @@ Thymeleaf 是一种用于在服务器端和客户端之间渲染 HTML、XML、Ja
     </html>
    ```
 
-5. **控制器中使用 Thymeleaf**
+**3、控制器中使用 Thymeleaf**
 
    在 Spring MVC 的控制器中，参数的值将添加到 Model 对象，传递给 Thymeleaf 模板。
    Thymeleaf 会自动根据模板中的表达式来渲染数据，并生成最终的 HTML 页面。
 
-   ```java
-    package com.example.servingwebcontent;
+```java
+package com.example.servingwebcontent;
 
-    import org.springframework.stereotype.Controller;
-    import org.springframework.ui.Model;
-    import org.springframework.web.bind.annotation.GetMapping;
-    import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-    @Controller
-    public class GreetingController {
+@Controller
+public class GreetingController {
 
-        @GetMapping("/greeting")
-        public String greeting(@RequestParam(name="name", required=false, defaultValue="World") String name, Model model) {
-            model.addAttribute("name", name);
-            return "greeting";
-        }
-
+    @GetMapping("/greeting")
+    public String greeting(@RequestParam(name="name", required=false, defaultValue="World") String name, Model model) {
+        model.addAttribute("name", name);
+        return "greeting";
     }
-   ```
+
+}
+```
 
 # 如何使用标准方言
 
@@ -139,13 +139,13 @@ Thymeleaf 提供了许多 th 属性，用于评估表达式并将这些属性的
 变量表达式用于在模板中访问和显示变量的值。
 变量可以是通过控制器传递给模板的模型属性、请求参数、会话属性等。
 
-1. 访问自定义对象
+**1、访问自定义对象**
 ```html
 <p th:text="${user.name}"></p>
 ```
 `${user.name}` 表达式用于访问模型中名为 "user" 对象的 "name" 的属性，并将其值插入到 `<p>` 元素中。
 
-2. 访问内置对象
+**2、访问内置对象**
 
    ① 访问请求对象：
     ```html
@@ -196,20 +196,20 @@ console.log(greeting);
 
 `@{...}` 表达式是链接表达式（Link Expressions），用于生成动态链接（URL）。可以轻松地处理路由和参数传递，无需手动构建 URL。
 
-1. 生成相对路径链接：
+**1、生成相对路径链接：**
 ```html
 <a th:href="@{/home}">Home</a>
 ```
 `@{/home}` 表达式将生成一个相对于当前上下文路径的链接，指向 "home" 路径。当用户点击链接时，将导航到 "/home" 页面。
 
-2. 生成带参数的链接：
+**2、生成带参数的链接：**
 ```html
 <a th:href="@{/user/details(userId=${user.id})}">View Details</a>
 ```
 `@{/user/details(userId=${user.id})}` 表达式生成一个带有参数的链接。
 `${user.id}` 是一个变量表达式，表示用户的 ID。生成的链接将包含用户 ID 作为查询参数，例如： "/user/details?userId=123"。
 
-3. 生成 URI 片段链接：
+**3、生成 URI 片段链接：**
 ```html
 <a th:href="@{#section-1}">Go to Section 1</a>
 ```
@@ -226,15 +226,16 @@ console.log(greeting);
 
 通过 `th:fragment` 定义模板，然后用 th:insert 或 th:replace 使用定义的模板。
 
-使用格式为：{templatename::selector}，应用于名为 templatename 的模板上的指定标记选择器所得到的片段。也可以使用：
+**使用格式为：** {templatename::selector}，应用于名为 templatename 的模板上的指定标记选择器所得到的片段。也可以使用：
 - `~{templatename}` ：包含名为 templatename 的完整模板。
 - `~{::selector} 或 ~{this::selector}` ：插入与选择器匹配的来自同一个模板的片段。
 
-常见属性：
+**常见属性：**
 - th:insert：它将简单地插⼊指定宿主标签的标签体中
 - th:replace：⽤指定的⽚段替换其宿主标签
 
-1. 包含模板片段：
+**1、包含模板片段：**
+
    定义了一个名为 copy 的片段：
 ```html
 <!DOCTYPE html>
@@ -279,7 +280,7 @@ console.log(greeting);
 </body>
 ```
 
-2. 参数化片段：
+**2、参数化片段：**
 
 使用 `th:fragment` 属性为片段定义参数，并调用带参数的片段。
 
@@ -330,35 +331,36 @@ console.log(greeting);
     - Default: (value) ?: (defaultvalue)
 
 示例：
-1. 字符串字面量：
-    ```html
-    <p th:text="'Hello, Thymeleaf!'"></p>
-    ```
-   `'Hello, Thymeleaf!'` 是一个字符串字面量，可以在 `<p>` 元素中显示文本 "Hello, Thymeleaf!"。
 
-2. 数字字面量：
-     ```html
-    <p th:text="42"></p>
-    ```
-   `42` 是一个数字字面量，可以在 `<p>` 元素中显示数字 42。
+**1、字符串字面量：**
+```html
+<p th:text="'Hello, Thymeleaf!'"></p>
+```
+`'Hello, Thymeleaf!'` 是一个字符串字面量，可以在 `<p>` 元素中显示文本 "Hello, Thymeleaf!"。
 
-3. 变量引用：
-     ```html
-    <p th:text="${username}"></p>
-    ```
-   `${username}` 是一个变量引用，通过该表达式可以获取名为 "username" 的变量的值，并在 `<p>` 元素中显示。
+**2、数字字面量：**
+```html
+<p th:text="42"></p>
+```
+`42` 是一个数字字面量，可以在 `<p>` 元素中显示数字 42。
 
-4. 算术操作：
-     ```html
-    <p th:text="${number1 + number2}"></p>
-    ```
-   `${number1 + number2}`是一个算术操作，通过该表达式可以对 number1 和 number2 变量进行加法运算，并在 `<p>` 元素中显示结果。
+**3、变量引用：**
+```html
+<p th:text="${username}"></p>
+```
+`${username}` 是一个变量引用，通过该表达式可以获取名为 "username" 的变量的值，并在 `<p>` 元素中显示。
 
-5. 逻辑操作：
-    ```html
-    <p th:if="${age >= 18}">You are an adult.</p>
-    ```
-   `${age >= 18}` 是一个逻辑操作，通过该表达式可以判断 age 变量是否大于或等于 18，如果条件满足，则显示 "You are an adult."。
+**4、算术操作：**
+```html
+<p th:text="${number1 + number2}"></p>
+```
+`${number1 + number2}`是一个算术操作，通过该表达式可以对 number1 和 number2 变量进行加法运算，并在 `<p>` 元素中显示结果。
+
+**5、逻辑操作：**
+```html
+<p th:if="${age >= 18}">You are an adult.</p>
+```
+`${age >= 18}` 是一个逻辑操作，通过该表达式可以判断 age 变量是否大于或等于 18，如果条件满足，则显示 "You are an adult."。
 
 ### Expression preprocessing
 
@@ -366,30 +368,32 @@ console.log(greeting);
 预处理器提供了一些特殊语法和功能，可以扩展表达式的功能并提供更好的灵活性和可读性。
 
 预处理的具体用法：
-1. 转义表达式：
-    ```html
-    <p th:text="|Hello, \${name}!|"></p>
-    ```
-   `|\${name}|` 是一个转义表达式，通过在表达式外添加竖线字符 "|"，可以防止表达式被求值，而直接显示为文本 "Hello, ${name}!"。
 
-2. 默认值设置：
-   ```html
-    <p th:text="${username} ?: 'Guest'"></p>
-    ```
-   `${username} ?: 'Guest'` 是一个默认值设置，如果 username 变量为空或不存在，将使用默认值 "Guest"。
+**1、转义表达式：**
+```html
+<p th:text="|Hello, \${name}!|"></p>
+```
+`|\${name}|` 是一个转义表达式，通过在表达式外添加竖线字符 "|"，可以防止表达式被求值，而直接显示为文本 "Hello, ${name}!"。
 
-3. 集合选择：
-   ```html
-    <ul>
-        <li th:each="item : ${items}" th:text="${item.name}"></li>
-    </ul>
-    ```
-   `${item.name}` 是一个集合选择表达式，用于从 items 集合中选取每个元素的 name 属性并显示在列表项中。
-4. 字符串拼接：
-   ```html
-    <p th:text="'Hello ' + ${name}"></p>
-    ```
-   `'Hello ' + ${name}` 是一个字符串拼接表达式，可将字符串 "Hello " 和 name 变量的值进行拼接。
+**2、默认值设置：**
+```html
+<p th:text="${username} ?: 'Guest'"></p>
+```
+`${username} ?: 'Guest'` 是一个默认值设置，如果 username 变量为空或不存在，将使用默认值 "Guest"。
+
+**3、集合选择：**
+```html
+<ul>
+    <li th:each="item : ${items}" th:text="${item.name}"></li>
+</ul>
+```
+`${item.name}` 是一个集合选择表达式，用于从 items 集合中选取每个元素的 name 属性并显示在列表项中。
+
+**4、字符串拼接：**
+```html
+<p th:text="'Hello ' + ${name}"></p>
+```
+`'Hello ' + ${name}` 是一个字符串拼接表达式，可将字符串 "Hello " 和 name 变量的值进行拼接。
 
 【注意】：片段表达式在 `Thymeleaf 3.0` 及更高版本中引入。
 
