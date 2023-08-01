@@ -17,7 +17,7 @@ Thymeleaf 是一种用于在服务器端和客户端之间渲染 HTML、XML、Ja
 模板引擎在 Web 领域的主要作用：让网站实现界面和数据分离，这样大大提高了开发效率，提供自然、灵活的模板处理功能，让代码重用更加容易。
 
 # Springboot 官方支持的模板引擎：Thymeleaf
-- 官方支持：[Spring Boot 提供对 Thymeleaf 的官方支持](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#web.servlet.spring-mvc.template-engines)，做了很多默认配置，开发者只需编写对应 html 即可，大大减轻了上手难度和配置复杂度。
+- 官方支持：[Spring Boot 提供对 Thymeleaf 的官方支持](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#web.servlet.spring-mvc.template-engines "Spring Boot 提供对 Thymeleaf 的官方支持")，做了很多默认配置，开发者只需编写对应 html 即可，大大减轻了上手难度和配置复杂度。
 
 - 动静分离：Thymeleaf 选用 html 作为模板页，通过一些特定标签语法代表其含义，但并未破坏 html 结构，即使无网络、不通过后端渲染也能在浏览器成功打开，大大方便界面的测试和修改。
 
@@ -53,7 +53,7 @@ Thymeleaf 是一种用于在服务器端和客户端之间渲染 HTML、XML、Ja
    创建一个以 .html 为后缀的模板文件，在其中使用 Thymeleaf 的模板语法。
 
    通过使用 Thymeleaf 的标签和表达式，我们可以插入动态数据、进行条件判断、循环迭代等操作。
-   
+
    示例：引入 `www.thymeleaf.org` `<p>` 中 `th:text="'Hello, ' + ${name} + '!'"` 为 Thymeleaf 语法。
 
    ```html
@@ -151,19 +151,19 @@ Thymeleaf 提供了许多 th 属性，用于评估表达式并将这些属性的
     ```html
     <input id="requestURI" th:value="${#request.requestURI}"/>
     ```
-    [Thymeleaf 文档](https://www.thymeleaf.org/doc/tutorials/3.1/usingthymeleaf.html#base-objects) 中可通过 $#ctx.request} 在上下文对象中获取 request，也可以通过简化形式 ${#request} 获得到 request。再通过 request 中的 requestURI 获得。
+   [Thymeleaf 文档](https://www.thymeleaf.org/doc/tutorials/3.1/usingthymeleaf.html#base-objects "Thymeleaf 文档") 中可通过 `$#ctx.request}` 在上下文对象中获取 request，也可以通过简化形式 ${#request} 获得到 request。再通过 request 中的 requestURI 获得。
 
    ② 访问请求参数：
      ```html
      <p th:text="${param.email}"></p>
     ```
-    `${param.email}` 表达式用于获取名为 "email" 的请求参数的值，并将其插入到 `<p>` 元素中。
-   
+   `${param.email}` 表达式用于获取名为 "email" 的请求参数的值，并将其插入到 `<p>` 元素中。
+
    ③ 访问会话属性：
     ```html
     ${session.user}
     ```
-    ${session.user} 表达式用于获取会话中名为 "user" 的属性的值，并将其插入到 `<p>` 元素中。
+   ${session.user} 表达式用于获取会话中名为 "user" 的属性的值，并将其插入到 `<p>` 元素中。
 
 【注意】：${...} 变量表达式在模板中只能读取变量的值，不能修改变量的值。
 
@@ -177,7 +177,8 @@ Thymeleaf 提供了许多 th 属性，用于评估表达式并将这些属性的
    <p th:text="*{age}"></p>
 </div>
 ```
-${user} 是一个对象绑定到上下文变量中的用户对象。th:object 指令会将该对象设置为当前选择对象。
+
+`${user}` 是一个对象绑定到上下文变量中的用户对象。`th:object` 指令会将该对象设置为当前选择对象。
 然后，我们可以使用选择表达式 `*{age}` 相当于 `${user.age}` 来获取对象的属性值。
 
 ### #{...} : Message (i18n) expressions.
@@ -193,7 +194,7 @@ console.log(greeting);
 
 ### @{...} : Link (URL) expressions.
 
-@{...} 表达式是链接表达式（Link Expressions），用于生成动态链接（URL）。可以轻松地处理路由和参数传递，无需手动构建 URL。
+`@{...}` 表达式是链接表达式（Link Expressions），用于生成动态链接（URL）。可以轻松地处理路由和参数传递，无需手动构建 URL。
 
 1. 生成相对路径链接：
 ```html
@@ -212,7 +213,7 @@ console.log(greeting);
 ```html
 <a th:href="@{#section-1}">Go to Section 1</a>
 ```
-   直接跳转到具有 ID 为 "section-1" 的页面片段。
+直接跳转到具有 ID 为 "section-1" 的页面片段。
 
 【注意】：
 - 链接表达式只能在 HTML 标签的属性中使用，用于生成正确的链接。
@@ -220,7 +221,7 @@ console.log(greeting);
 
 ### ~{...} : Fragment expressions.
 
-~{...} 表达式是[片段表达式（Fragment Expressions）](https://www.thymeleaf.org/doc/tutorials/3.1/usingthymeleaf.html#template-layout)，用于引入和使用模板片段，重用可独立使用的模块或组件。
+`~{...}` 表达式是[片段表达式（Fragment Expressions）](https://www.thymeleaf.org/doc/tutorials/3.1/usingthymeleaf.html#template-layout "片段表达式（Fragment Expressions）")，用于引入和使用模板片段，重用可独立使用的模块或组件。
 通过引入和参数化片段，在不同的地方使用相同的代码片段，提高了模板的可维护性和重用性。
 
 通过 `th:fragment` 定义模板，然后用 th:insert 或 th:replace 使用定义的模板。
@@ -234,7 +235,7 @@ console.log(greeting);
 - th:replace：⽤指定的⽚段替换其宿主标签
 
 1. 包含模板片段：
-定义了一个名为 copy 的片段：
+   定义了一个名为 copy 的片段：
 ```html
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
@@ -252,7 +253,7 @@ console.log(greeting);
   <div th:replace="~{footer :: copy}"></div>
 </body>
 ```
-th:insert 或 th:replace 期望一个片段表达式（~{...}），它是一个返回片段的表达式。执行结果：
+`th:insert` 或 `th:replace` 期望一个片段表达式（~{...}），它是一个返回片段的表达式。执行结果：
 ```html
 <body>
   <div>
@@ -334,31 +335,31 @@ th:insert 或 th:replace 期望一个片段表达式（~{...}），它是一个�
     ```html
     <p th:text="'Hello, Thymeleaf!'"></p>
     ```
-    `'Hello, Thymeleaf!'` 是一个字符串字面量，可以在 `<p>` 元素中显示文本 "Hello, Thymeleaf!"。
+   `'Hello, Thymeleaf!'` 是一个字符串字面量，可以在 `<p>` 元素中显示文本 "Hello, Thymeleaf!"。
 
 2. 数字字面量：
      ```html
     <p th:text="42"></p>
     ```
-    `42` 是一个数字字面量，可以在 `<p>` 元素中显示数字 42。
+   `42` 是一个数字字面量，可以在 `<p>` 元素中显示数字 42。
 
 3. 变量引用：
      ```html
     <p th:text="${username}"></p>
     ```
-    `${username}` 是一个变量引用，通过该表达式可以获取名为 "username" 的变量的值，并在 `<p>` 元素中显示。
-     
+   `${username}` 是一个变量引用，通过该表达式可以获取名为 "username" 的变量的值，并在 `<p>` 元素中显示。
+
 4. 算术操作：
      ```html
     <p th:text="${number1 + number2}"></p>
     ```
-    `${number1 + number2}`是一个算术操作，通过该表达式可以对 number1 和 number2 变量进行加法运算，并在 `<p>` 元素中显示结果。
+   `${number1 + number2}`是一个算术操作，通过该表达式可以对 number1 和 number2 变量进行加法运算，并在 `<p>` 元素中显示结果。
 
 5. 逻辑操作：
     ```html
     <p th:if="${age >= 18}">You are an adult.</p>
     ```
-    `${age >= 18}` 是一个逻辑操作，通过该表达式可以判断 age 变量是否大于或等于 18，如果条件满足，则显示 "You are an adult."。
+   `${age >= 18}` 是一个逻辑操作，通过该表达式可以判断 age 变量是否大于或等于 18，如果条件满足，则显示 "You are an adult."。
 
 ### Expression preprocessing
 
@@ -370,7 +371,7 @@ th:insert 或 th:replace 期望一个片段表达式（~{...}），它是一个�
     ```html
     <p th:text="|Hello, \${name}!|"></p>
     ```
-    `|\${name}|` 是一个转义表达式，通过在表达式外添加竖线字符 "|"，可以防止表达式被求值，而直接显示为文本 "Hello, ${name}!"。
+   `|\${name}|` 是一个转义表达式，通过在表达式外添加竖线字符 "|"，可以防止表达式被求值，而直接显示为文本 "Hello, ${name}!"。
 
 2. 默认值设置：
    ```html
@@ -395,4 +396,4 @@ th:insert 或 th:replace 期望一个片段表达式（~{...}），它是一个�
 
 # 总结
 Thymeleaf 是一种 Java 模板引擎，大大提高开发效率，提高代码复用率，拥有快速开发网页能力，掌握它还是很有必要的！
-若想了解更多 Thymeleaf ，请到[Thymeleaf 官网](https://www.thymeleaf.org/doc/tutorials/3.1/usingthymeleaf.html#introducing-thymeleaf)深入学习。
+若想了解更多 Thymeleaf ，请到[Thymeleaf 官网](https://www.thymeleaf.org/doc/tutorials/3.1/usingthymeleaf.html#introducing-thymeleaf "Thymeleaf 官网")深入学习。
