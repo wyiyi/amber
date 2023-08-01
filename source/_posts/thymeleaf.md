@@ -181,7 +181,7 @@ Thymeleaf 提供了许多 th 属性，用于评估表达式并将这些属性的
 `${user}` 是一个对象绑定到上下文变量中的用户对象。`th:object` 指令会将该对象设置为当前选择对象。
 然后，我们可以使用选择表达式 `*{age}` 相当于 `${user.age}` 来获取对象的属性值。
 
-### #{...} : Message (i18n) expressions.
+### #{...} : Message(i18n) expressions.
 
 #{...} 是一种用于国际化（i18n）的消息表达式。它的主要目的是在软件中支持多语言的消息处理。
 
@@ -192,7 +192,7 @@ console.log(greeting);
 ```
 `#{name}` 表达式用来将变量 name 的值动态地插入到问候消息中，生成适当的本地化文本。
 
-### @{...} : Link (URL) expressions.
+### @{...} : Link(URL) expressions.
 
 `@{...}` 表达式是链接表达式（Link Expressions），用于生成动态链接（URL）。可以轻松地处理路由和参数传递，无需手动构建 URL。
 
