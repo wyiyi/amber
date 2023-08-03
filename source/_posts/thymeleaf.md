@@ -151,7 +151,7 @@ Thymeleaf 提供了许多 `th` 属性，用于评估表达式并将这些属性�
 ```html
 <input id="requestURI" th:value="${#request.requestURI}"/>
 ```
-[Thymeleaf 文档](https://www.thymeleaf.org/doc/tutorials/3.1/usingthymeleaf.html#base-objects") 中可通过 {`$#ctx.request`} 在上下文对象中获取 request，也可以通过简化形式 ${`#request`} 获得到 request。再通过 request 中的 requestURI 获得。
+[Thymeleaf 文档](https://www.thymeleaf.org/doc/tutorials/3.1/usingthymeleaf.html#base-objects") 中可通过 ${`#ctx.request`} 在上下文对象中获取 request，也可以通过简化形式 ${`#request`} 获得到 request。再通过 request 中的 requestURI 获得。
 
 ② 访问请求参数：
 ```html
