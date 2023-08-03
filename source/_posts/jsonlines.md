@@ -1,18 +1,17 @@
 ---
-id: json-lines
 title: 处理大数据集的灵活格式 —— JSON Lines
-description: 格式及相关小工具介绍
 date: 2023.07.01
-categories:
-    - JSON Lines
 tags: 
    - Go
    - JSON Lines
    - AI
+categories:
+   - JSON Lines
 categories: Technology   
 mathjax: true 
 comments: true
 toc: true
+description: 格式及相关小工具介绍
 ---
 ![](https://wyiyi.github.io/amber/contents/2023/json-lines.png)
 
