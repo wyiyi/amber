@@ -5,8 +5,6 @@ tags:
    - Go
    - JSON Lines
    - AI
-categories:
-   - JSON Lines
 categories: Technology   
 mathjax: true 
 comments: true
