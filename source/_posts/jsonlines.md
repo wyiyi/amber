@@ -1,5 +1,5 @@
 ---
-title: 处理大数据集的灵活格式 —— JSON Lines
+title: JSON Lines — 处理大数据集的灵活格式
 date: 2023.07.01
 tags: 
    - Go
