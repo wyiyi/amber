@@ -1,5 +1,5 @@
 ---
-title: Thymeleaf—简化 Java Web 开发的强大模板引擎
+title: Thymeleaf — 简化 Java Web 开发的强大模板引擎
 date: 2023.08.01
 tags: 
    - Java Web
