@@ -12,9 +12,70 @@ description: 本文将深入探讨 this 在前端开发中的应用场景以及�
 ---
 
 在前端开发中，this 是一个常见的概念。
-它代表了当前执行上下文中的对象或函数，并且在不同的情况下，this 的指向也会有所不同。
+它代表了当前执行上下文中的对象或函数，并且在不同的情况下，`this` 的指向也会有所不同。
 
 本文将深入探讨 `this` 在前端开发中的应用场景以及不同情况下的指向规则，更好地理解和运用 `this` 指向。
+
+# 小试牛刀，你的战绩如何？
+1、普通函数、箭头函数组合使用
+
+```js
+var name = "TOM"
+let obj={
+  name:"Jerry",
+  SayHi:()=>{
+   return function(){
+      console.log(this.name) //问题1 这个this又指向谁
+    }
+  },
+  SayFoo:function(){
+    return ()=>{
+      console.log(this.name) //问题2 这个this又指向谁
+    }
+  }
+}
+obj.SayHi()()
+obj.SayFoo()()
+```
+
+- 函数的 this 指向遵循一个基本原则：谁调用的函数，函数的 this 就指向谁，否则指向全局。
+
+- 箭头函数本身没有 `this`，箭头函数 `this` 是定义箭头函数时父级作用域的 `this`，
+也就是说使用箭头函数时，内部的 `this` 只需要看定义该箭头函数时，该父级的 this 即可。
+
+解析：
+
+问题1：`SayHi` 函数返回一个新的匿名函数，所以主要看谁调用了它，没人具体的调用者，所以this 指向 window。
+   
+问题2：`SayFoo` 函数返回一个新的匿名箭头函数，所以主要看定义该箭头函数其父级的 this，其父级的 this 指向的是该函数的调用者，所以 this 指向 obj。
+
+答案：TOM、Jerry
+
+2、改变 this 指向的：call、apply、bind 
+
+```js
+var name = 'win';
+const obj = {
+    name: 'obj',
+    a: () => {
+        console.log(this.name);
+    }
+};
+const obj1 = {
+    name: 'obj1'
+};
+obj.a.call(obj1);
+```
+- 改变 this 指向的方法: call()、apply() 或 bind() 。
+
+- 区别：
+call 和 apply 调用时候立即执行，bind 调用返回新的函数。
+当需要传递参数时候，call 直接写多个参数，apply 将多个参数写成数组。
+bind 在绑定时候需要固定参数时候，也是直接写多个参数。
+
+解析：箭头函数声明时候所在的作用域是全局，因此指向 window，call 并不能改变箭头函数指向。？？？
+
+答案：'win'。
 
 # this 
 在 `JavaScript` 中，函数的 `this` 关键字与其他语言有一些不同。
