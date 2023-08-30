@@ -2,13 +2,13 @@
 title: 探索前端的 this 指向
 date: 2023.09.01
 tags:
-- JS
-- this
-  categories: Technology   
-  mathjax: true
-  comments: true
-  toc: true
-  description: 本文将深入探讨 this 在前端开发中的应用场景以及不同情况下的指向规则，更好地理解和运用 this 指向。
+  - JS
+  - this
+categories: Technology   
+mathjax: true
+comments: true
+toc: true
+description: 本文将深入探讨 this 在前端开发中的应用场景以及不同情况下的指向规则，更好地理解和运用 this 指向。
 ---
 
 在前端开发中，this 是一个常见的概念。
