@@ -204,4 +204,5 @@ console.log(this === window); // true
 # 总结：
 要正确理解和使用 this，需要了解当前代码的执行上下文，合理运用 this 指向，使得代码更加灵活和易于维护。
 
+深入了解请参考[文档](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this#description)。
 希望这篇文章对您理解和使用 this 有所帮助。
