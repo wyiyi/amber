@@ -16,6 +16,46 @@ description: 本文将深入探讨 this 在前端开发中的应用场景以及�
 
 本文将深入探讨 `this` 在前端开发中的应用场景以及不同情况下的指向规则，更好地理解和运用 `this` 指向。
 
+# 小试牛刀
+## 1、普通函数、箭头函数组合使用
+
+```js
+var name = "TOM"
+let obj={
+  name:"Jerry",
+  SayHi:()=>{
+   return function(){
+      console.log(this.name) //问题1 这个this又指向谁
+    }
+  },
+  SayFoo:function(){
+    return ()=>{
+      console.log(this.name) //问题2 这个this又指向谁
+    }
+  }
+}
+obj.SayHi()()
+obj.SayFoo()()
+```
+
+## 2、改变 this 指向的：call、apply、bind
+
+```js
+var name = 'win';
+const obj = {
+    name: 'obj',
+    a: () => {
+        console.log(this.name);
+    }
+};
+const obj1 = {
+    name: 'obj1'
+};
+obj.a.call(obj1);
+```
+
+别急，答案和解析逐步揭晓。
+
 # this 
 在 `JavaScript` 中，函数的 `this` 关键字与其他语言有一些不同。
 它也在[严格模式](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode)和非严格模式下有一些区别。
@@ -100,6 +140,11 @@ console.log(foo() === globalObject); // true
 ```
 
 当使用 [call()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call)、[apply()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply) 或 [bind()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind) 调用箭头函数时，`thisArg` 参数会被忽略。但仍然可以使用这些方法传递其他参数。
+
+区别：
+call 和 apply 调用时候立即执行，bind 调用返回新的函数。
+当需要传递参数时候，call 直接写多个参数，apply 将多个参数写成数组，
+bind 在绑定时候需要固定参数时候，也是直接写多个参数。
 
 ```js
 const obj = { name: "obj" };
@@ -201,7 +246,26 @@ new Bad(); // 报错：必须在派生类构造函数中调用 super() 才能访
 console.log(this === window); // true
  ```
 
-# 总结：
+# 公布答案及解析，你的战绩如何？
+## 小试牛刀 1
+
+**答案**：TOM、Jerry
+
+**解析**：
+问题1：`SayHi` 函数返回一个新的匿名函数，所以主要看谁调用了它，没人具体的调用者，所以this 指向 window。
+问题2：`SayFoo` 函数返回一个新的匿名箭头函数，所以主要看定义该箭头函数其父级的 this，其父级的 this 指向的是该函数的调用者，所以 this 指向 obj。
+
+## 小试牛刀 2
+
+**答案**：win。
+
+**解析**：
+使用箭头函数定义了对象 obj 的属性 a。
+箭头函数不会绑定自己的 this 值，而是继承外层作用域的 this 值。
+在全局作用域中，this 指向全局对象（例如浏览器中的 window 对象），所以 this.name 实际上是在全局作用域中查找 name 变量的值。
+在 obj1 对象上使用了 call 方法来显式设置 obj.a 函数中的 this 值为 obj1，但由于箭头函数不受 this 绑定的影响，它仍然会继承全局作用域中的 this 值。
+
+# Ending...
 要正确理解和使用 this，需要了解当前代码的执行上下文，合理运用 this 指向，使得代码更加灵活和易于维护。
 
 了解更多请参考[文档](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this#description)。
