@@ -38,7 +38,7 @@ obj.SayHi()()
 obj.SayFoo()()
 ```
 
-## 2、改变 this 指向的：call、apply、bind
+## 2、改变 this 指向
 
 ```js
 var name = 'win';
