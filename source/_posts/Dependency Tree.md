@@ -36,11 +36,13 @@ description:
 
 ## 使用 IDEA 查看 Show dependencies
 
-1. 按下图操作（快捷键（ctrl+alt+shift+u），点击 show dependencies 显示依赖树结果（图三）
+1. 按下图操作，
+- 找到 Dependencies 选项展开后即可查看项目的编译的依赖树
+- 点击 show dependencies 显示依赖树结果-图三（快捷键（ctrl+alt+shift+u）
   ![图一_maven](https://wyiyi.github.io/amber/contents/tree/idea_1.png)
   ![图一_gradle](https://wyiyi.github.io/amber/contents/tree/gradle_1.png)
 
-2. 打开文件（pom.xml 或者 .gradle）右键，如图点击 show dependencies 后显示依赖树结果（图三）
+2. 打开文件（pom.xml 或者 .gradle）右键，如图点击 show dependencies 后显示依赖树结果-图三
   ![图二_maven](https://wyiyi.github.io/amber/contents/tree/idea_2.png)
   ![图二_gradle](https://wyiyi.github.io/amber/contents/tree/gradle_2.png)
 
