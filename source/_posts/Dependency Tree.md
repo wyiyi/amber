@@ -10,7 +10,7 @@ comments: true
 toc: true
 description: 
 ---
-依赖树（Dependency Tree）工具，可以显示项目的依赖关系图，帮助我们理清项目中各个模块和库之间的依赖关系。
+依赖树（Dependency Tree）工具，可以显示项目的依赖关系图，用于查看和分析项目的依赖关系。
 
 本文将介绍 maven 和 gradle 两种构建如何查看依赖树。
 
