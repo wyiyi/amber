@@ -17,33 +17,27 @@ Maven 提供了一个强大的工具，即 “依赖树” ，用于查看和分
 ## 使用命令行查看
 1. Maven 提供了命令行工具来查看项目的依赖树，执行命令：
     
-```
-mvn dependency:tree
-```
+    ```
+    mvn dependency:tree
+    ```
 
 2. 对于大型项目，可以将输出结果保存到文件中：
 
-```
-mvn dependency:tree > dependency_tree.txt
-```
+    ```
+    mvn dependency:tree > dependency_tree.txt
+    ```
 
 ## 使用 IDEA 查看
 
-### Show dependencies
+### Show dependencies 
 
-直接按照图一操作（快捷键（ctrl+alt+shift+u））点击 show dependencies 按钮，查看到下图二。
+1. 按照图一操作（快捷键（ctrl+alt+shift+u），点击 show dependencies 后，如图三
+  ![图一](https://wyiyi.github.io/amber/contents/mvnTree/idea_1.png)
 
-ctrl + f 可以搜索要查找的 Jar 定位到依赖关系。
+2. 打开 pom.xml 文件，右键，如图二，点击 show dependencies 后，如图三
+  ![图二](https://wyiyi.github.io/amber/contents/mvnTree/idea_2.png)
 
-注意：IDEA 版本
-
-![图一](https://wyiyi.github.io/amber/contents/mvnTree/idea_1.png)
-
-![图二](https://wyiyi.github.io/amber/contents/mvnTree/idea_2.png)
-
-### Diagrams-show dependencies 选项
-打开 pom.xml 文件，图三：
-
+使用快捷键 ctrl + f 可以搜索要查找的 Jar 定位到依赖关系。（注意：IDEA 版本）
 ![图三](https://wyiyi.github.io/amber/contents/mvnTree/idea_3.png)
 
 ### Maven Helper 插件
