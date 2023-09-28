@@ -8,7 +8,7 @@ categories: Technology
 mathjax: true 
 comments: true
 toc: true
-description: 
+description: 依赖树（Dependency Tree）工具，可以查看和分析项目的依赖关系。本文将介绍 maven 和 gradle 两种构建如何查看依赖树。
 ---
 依赖树（Dependency Tree）工具，可以查看和分析项目的依赖关系。
 
