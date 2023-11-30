@@ -39,7 +39,7 @@ BaseMapper 和 IService 怎么用？有何关联？一起使用是否重复了�
 
 开发者可以通过继承 BaseMapper 接口，并指定对应的实体类，即可直接使用这些通用方法，无需手动编写SQL语句，从而减少了代码量和重复劳动。
 
-```
+```java
 public interface BaseMapper<T> extends Mapper<T> {
     // 定义常用的数据库操作方法
     // ...
@@ -60,7 +60,7 @@ IService 接口的主要作用是定义 Service 层的业务逻辑方法，例�
 
 开发者可以通过继承 IService 接口，并指定对应的实体类，即可直接使用这些通用方法，无需手动编写业务逻辑代码，使得代码更加简洁和易于维护。
 
-```
+```java
 public interface IService<T> extends CrudService<T, Long> {
     // 定义常用的业务逻辑方法
     // ...
@@ -73,9 +73,9 @@ public interface IService<T> extends CrudService<T, Long> {
 - M：Mapper 接口类型
 - T：对应实体类的类型
 
-```
+```java
 public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
-    ...
+    //...
 }
 ```
 
@@ -87,27 +87,27 @@ public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
 
 举个例子说明 IService、ServiceImpl、BaseMapper 三者的类关系如下：
 
-```
+```java
 public interface UserService extends IService<User> {
-    ...
+    //...
 }
 
 @Service
 public class UserServiceImpl implements UserService {
     @Resource
     UserMapper userMapper;
-    ...
+    //...
 }
 
-实现类或者可以写成：
+// 实现类或者可以写成：
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> {
-    ...
+    //...
 }
 
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
-    ...
+    //...
 }
 ```
 
