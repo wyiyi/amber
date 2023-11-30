@@ -1,20 +1,12 @@
-[//]: # (---)
-
-[//]: # (title: 解析 MyBatis-Plus 中 IService 和 BaseMapper 的关联关系—基础篇)
-
-[//]: # (date: 2023.12.01)
-
-[//]: # (tags: Mybatis-plus)
-
-[//]: # (categories: Technology  )
-
-[//]: # (mathjax: true)
-
-[//]: # (comments: true)
-
-[//]: # (description: Mapper 和 IService 有何关联？单独使用？一起使用是否重复了？)
-
-[//]: # (---)
+---
+title: 解析 MyBatis-Plus 中 IService 和 BaseMapper 的关联关系—基础篇
+date: 2023.12.01
+tags: Mybatis-plus
+categories: Technology  
+mathjax: true
+comments: true
+description: Mapper 和 IService 有何关联？单独使用？一起使用是否重复了？
+---
 
 ## 问题现象描述
 - 常规操作：Service 实现类引入 Mapper，Mapper 继承 BaseMapper
