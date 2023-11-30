@@ -68,8 +68,7 @@ public interface IService<T> extends CrudService<T, Long> {
 ```
 
 ## 引出 ServiceImpl
-[ServiceImpl](https://github.com/baomidou/mybatis-plus/blob/3.0/mybatis-plus-extension/src/main/java/com/baomidou/mybatisplus/extension/service/impl/ServiceImpl.java#L60C22-L60C22)
-是 IService 默认实现类，ServiceImpl 是针对业务逻辑层的实现，并调用 BaseMapper 来操作数据库。
+[ServiceImpl](https://github.com/baomidou/mybatis-plus/blob/3.0/mybatis-plus-extension/src/main/java/com/baomidou/mybatisplus/extension/service/impl/ServiceImpl.java#L60C22-L60C22)是 IService 默认实现类，ServiceImpl 是针对业务逻辑层的实现，并调用 BaseMapper 来操作数据库。
 传入的参数为 M 和 T：
 - M：Mapper 接口类型
 - T：对应实体类的类型
@@ -113,9 +112,9 @@ public interface UserMapper extends BaseMapper<User> {
 ```
 
 ## 既用之，则听之
-看大家对于 mybatis plus 的 `BaseMapper`以及 `IService` 以及 `ServiceImpl` 在 [issue](https://github.com/baomidou/mybatis-plus/issues) 中火热讨论，最后还是以官方为主，若有改动文章在做后续调整。
+大家对于 mybatis plus 的 `BaseMapper`以及 `IService` 以及 `ServiceImpl` 还是存在很大争议，并在 [issue](https://github.com/baomidou/mybatis-plus/issues) 中火热讨论，最后还是以官方为主，若有改动文章在做后续调整。
 
-- [关于改进 IService 和 ServiceImpl](https://github.com/baomidou/mybatis-plus/issues/5764)
+- [关于改进 IService 和 ServiceImpl 的建议](https://github.com/baomidou/mybatis-plus/issues/5764)
 - [关于 mybatis plus 中的 BaseMapper<T> 以及 IService<T> 以及 ServiceImpl<M extends <Basemapper>，T> 这几个类](https://github.com/baomidou/mybatis-plus/issues/59)
 - [mybatis-plus 的一种很别扭的用法](https://github.com/baomidou/mybatis-plus/issues/926)
 
