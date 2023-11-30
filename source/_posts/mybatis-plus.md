@@ -5,7 +5,7 @@ tags: Mybatis-plus
 categories: Technology  
 mathjax: true
 comments: true
-description: Mapper 和 IService 有何关联？单独使用？一起使用是否重复了？
+description: BaseMapper 和 IService 怎么用？有何关联？一起使用是否重复了？有一种剪不断理还乱的感觉。
 ---
 
 ## 问题现象描述
@@ -18,7 +18,7 @@ description: Mapper 和 IService 有何关联？单独使用？一起使用是�
 
 ![](https://wyiyi.github.io/amber/contents/2023/IService.png)
 
-BaseMapper 和 IService 有何关联？单独使用？一起使用是否重复了？有一种剪不断理还乱的感觉。
+BaseMapper 和 IService 怎么用？有何关联？一起使用是否重复了？有一种剪不断理还乱的感觉。
 
 ## 引言
 [MyBatis-Plus](https://mybatis.plus/guide/) 作为一个优秀的 ORM 框架，致力于简化和提高 Java 应用程序对数据库访问的效率。
@@ -80,7 +80,7 @@ public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
 }
 ```
 
-## 关联？
+## 关联
 - IService 是对 BaseMapper 的扩展
 - IService 提供批量处理操作，BaseMapper 没有（文章开篇图片已说明）
 - IService 依赖于 Spring 容器，而 BaseMapper 不依赖
