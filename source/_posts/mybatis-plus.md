@@ -84,12 +84,12 @@ public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
 - IService 提供批量处理操作，BaseMapper 没有（文章开篇图片已说明）
 - BaseMapper 可以继承并添加新的数据库操作，IService 要扩展的话还是得调用 Mapper，略显重复
 
-其中，实现类也可以直接操作数据库写成如下方式：实现三比实现二需多建 UserMapper 接口，略显麻烦，如果复杂 SQL 则可以考虑使用实现三。
-举个例子说明 IService、ServiceImpl、BaseMapper 三者的类关系如下：
+举个例子说明 IService、ServiceImpl、BaseMapper 三者的类关系。
+其中，实现类也可以直接操作数据库写成如下方式：实现二比实现一需多建 UserMapper 接口，略显麻烦，如果复杂 SQL 则可以考虑使用实现二：
 
 ```java
-public interface UserService {
-    //...也可直接 extends IService<User>
+public interface UserService extends IService<User> {
+    //...
 }
 
 @Mapper
@@ -98,16 +98,6 @@ public interface UserMapper extends BaseMapper<User> {
 }
 
 // 实现一：
-@Service
-public class UserServiceImpl implements UserService {
-    @Resource
-    UserMapper userMapper;
-
-    public int updateById(User user){
-        return userMapper.updateById(user);
-    }
-}
-// 实现二：
 @Service
 public class UserServiceImpl extends ServiceImpl<BaseMapper<User>, User> implements UserService {
 
@@ -119,7 +109,7 @@ public class UserServiceImpl extends ServiceImpl<BaseMapper<User>, User> impleme
         return super.saveBatch(userList);
     }
 }
-// 实现三：
+// 实现二：
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
