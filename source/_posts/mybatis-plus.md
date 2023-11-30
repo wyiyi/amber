@@ -20,7 +20,7 @@ description: BaseMapper 和 IService 怎么用？有何关联？一起使用是�
 
 BaseMapper 和 IService 怎么用？有何关联？一起使用是否重复了？有一种剪不断理还乱的感觉。
 
-## 引言
+## MyBatis-Plus
 [MyBatis-Plus](https://mybatis.plus/guide/) 作为一个优秀的 ORM 框架，致力于简化和提高 Java 应用程序对数据库访问的效率。
 在 MyBatis-Plus 中，IService 和 BaseMapper 是两个核心接口，它们分别负责定义 Service 层和 DAO 层的操作方法，相互之间有着紧密的关联。
 
