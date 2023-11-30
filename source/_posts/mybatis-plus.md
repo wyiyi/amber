@@ -47,11 +47,11 @@ public interface BaseMapper<T> extends Mapper<T> {
 ```
 
 ## IService 接口
-[IService](https://github.com/baomidou/mybatis-plus/blob/3.0/mybatis-plus-extension/src/main/java/com/baomidou/mybatisplus/extension/service/IService.java) 接口是 MyBatis-Plus 提供的高级 Service 接口，它继承自 Spring 的 [CrudService](https://baomidou.com/pages/49cc81/#service-crud-%E6%8E%A5%E5%8F%A3) 接口，并扩展了一些常用的数据库操作方法。
+[IService](https://github.com/baomidou/mybatis-plus/blob/3.0/mybatis-plus-extension/src/main/java/com/baomidou/mybatisplus/extension/service/IService.java) 接口是 MyBatis-Plus 提供的顶级 Service 接口。
 
 > 说明:
 >
-> - 通用 Service CRUD 封装 IService 接口，进一步封装 CRUD 采用 `get 查询单行` `remove 删除` `list 查询集合` `page 分页` 前缀命名方式区分 `Mapper` 层避免混淆，
+> - 通用 [Service CRUD](https://baomidou.com/pages/49cc81/#service-crud-%E6%8E%A5%E5%8F%A3) 封装 IService 接口，进一步封装 CRUD 采用 `get 查询单行` `remove 删除` `list 查询集合` `page 分页` 前缀命名方式区分 `Mapper` 层避免混淆，
 > - 泛型 `T` 为任意实体对象
 > - 建议如果存在自定义通用 Service 方法的可能，请创建自己的 `IBaseService` 继承 `Mybatis-Plus` 提供的基类
 > - 对象 `Wrapper` 为 `条件构造器`
@@ -61,7 +61,7 @@ IService 接口的主要作用是定义 Service 层的业务逻辑方法，例�
 开发者可以通过继承 IService 接口，并指定对应的实体类，即可直接使用这些通用方法，无需手动编写业务逻辑代码，使得代码更加简洁和易于维护。
 
 ```java
-public interface IService<T> extends CrudService<T, Long> {
+public interface XxxService extends IService<T> {
     // 定义常用的业务逻辑方法
     // ...
 }
@@ -82,32 +82,57 @@ public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
 ## 关联
 - IService 是对 BaseMapper 的扩展
 - IService 提供批量处理操作，BaseMapper 没有（文章开篇图片已说明）
-- IService 依赖于 Spring 容器，而 BaseMapper 不依赖
 - BaseMapper 可以继承并添加新的数据库操作，IService 要扩展的话还是得调用 Mapper，略显重复
 
+其中，实现类也可以直接操作数据库写成如下方式：实现三比实现二需多建 UserMapper 接口，略显麻烦，如果复杂 SQL 则可以考虑使用实现三。
 举个例子说明 IService、ServiceImpl、BaseMapper 三者的类关系如下：
 
 ```java
-public interface UserService extends IService<User> {
-    //...
-}
-
-@Service
-public class UserServiceImpl implements UserService {
-    @Resource
-    UserMapper userMapper;
-    //...
-}
-
-// 实现类或者可以写成：
-@Service
-public class UserServiceImpl extends ServiceImpl<UserMapper, User> {
-    //...
+public interface UserService {
+    //...也可直接 extends IService<User>
 }
 
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
     //...
+}
+
+// 实现一：
+@Service
+public class UserServiceImpl implements UserService {
+    @Resource
+    UserMapper userMapper;
+
+    public int updateById(User user){
+        return userMapper.updateById(user);
+    }
+}
+// 实现二：
+@Service
+public class UserServiceImpl extends ServiceImpl<BaseMapper<User>, User> implements UserService {
+
+    public boolean updateById(User user){
+        return super.updateById(user);
+    }
+    
+    public boolean updateSaveBatch(List<User> userList){
+        return super.saveBatch(userList);
+    }
+}
+// 实现三：
+@Service
+public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
+
+    @Resource
+    UserMapper userMapper;
+
+    public boolean updateSaveBatch(List<User> userList){
+        return super.saveBatch(userList);
+    }
+    
+    public int updateById(User user){
+        return userMapper.updateById(user);
+    }
 }
 ```
 
