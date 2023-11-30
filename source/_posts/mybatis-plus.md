@@ -85,7 +85,7 @@ public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
 - BaseMapper 可以继承并添加新的数据库操作，IService 要扩展的话还是得调用 Mapper，略显重复
 
 举个例子说明 IService、ServiceImpl、BaseMapper 三者的类关系。
-其中，实现类也可以直接操作数据库写成如下方式：实现二比实现一需多建 UserMapper 接口，略显麻烦，如果复杂 SQL 则可以考虑使用实现二：
+其中，实现类也可以直接操作数据库写成如下方式：实现二比实现一需多建 UserMapper 接口，略显麻烦，如果复杂 SQL 则可以考虑使用实现二。
 
 ```java
 public interface UserService extends IService<User> {
