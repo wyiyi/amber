@@ -25,7 +25,7 @@ BaseMapper 和 IService 怎么用？有何关联？一起使用是否重复了�
 在 MyBatis-Plus 中，IService 和 BaseMapper 是两个核心接口，它们分别负责定义 Service 层和 DAO 层的操作方法，相互之间有着紧密的关联。
 
 ## BaseMapper 接口
-[BaseMapper](https://baomidou.com/pages/49cc81/#mapper-crud-%E6%8E%A5%E5%8F%A3) 接口是 MyBatis-Plus 提供的通用 Mapper 接口，它继承自 MyBatis 的 Mapper 接口，并扩展了一些常用的数据库操作方法。
+[BaseMapper](https://baomidou.com/pages/49cc81/#mapper-crud-%E6%8E%A5%E5%8F%A3) 接口是 MyBatis-Plus 提供的通用 Mapper 接口，它继承自 mybatis-plus 的 Mapper 接口，并扩展了一些常用的数据库操作方法。
 
 > 说明:
 >
@@ -40,14 +40,14 @@ BaseMapper 和 IService 怎么用？有何关联？一起使用是否重复了�
 开发者可以通过继承 BaseMapper 接口，并指定对应的实体类，即可直接使用这些通用方法，无需手动编写SQL语句，从而减少了代码量和重复劳动。
 
 ```java
-public interface BaseMapper<T> extends Mapper<T> {
-    // 定义常用的数据库操作方法
-    // ...
+@Mapper
+public interface UserMapper extends BaseMapper<User> {
+    //...
 }
 ```
 
 ## IService 接口
-[IService](https://github.com/baomidou/mybatis-plus/blob/3.0/mybatis-plus-extension/src/main/java/com/baomidou/mybatisplus/extension/service/IService.java) 接口是 MyBatis-Plus 提供的顶级 Service 接口。
+[IService](https://github.com/baomidou/mybatis-plus/blob/3.0/mybatis-plus-extension/src/main/java/com/baomidou/mybatisplus/extension/service/IService.java) 接口是 MyBatis-Plus 提供的通用 Service 接口。
 
 > 说明:
 >
@@ -56,7 +56,7 @@ public interface BaseMapper<T> extends Mapper<T> {
 > - 建议如果存在自定义通用 Service 方法的可能，请创建自己的 `IBaseService` 继承 `Mybatis-Plus` 提供的基类
 > - 对象 `Wrapper` 为 `条件构造器`
 
-IService 接口的主要作用是定义 Service 层的业务逻辑方法，例如数据的增删改查等。
+IService 接口的主要作用是定义 Service 层的业务接口。
 
 开发者可以通过继承 IService 接口，并指定对应的实体类，即可直接使用这些通用方法，无需手动编写业务逻辑代码，使得代码更加简洁和易于维护。
 
