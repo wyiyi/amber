@@ -13,7 +13,7 @@ description: 通过热点将 Jar 包上传至服务器，呃...，挺慢，影�
 
 本文将介绍如何离线打包的操作。
 
-## 离线构建打包
+![](https://wyiyi.github.io/amber/contents/2023/apache-maven.png)
 
 1. 修改 `apache-maven-3.6.1\conf\setting.xml` [文件](https://maven.apache.org/settings.html)，只需替换 `/u01/soft/build/repository` 路径即可。其中：
 - 设置本地仓库：将`/u01/soft/build/repository`，作为本地仓库（实际是 `./m2` 下的 `repository` 复制至其路径下）
