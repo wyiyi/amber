@@ -42,7 +42,7 @@ description: 通过热点将 Jar 包上传至服务器，呃...，挺慢，影�
 </settings>
 ```
 
-2. 找到 `repository` 包中的 `_remote.repositories` 文件将其删除[（如下）](https://blog.csdn.net/Remember_Z/article/details/119523295)，否则还是回到远程仓库去找。
+2. 找到 `repository` 包中的 `_remote.repositories` 文件将其删除（[如下](https://blog.csdn.net/Remember_Z/article/details/119523295)），否则还是回到远程仓库去找。
 - Windows
 ```
 for /r %i in (_remote.repositories) do del %i
