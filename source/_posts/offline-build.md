@@ -1,5 +1,5 @@
 ---
-title: 离线构建工程
+title: 离线编译打包
 date: 2024.01.01
 tags: Maven
 categories: Technology  
@@ -9,13 +9,24 @@ toc: true
 description: 通过热点将 Jar 包上传至服务器，呃...，挺慢，影响开发效率。
 ---
 
-通过热点将 Jar 包上传至服务器，呃...，挺慢，影响开发效率。
+若能脱离私服，直接依赖本地的 maven 仓库，进行编译打包，是不是能够提高开发效率呢？
 
-本文将介绍如何离线打包的操作。
+本文将介绍在离线环境下如何进行 Maven 编译打包？
 
 ![](https://wyiyi.github.io/amber/contents/2023/apache-maven.png)
 
-1. 修改 `apache-maven-3.6.1\conf\setting.xml` [文件](https://maven.apache.org/settings.html)，只需替换 `/u01/soft/build/repository` 路径即可。其中：
+以`/u01/soft/build/` 路径为例：
+
+├── demo-project
+
+├── repository
+
+├── settings.xml
+
+└── build.sh
+
+1. 修改 `apache-maven\conf\setting.xml` [文件](https://maven.apache.org/settings.html)，只需替换 `/u01/soft/build/repository` 路径即可。
+其中：
 - 设置本地仓库：将`/u01/soft/build/repository`，作为本地仓库（实际是 `./m2` 下的 `repository` 复制至其路径下）
 - 在离线模式下运行：offline 设置为 true
 - 设置镜像地址，指向本地仓库
@@ -52,10 +63,9 @@ for /r %i in (_remote.repositories) do del %i
 find ./repository -name "_remote.repositories" -exec rm {} \;
 ```
 
-3. 上传需要打包的代码工程并执行脚本：`sh build.sh`（如下） ，在 `demo` 工程中即可看见构建好的 `target` 包。 生成的 jar 包通过命令复制到目标位置使用即可。
-
+3. 上传需要打包的代码工程并执行脚本：`sh build.sh`（如下） ，在 `demo-project` 工程中即可看见构建好的 `target` 包。 生成的 `jar` 包通过命令复制到目标位置使用即可。
 ```shell
-./apache-maven-3.6.1/bin/mvn -s settings.xml -f demo/pom.xml clean package
+./apache-maven/bin/mvn -s settings.xml -f demo-project/pom.xml clean package
 ```
 
 ## NICE
