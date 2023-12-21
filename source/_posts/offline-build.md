@@ -1,5 +1,5 @@
 ---
-title: Maven 离线编译
+title: 离线环境下 Maven 编译打包
 date: 2024.01.01
 tags: Maven
 categories: Technology  
@@ -34,7 +34,6 @@ description: 本文将介绍在离线环境下如何进行 Maven 编译打包。
 - 设置镜像地址，将其指向本地仓库
 
 下面是修改后的 `settings.xml` 文件示例：
-
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
@@ -67,7 +66,7 @@ for /r %i in (_remote.repositories) do del %i
 find ./repository -name "_remote.repositories" -exec rm {} \;
 ```
 
-3. 上传需要打包的代码工程，并执行脚本：`sh build.sh` 脚本中会调用 `Maven` 命令进行编译和打包操作。 
+3. 上传需要打包的代码工程，并执行脚本。`sh build.sh` 脚本中会调用 `Maven` 命令进行编译和打包操作。 
 在 `demo-project` 工程中将会看到构建好的 `target` 目录。 生成的 `jar` 包通过命令复制到目标位置使用即可。
 ```shell
 ./apache-maven/bin/mvn -s settings.xml -f demo-project/pom.xml clean package
