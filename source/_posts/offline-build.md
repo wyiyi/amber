@@ -9,9 +9,9 @@ toc: true
 description: 本文将介绍在离线环境下如何进行 Maven 编译打包。
 ---
 
-若能脱离私服，直接依赖本地的 maven 仓库，进行编译打包，是不是能够提高开发效率呢？
+如果能够在离线环境下直接依赖本地的 Maven 仓库进行编译打包，无需依赖私服，那么开发效率肯定会得到提高。
 
-本文将介绍在离线环境下如何进行 Maven 编译打包？
+下面将介绍在离线环境下如何进行 Maven 编译打包。
 
 ![](https://wyiyi.github.io/amber/contents/2023/apache-maven.png)
 
@@ -21,15 +21,19 @@ description: 本文将介绍在离线环境下如何进行 Maven 编译打包。
 
 ├── repository
 
+├── apache-maven
+
 ├── settings.xml
 
 └── build.sh
 
-1. 修改 `apache-maven\conf\setting.xml` [文件](https://maven.apache.org/settings.html)，只需替换 `/u01/soft/build/repository` 路径即可。
-其中：
-- 设置本地仓库：将`/u01/soft/build/repository`，作为本地仓库（实际是 `./m2` 下的 `repository` 复制至其路径下）
-- 在离线模式下运行：offline 设置为 true
-- 设置镜像地址，指向本地仓库
+
+1. 对 Maven 的配置文件 `settings.xml` 进行修改。该[文件](https://maven.apache.org/settings.html)位于 `apache-maven\conf` 目录下：
+- 需要更改其中的本地仓库路径，将其设置为 `/u01/soft/build/repository`（实际上是将 Maven 默认的 `./m2` 目录下的 `repository` 文件夹复制到指定的路径下）。
+- 将 Maven 设置为离线模式，即将 `offline` 参数设置为 `true`。
+- 设置镜像地址，将其指向本地仓库
+
+下面是修改后的 `settings.xml` 文件示例：
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -53,24 +57,27 @@ description: 本文将介绍在离线环境下如何进行 Maven 编译打包。
 </settings>
 ```
 
-2. 找到 `repository` 包中的 `_remote.repositories` 文件将其删除（[如下](https://blog.csdn.net/Remember_Z/article/details/119523295)），否则还是回到远程仓库去找。
-- Windows
+2. 删除 `repository` 目录中的 `_remote.repositories` 文件。可通过运行以下[命令](https://blog.csdn.net/Remember_Z/article/details/119523295)来完成（Windows 和 Linux 命令略有不同）：
+- Windows：
 ```
 for /r %i in (_remote.repositories) do del %i
 ```
-- Linux
+- Linux：
 ```
 find ./repository -name "_remote.repositories" -exec rm {} \;
 ```
 
-3. 上传需要打包的代码工程并执行脚本：`sh build.sh`（如下） ，在 `demo-project` 工程中即可看见构建好的 `target` 包。 生成的 `jar` 包通过命令复制到目标位置使用即可。
+3. 上传需要打包的代码工程，并执行脚本：`sh build.sh` 脚本中会调用 `Maven` 命令进行编译和打包操作。 
+在 `demo-project` 工程中将会看到构建好的 `target` 目录。 生成的 `jar` 包通过命令复制到目标位置使用即可。
 ```shell
 ./apache-maven/bin/mvn -s settings.xml -f demo-project/pom.xml clean package
 ```
 
 ## NICE
+通过一次性上传相关文件或依赖后，若后续有代码修改，只需上传对应的 `java` 文件即可。
+这样可以有效解决离线环境下构建`jar` 包的问题，同时也解决了上传`jar` 包到服务器速度慢的问题。
 
-通过一次性上传相关文件或依赖后，若后续有修改可直接上传对应的 `java` 文件，可以有效解决离线构建`jar` 包同时也解决了 `jar` 包上传服务器慢的问题。
+以上是在离线环境下使用本地 Maven 仓库进行编译打包的简要介绍。希望对你有所帮助！
 
 ![](https://wyiyi.github.io/amber/contents/2023/nice.gif)
 
