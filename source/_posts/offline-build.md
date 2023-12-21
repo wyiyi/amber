@@ -6,7 +6,7 @@ categories: Technology
 mathjax: true 
 comments: true
 toc: true
-description: 通过热点将 Jar 包上传至服务器，呃...，挺慢，影响开发效率。
+description: 本文将介绍在离线环境下如何进行 Maven 编译打包。
 ---
 
 若能脱离私服，直接依赖本地的 maven 仓库，进行编译打包，是不是能够提高开发效率呢？
