@@ -21,8 +21,6 @@ description: 本文将介绍在离线环境下如何进行 Maven 编译打包。
 
 ├── repository
 
-├── apache-maven
-
 ├── settings.xml
 
 └── build.sh
