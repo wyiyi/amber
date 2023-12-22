@@ -15,7 +15,7 @@ description: 本文将介绍在离线环境下如何进行 Maven 编译打包。
 
 ![](https://wyiyi.github.io/amber/contents/2023/apache-maven.png)
 
-以`/u01/soft/build/` 路径为例：
+以`/maven-offline/build/` 路径为例：
 
 ├── demo-project
 
@@ -26,7 +26,7 @@ description: 本文将介绍在离线环境下如何进行 Maven 编译打包。
 └── build.sh
 
 1. 对 Maven 的配置文件 `settings.xml` 进行修改（该[文件](https://maven.apache.org/settings.html)位于 `apache-maven\conf` 目录下）。下面是修改后的 `settings.xml` 文件示例：
-- 需要更改其中的本地仓库路径，将其设置为 `/u01/soft/build/repository`（实际上是将 Maven 默认的 `./m2` 目录下的 `repository` 文件夹复制到指定的路径下）。
+- 需要更改其中的本地仓库路径，将其设置为 `/maven-offline/build/repository`（实际上是将 Maven 默认的 `./m2` 目录下的 `repository` 文件夹复制到指定的路径下）。
 - 将 Maven 设置为离线模式，即将 `offline` 参数设置为 `true`。
 - 设置镜像地址，将其指向本地仓库。
 ```xml
@@ -35,7 +35,7 @@ description: 本文将介绍在离线环境下如何进行 Maven 编译打包。
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
     <localRepository>
-        /u01/soft/build/repository
+        /maven-offline/build/repository
     </localRepository>
     
     <offline>true</offline>
@@ -45,7 +45,7 @@ description: 本文将介绍在离线环境下如何进行 Maven 编译打包。
             <id>read</id>
             <mirrorOf>*</mirrorOf>
             <name>Nexus</name>
-            <url>file:///u01/soft/build/repository</url>
+            <url>file:///maven-offline/build/repository</url>
         </mirror>
     </mirrors>
 </settings>
