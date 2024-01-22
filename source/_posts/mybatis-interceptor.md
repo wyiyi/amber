@@ -27,79 +27,110 @@ description: 本文介绍如何基于拦截处理敏感数据并支持在配置�
 > * ResultSetHandler (handleResultSets, handleOutputParameters)
 > * StatementHandler (prepare, parameterize, batch, update, query)
 >
-> 
 >通过 MyBatis 提供的强大机制，使用插件是非常简单的，只需实现 Interceptor 接口，并指定想要拦截的方法签名即可。
 
-在此基础上，还需要实现 `Interceptor` 的三个方法：
+可见这些方法是在不同的执行阶段被调用的，具体如下：
+1. **Executor**：
+    - update: 当执行更新（INSERT、UPDATE、DELETE）操作时调用。
+    - query: 当执行查询操作时调用。
+    - flushStatements: 当执行批处理操作后，所有语句被刷新到数据库时调用。
+    - commit: 当事务提交时调用。
+    - rollback: 当事务回滚时调用。
+    - getTransaction: 获取当前事务。
+    - close: 当你关闭数据库连接时调用。
+    - isClosed: 检查数据库连接是否已关闭。
+
+2. **ParameterHandler**：
+    - getParameterObject: 获取传入参数的对象。
+    - setParameters: 设置预处理语句的参数。
+
+3. **ResultSetHandler**：
+    - handleResultSets: 处理查询结果集。
+    - handleOutputParameters: 处理输出参数。
+
+4. **StatementHandler**：
+    - prepare: 准备预处理语句。
+    - parameterize: 参数化 SQL 中的参数。
+    - batch: 在批量操作中调用。
+    - update: 用于获取实际执行的更新数。
+    - query: 用于获取查询返回的结果集。
+
+为了实现 Interceptor，需创建一个实现 Interceptor 接口的类并实现 `Interceptor` 的三个方法：
 
 * `intercept(Invocation invocation)`: 这个方法用于拦截目标方法并执行自定义逻辑。获取目标方法的参数、方法等信息，并进行处理。
-* `plugin(Object target)`: 这个方法用于生成一个代理对象。需要判断目标对象是否需要被拦截，如果需要则返回一个代理对象，否则返回null。
+* `plugin(Object target)`: 这个方法用于生成一个代理对象。需要判断目标对象是否需要被拦截，如果需要则返回一个代理对象，否则返回 null。
 * `setProperties(Properties properties)`: 这个方法用于设置属性。获取配置文件中的属性，并进行相应的设置。
 
 最后，在 `MyBatis` 的配置文件中注册 `Interceptor` 即可。
+当 MyBatis 执行相应的操作时，就会自动调用自定义的逻辑。
 
 ## Simple Example
 
 1. 创建并实现 `org.apache.ibatis.plugin.Interceptor` 接口的类：
 ```
+// ExamplePlugin.java
 @Intercepts({@Signature(
-   type = Executor.class, 
-   method = "update", 
-   args = {MappedStatement.class, Object.class})})  
-public class SensitiveDataInterceptor implements Interceptor {
+  type= Executor.class,
+  method = "update",
+  args = {MappedStatement.class,Object.class})})
+public class ExamplePlugin implements Interceptor {
+  private Properties properties = new Properties();
 
-    @Override  
-    public Object intercept(Invocation invocation) throws Throwable {  
-        StatementHandler statementHandler = (StatementHandler) invocation.getTarget();  
-        // 获取 SQL 语句  
-        String sql = statementHandler.getBoundSql().getSql();  
-        // 在这里处理敏感数据，例如替换或删除敏感词  
-        sql = sql.replace("敏感词", "***");  
-        // 继续执行原始操作  
-        return invocation.proceed();    
-    }  
-  
-    @Override  
-    public Object plugin(Object target) {  
-        if (target instanceof StatementHandler) {  
-            return Plugin.wrap(target, this);  
-        } else {  
-            return target;  
-        }  
-    }  
-  
-    @Override  
-    public void setProperties(Properties properties) {  
-        // 可以设置一些属性，用于配置敏感数据操作的行为  
-    }  
+  @Override
+  public Object intercept(Invocation invocation) throws Throwable {
+    // implement pre processing if need
+    Object returnObject = invocation.proceed();
+    // implement post processing if need
+    return returnObject;
+  }
+
+  @Override
+  public void setProperties(Properties properties) {
+    this.properties = properties;
+  }
 }
 ```
 
 2. 在 `MyBatis` 的配置文件中注册 `Interceptor`：
 ```
 <!-- mybatis-config.xml -->
-<configuration>  
-    ...  
-    <plugins>  
-        <plugin interceptor="com.example.SensitiveDataInterceptor">  
-            <!-- 这里可以设置一些属性，例如敏感词 -->  
-            <!-- <property name="sensitiveWords" value="密码,用户名"/> -->  
-        </plugin>  
-    </plugins>  
-    ...  
-</configuration>
+<plugins>
+  <plugin interceptor="org.mybatis.example.ExamplePlugin">
+    <property name="someProperty" value="100"/>
+  </plugin>
+</plugins>
 ```
 
-3. 在应用程序中使用 `MyBatis` 时，所有的 `SQL` 语句都会被 `SensitiveDataInterceptor` 拦截，敏感词会被替换或删除。
-即使 `SQL` 语句中包含敏感数据，也不会在实际执行时出现问题。
+3. 插件将会拦截在 `Executor` 实例中所有的 `update` 方法调用，这里的 `Executor` 是负责执行底层映射语句的内部对象。
 
-4. 插件将会拦截在 `Executor` 实例中所有的 `update` 方法调用，这里的 `Executor` 是负责执行底层映射语句的内部对象。
+**Tips**：在 [Mybatis-3.5.2 Interceptor](https://github.com/mybatis/mybatis-3/blob/mybatis-3.5.2/src/main/java/org/apache/ibatis/plugin/Interceptor.java)
+类中已为接口中定义的方法给出了默认实现，只需自定义 `intercept` 方法，这是 `Java 8` 默认方法特性的一种应用，旨在简化接口的实现。
 
-# 实践
-在不改变原始 SQL 语句的情况下，对敏感数据进行处理。
-通过使用 Interceptor，开发者可以更加灵活、统一地处理敏感数据，提高应用程序的数据安全性。
+```java
+public interface Interceptor {
 
-从 `写入数据库` 和 `数据库中读取` 两个环节对敏感数据进行处理，如：
+  Object intercept(Invocation invocation) throws Throwable;
+
+  default Object plugin(Object target) {
+    return Plugin.wrap(target, this);
+  }
+
+  default void setProperties(Properties properties) {
+    // NOP
+  }
+
+}
+```
+
+## By The Way
+注册方式与[Spring 的 Interceptor](https://mp.weixin.qq.com/s/8zkih84FnsfhOkgK7egnPQ)  略有不同：
+
+Spring 的拦截器通过实现 HandlerInterceptor 接口并使用 @Component 或 @Configuration 注解将其注册到 Spring 容器中。
+- 在 JavaConfig 中，可以使用 @Bean 方法将拦截器类注册到 Spring 容器中。
+- 在 XML 配置文件中，可以使用 <bean> 元素将拦截器类注册到 Spring 容器中，并使用 <mvc:interceptors> 元素来配置拦截器。
+
+# 敏感数据处理的场景
+假设在不改变原始 SQL 语句的情况下，从 `写入数据库` 和 `数据库中读取` 两个环节对敏感数据进行处理，如：
 
 1. 写入时加密，读取时解密：涉密数据希望在 DB 中以密文形式存储，系统中以明文形式展示
 2. 写入时加密，读取时不处理：密码希望以不可逆密文存储在数据库，读取使用时也是以密文形式使用
@@ -175,15 +206,6 @@ public class DataSensitiveInterceptor implements Interceptor {
             }
         }
     }
-
-    @Override
-    public Object plugin(Object target) {
-        return Plugin.wrap(target, this);
-    }
-
-    @Override
-    public void setProperties(Properties properties) {
-    }
 }
 ```
 
@@ -236,7 +258,16 @@ public class DataSensitiveAbbHandler implements DataSensitiveHandler {
 
     @Override
     public String decrypt(String str) {
-        return StringUtils.abbreviateMiddle(str, "****", str.length() - 4);
+       int length = str.length();
+       if (length < 2){
+          return str;
+       } else if (length % 2 == 0) {
+          int midIndex = length / 2 - 1;
+          return str.substring(0, midIndex) + "****" + str.substring(midIndex + 2);
+       }else {
+          int midIndex = length / 2;
+          return str.substring(0, midIndex - 2) + "****" + str.substring(midIndex + 2);
+       }
     }
 }
 ```
@@ -370,6 +401,8 @@ class DataSensitiveTest extends BaseApplicationTests {
     }
 }
 ```
+
+通过使用 Interceptor，开发者可以更加灵活、统一地处理敏感数据，提高应用程序的数据安全性。
 
 ## 注意
 
