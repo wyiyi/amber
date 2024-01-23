@@ -16,7 +16,7 @@ description: 本文介绍如何基于拦截处理敏感数据并支持在配置�
 `MyBatis` 允许在已映射语句、查询结果以及参数上进行拦截，然后使用自定义的逻辑进行处理。
 这种拦截功能是通过 `MyBatis` 的 `Interceptor` 接口实现的。
 
-在本文中，我们将介绍 `MyBatis` 中 `Interceptor` 的工作原理并探讨如何来处理敏感数据操作。
+在本文中，在深入探讨了 `MyBatis` 中 `Interceptor` 的工作原理之后，通过对监控和记录对敏感数据的实例来演示如何实现一个自定义的拦截器。
 
 # Interceptor 工作原理
 [MyBatis 官网中 Interceptor 的介绍：](https://mybatis.org/mybatis-3/zh_CN/configuration.html#%E6%8F%92%E4%BB%B6%EF%BC%88plugins%EF%BC%89)
@@ -55,7 +55,17 @@ description: 本文介绍如何基于拦截处理敏感数据并支持在配置�
     - update: 用于获取实际执行的更新数。
     - query: 用于获取查询返回的结果集。
 
-为了实现 Interceptor，需创建一个实现 Interceptor 接口的类并实现 `Interceptor` 的三个方法：
+为了实现 Interceptor，需创建 Interceptor 接口并实现接口中的方法（Mybatis-3.5.1 版本）。
+
+```java
+public interface Interceptor {
+    Object intercept(Invocation var1) throws Throwable;
+
+    Object plugin(Object var1);
+
+    void setProperties(Properties var1);
+}
+```
 
 * `intercept(Invocation invocation)`: 这个方法用于拦截目标方法并执行自定义逻辑。获取目标方法的参数、方法等信息，并进行处理。
 * `plugin(Object target)`: 这个方法用于生成一个代理对象。需要判断目标对象是否需要被拦截，如果需要则返回一个代理对象，否则返回 null。
@@ -91,20 +101,8 @@ public class ExamplePlugin implements Interceptor {
 }
 ```
 
-2. 在 `MyBatis` 的配置文件中注册 `Interceptor`：
-```
-<!-- mybatis-config.xml -->
-<plugins>
-  <plugin interceptor="org.mybatis.example.ExamplePlugin">
-    <property name="someProperty" value="100"/>
-  </plugin>
-</plugins>
-```
-
-3. 插件将会拦截在 `Executor` 实例中所有的 `update` 方法调用，这里的 `Executor` 是负责执行底层映射语句的内部对象。
-
-**Tips**：在 [Mybatis-3.5.2 Interceptor](https://github.com/mybatis/mybatis-3/blob/mybatis-3.5.2/src/main/java/org/apache/ibatis/plugin/Interceptor.java)
-类中已为接口中定义的方法给出了默认实现，只需自定义 `intercept` 方法，这是 `Java 8` 默认方法特性的一种应用，旨在简化接口的实现。
+**Tips**：在 [Mybatis-3.5.2 版本后 Interceptor](https://github.com/mybatis/mybatis-3/blob/mybatis-3.5.2/src/main/java/org/apache/ibatis/plugin/Interceptor.java)
+接口中定义的方法已给出了默认实现，只需按需求实现 `intercept` 方法，这是 `Java 8` 默认方法特性的一种应用，旨在简化接口的实现。
 
 ```java
 public interface Interceptor {
@@ -122,12 +120,17 @@ public interface Interceptor {
 }
 ```
 
-## By The Way
-注册方式与[Spring 的 Interceptor](https://mp.weixin.qq.com/s/8zkih84FnsfhOkgK7egnPQ)  略有不同：
+2. 在 `MyBatis` 的配置文件中注册 `Interceptor`：
+```
+<!-- mybatis-config.xml -->
+<plugins>
+  <plugin interceptor="org.mybatis.example.ExamplePlugin">
+    <property name="someProperty" value="100"/>
+  </plugin>
+</plugins>
+```
 
-Spring 的拦截器通过实现 HandlerInterceptor 接口并使用 @Component 或 @Configuration 注解将其注册到 Spring 容器中。
-- 在 JavaConfig 中，可以使用 @Bean 方法将拦截器类注册到 Spring 容器中。
-- 在 XML 配置文件中，可以使用 <bean> 元素将拦截器类注册到 Spring 容器中，并使用 <mvc:interceptors> 元素来配置拦截器。
+3. 插件将会拦截在 `Executor` 实例中所有的 `update` 方法调用，这里的 `Executor` 是负责执行底层映射语句的内部对象。
 
 # 敏感数据处理的场景
 假设在不改变原始 SQL 语句的情况下，从 `写入数据库` 和 `数据库中读取` 两个环节对敏感数据进行处理，如：
@@ -350,55 +353,57 @@ class DataSensitiveTest extends BaseApplicationTests {
     @Autowired
     RoleServiceImpl roleService
 
-    @Autowired
-    JdbcTemplate jdbcTemplate
+   @Autowired
+   JdbcTemplate jdbcTemplate
 
-    @Test
-    void test() {
-        assert jdbcTemplate.queryForObject('select count(*) from userinfo', Integer) == 0
+   private static final SymmetricCrypto SM4 = SmUtil.sm4();
 
-        // Create
-        UserDO user = new UserDO()
-        user.setName('user name')
-        user.setPhone('12345678901')
-        user.setIdCard('234098uzxcv')
-        user.setPassword('123456')
+   @Test
+   void test() {
+      assert jdbcTemplate.queryForObject('select count(*) from userinfo', Integer) == 0
 
-        assert userDAO.insert(user) == 1
-        assert user.getId() > ''
-        assert user.getPhone() == '12345678901'
-        assert user.getPassword() == 'e10adc3949ba59abbe56e057f20f883e'
-        assert user.getIdCard() != '234098uzxcv'
-        def sm4ValueLen = '9743b76689643f810bb72478a7fb59a6'.length()
-        assert user.getIdCard().length() == sm4ValueLen
+      // Create
+      UserDO user = new UserDO()
+      user.setName('user name')
+      user.setPhone('12345678901')
+      user.setIdCard('234098uzxcv')
+      user.setPassword('123456')
 
-        assert jdbcTemplate.queryForObject('select count(*) from userinfo', Integer) == 1
-        assert jdbcTemplate.queryForObject('select phone from userinfo', String) == '12345678901'
-        assert jdbcTemplate.queryForObject('select password from userinfo', String) == 'e10adc3949ba59abbe56e057f20f883e'
-        assert jdbcTemplate.queryForObject('select id_card from userinfo', String) != '234098uzxcv'
-        assert jdbcTemplate.queryForObject('select id_card from userinfo', String).length() == sm4ValueLen
+      assert userDAO.insert(user) == 1
+      assert user.getId() > ''
+      assert user.getPhone() == '12345678901'
+      assert user.getPassword() == DigestUtils.md5Hex('123456')
+      assert user.getIdCard() != '234098uzxcv'
+      def sm4ValueLen = SM4.encryptHex('234098uzxcv').length()
+      assert user.getIdCard().length() == sm4ValueLen
 
-        // Retrieve
+      assert jdbcTemplate.queryForObject('select count(*) from userinfo', Integer) == 1
+      assert jdbcTemplate.queryForObject('select phone from userinfo', String) == '12345678901'
+      assert jdbcTemplate.queryForObject('select password from userinfo', String) == DigestUtils.md5Hex('123456')
+      assert jdbcTemplate.queryForObject('select id_card from userinfo', String) != '234098uzxcv'
+      assert jdbcTemplate.queryForObject('select id_card from userinfo', String).length() == sm4ValueLen
 
-        UserDO retrievedUser = userDAO.selectById(user.getId())
-        assert retrievedUser.getPhone() == '123****8901'
-        assert retrievedUser.getIdCard() == '234098uzxcv'
+      // Retrieve
 
-        // Update
-        retrievedUser.setPhone('01234567890')
-        retrievedUser.setIdCard('210103')
-        userDAO.updateById(retrievedUser)
-        assert retrievedUser.getPhone() == '01234567890'
-        assert retrievedUser.getIdCard() != '210103'
-        assert retrievedUser.getIdCard().length() == sm4ValueLen
+      UserDO retrievedUser = userDAO.selectById(user.getId())
+      assert retrievedUser.getPhone() == '123****8901'
+      assert retrievedUser.getIdCard() == '234098uzxcv'
 
-        assert jdbcTemplate.queryForObject('select phone from userinfo', String) == '01234567890'
-        assert jdbcTemplate.queryForObject('select id_card from userinfo', String) != '210103'
+      // Update
+      retrievedUser.setPhone('01234567890')
+      retrievedUser.setIdCard('210103')
+      userDAO.updateById(retrievedUser)
+      assert retrievedUser.getPhone() == '01234567890'
+      assert retrievedUser.getIdCard() != '210103'
+      assert retrievedUser.getIdCard().length() == sm4ValueLen
 
-        retrievedUser = userDAO.selectById(user.getId())
-        assert retrievedUser.getPhone() == '012****7890'
-        assert retrievedUser.getIdCard() == '210103'
-    }
+      assert jdbcTemplate.queryForObject('select phone from userinfo', String) == '01234567890'
+      assert jdbcTemplate.queryForObject('select id_card from userinfo', String) != '210103'
+
+      retrievedUser = userDAO.selectById(user.getId())
+      assert retrievedUser.getPhone() == '012****7890'
+      assert retrievedUser.getIdCard() == '210103'
+   }
 }
 ```
 
