@@ -356,8 +356,6 @@ class DataSensitiveTest extends BaseApplicationTests {
    @Autowired
    JdbcTemplate jdbcTemplate
 
-   private static final SymmetricCrypto SM4 = SmUtil.sm4();
-
    @Test
    void test() {
       assert jdbcTemplate.queryForObject('select count(*) from userinfo', Integer) == 0
@@ -372,14 +370,18 @@ class DataSensitiveTest extends BaseApplicationTests {
       assert userDAO.insert(user) == 1
       assert user.getId() > ''
       assert user.getPhone() == '12345678901'
-      assert user.getPassword() == DigestUtils.md5Hex('123456')
+      assert user.getPassword() == 'e10adc3949ba59abbe56e057f20f883e'
       assert user.getIdCard() != '234098uzxcv'
-      def sm4ValueLen = SM4.encryptHex('234098uzxcv').length()
+      // str.length <15  sm4 length 32
+      // str.length >15  sm4 length 64
+      // str.length >32 sm4 length 96
+      // sm4 length 128 160 192 ...
+      def sm4ValueLen = 32
       assert user.getIdCard().length() == sm4ValueLen
 
       assert jdbcTemplate.queryForObject('select count(*) from userinfo', Integer) == 1
       assert jdbcTemplate.queryForObject('select phone from userinfo', String) == '12345678901'
-      assert jdbcTemplate.queryForObject('select password from userinfo', String) == DigestUtils.md5Hex('123456')
+      assert jdbcTemplate.queryForObject('select password from userinfo', String) == 'e10adc3949ba59abbe56e057f20f883e'
       assert jdbcTemplate.queryForObject('select id_card from userinfo', String) != '234098uzxcv'
       assert jdbcTemplate.queryForObject('select id_card from userinfo', String).length() == sm4ValueLen
 
