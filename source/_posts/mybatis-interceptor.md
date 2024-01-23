@@ -29,29 +29,29 @@ description: 本文介绍如何基于拦截处理敏感数据并支持在配置�
 >
 >通过 MyBatis 提供的强大机制，使用插件是非常简单的，只需实现 Interceptor 接口，并指定想要拦截的方法签名即可。
 
-可见这些方法是在不同的执行阶段被调用的，具体如下：
+可见这些方法是在不同的执行阶段被调用的，具体如下（参考 [MyBatis从入门到精通](https://book.douban.com/subject/27074809/)）：
 1. **Executor**：
-    - update: 当执行更新（INSERT、UPDATE、DELETE）操作时调用。
-    - query: 当执行查询操作时调用。
-    - flushStatements: 当执行批处理操作后，所有语句被刷新到数据库时调用。
-    - commit: 当事务提交时调用。
-    - rollback: 当事务回滚时调用。
-    - getTransaction: 获取当前事务。
-    - close: 当你关闭数据库连接时调用。
-    - isClosed: 检查数据库连接是否已关闭。
+    - update: 当执行 INSERT、UPDATE、DELETE 操作时调用。
+    - query: 在 SELECT 查询方法执行时调用。
+    - flushStatements: 在通过 SqlSession 方法调用 flushStatements 方法或执行的接口方法中带有 @Flush 注解时才被调用。
+    - commit: 在通过 SqlSession 方法调用 commit 方法时被调用。
+    - rollback: 在通过 SqlSession 方法调用 rollback 方法时被调用。
+    - getTransaction: 在通过 SqlSession 方法获取数据库连接时被调用。
+    - close: 在延迟加载获取新的 Executor 后才会被执行。
+    - isClosed: 在延迟加载执行查询方法前被执行。
 
 2. **ParameterHandler**：
-    - getParameterObject: 获取传入参数的对象。
-    - setParameters: 设置预处理语句的参数。
+    - getParameterObject: 在执行存储过程处理出参的时候被调用。
+    - setParameters: 在所有数据库方法设置 SQL 参数时被调用。
 
 3. **ResultSetHandler**：
     - handleResultSets: 处理查询结果集。
-    - handleOutputParameters: 处理输出参数。
+    - handleOutputParameters: 使用存储过程处理出参时被调用。
 
 4. **StatementHandler**：
-    - prepare: 准备预处理语句。
-    - parameterize: 参数化 SQL 中的参数。
-    - batch: 在批量操作中调用。
+    - prepare: 在数据库执行前被调用，优先于当前接口中其他方法而被执行。
+    - parameterize: 在 prepare 方法后执行，用于处理参数信息。
+    - batch: 在全局设置配置 defaultExecutorType="BATCH" 时执行数据操作才会调用。
     - update: 用于获取实际执行的更新数。
     - query: 用于获取查询返回的结果集。
 
