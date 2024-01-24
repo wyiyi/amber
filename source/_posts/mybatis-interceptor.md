@@ -1,5 +1,5 @@
 ---
-title: 深入探索MyBatis的Interceptor处理敏感数据解决方案（支持可配置）
+title: MyBatis Interceptor 处理敏感数据解决方案
 date: 2024.02.01
 tags: 
    - Mybatis
@@ -11,12 +11,11 @@ toc: true
 description: 本文介绍如何基于拦截处理敏感数据并支持在配置文件中可配置实体类中字段进行处理。
 ---
 
-# 背景
-`MyBatis` 是一个优秀的持久层框架，它支持定制化 `SQL`、存储过程以及高级映射。
-`MyBatis` 允许在已映射语句、查询结果以及参数上进行拦截，然后使用自定义的逻辑进行处理。
-这种拦截功能是通过 `MyBatis` 的 `Interceptor` 接口实现的。
-
-在本文中，在深入探讨了 `MyBatis` 中 `Interceptor` 的工作原理之后，通过对监控和记录对敏感数据的实例来演示如何实现一个自定义的拦截器。
+# 引言
+在软件开发中，保护敏感数据是至关重要的。
+特别是在处理敏感信息，如个人身份信息、财务数据等时，开发者必须确保数据在存储和传输过程中的安全性。
+`MyBatis` 作为一个流行的持久层框架，提供了拦截器 `Interceptor` 机制，允许开发者在 `SQL` 执行过程中插入自定义逻辑，
+从而实现对敏感数据的加密和解密处理的同时支持通过实体字段可配置。
 
 # Interceptor 工作原理
 [MyBatis 官网中 Interceptor 的介绍：](https://mybatis.org/mybatis-3/zh_CN/configuration.html#%E6%8F%92%E4%BB%B6%EF%BC%88plugins%EF%BC%89)
@@ -29,7 +28,7 @@ description: 本文介绍如何基于拦截处理敏感数据并支持在配置�
 >
 >通过 MyBatis 提供的强大机制，使用插件是非常简单的，只需实现 Interceptor 接口，并指定想要拦截的方法签名即可。
 
-可见这些方法是在不同的执行阶段被调用的，具体如下（参考 [MyBatis从入门到精通](https://book.douban.com/subject/27074809/)）：
+可见这些方法是在不同的执行阶段被调用的—[MyBatis从入门到精通](https://book.douban.com/subject/27074809/)：
 1. **Executor**：
     - update: 当执行 INSERT、UPDATE、DELETE 操作时调用。
     - query: 在 SELECT 查询方法执行时调用。
@@ -52,14 +51,15 @@ description: 本文介绍如何基于拦截处理敏感数据并支持在配置�
     - prepare: 在数据库执行前被调用，优先于当前接口中其他方法而被执行。
     - parameterize: 在 prepare 方法后执行，用于处理参数信息。
     - batch: 在全局设置配置 defaultExecutorType="BATCH" 时执行数据操作才会调用。
-    - update: 用于获取实际执行的更新数。
+    - update: 用于执行更新类型的 SQL 语句。
     - query: 用于获取查询返回的结果集。
 
-为了实现 Interceptor，需创建 Interceptor 接口并实现接口中的方法（Mybatis-3.5.1 版本）。
+通过实现 `Interceptor` 接口并指定想要拦截的方法签名，可以轻松地使用这一机制。
+`Interceptor` 接口包含以下方法：（Mybatis-3.5.1 版本）
 
 ```java
 public interface Interceptor {
-    Object intercept(Invocation var1) throws Throwable;
+    Object intercept(Invocation invocation) throws Throwable;
 
     Object plugin(Object var1);
 
@@ -71,8 +71,7 @@ public interface Interceptor {
 * `plugin(Object target)`: 这个方法用于生成一个代理对象。需要判断目标对象是否需要被拦截，如果需要则返回一个代理对象，否则返回 null。
 * `setProperties(Properties properties)`: 这个方法用于设置属性。获取配置文件中的属性，并进行相应的设置。
 
-最后，在 `MyBatis` 的配置文件中注册 `Interceptor` 即可。
-当 MyBatis 执行相应的操作时，就会自动调用自定义的逻辑。
+在 `MyBatis` 的配置文件中注册 `Interceptor` 后，框架会在执行相应的操作时自动调用自定义逻辑。
 
 ## Simple Example
 
@@ -133,11 +132,15 @@ public interface Interceptor {
 3. 插件将会拦截在 `Executor` 实例中所有的 `update` 方法调用，这里的 `Executor` 是负责执行底层映射语句的内部对象。
 
 # 敏感数据处理的场景
-假设在不改变原始 SQL 语句的情况下，从 `写入数据库` 和 `数据库中读取` 两个环节对敏感数据进行处理，如：
+
+假设在不改变原始 SQL 语句的情况下，从 `写入数据库` 和 `数据库中读取` 两个环节对敏感数据进行处理，
+同时为了减少修改原有代码（在代码里通过注解的方式或者其它方式），希望能够在配置文件中去配置敏感字段。
 
 1. 写入时加密，读取时解密：涉密数据希望在 DB 中以密文形式存储，系统中以明文形式展示
 2. 写入时加密，读取时不处理：密码希望以不可逆密文存储在数据库，读取使用时也是以密文形式使用
 3. 写入时不处理，读取时加密：数据使用时希望遮挡部分内容脱敏显示
+
+根据此需求，我们选择`Executor` 中 `update`方法和 处理结果集 `ResultSetHandler` 的 `handleResultSets`方法作为拦截器的签名。
 
 代码如下：完整实例可见[仓库](https://github.com/wyiyi/bronze)
 
@@ -227,7 +230,7 @@ public class DataSensitiveConfig {
 
 ### 2.实现敏感数据加密和解密接口
 
-实现 `DataSensitiveHandler` 接口的两个方法：
+实现 `DataSensitiveHandler` 接口，定义具体的加密和解密方法。
 
 ```java
 public interface DataSensitiveHandler {
@@ -321,7 +324,7 @@ public class DataSensitiveSm4Handler implements DataSensitiveHandler {
 
 ## 配置
 
-配置参数以 `com.amber.common.sensitive` 为前缀，后面配置格式为 `key` : `value`，其中：
+配置参数以 `com.amber.common.sensitive` 为前缀，后面配置格式为 `key : value`，其中：
 
 - `key` 为 MyBatis Mapper 实体类全名及要处理敏感数据的属性，如 `UserDO` 的 `phone` 属性设置为：`com.amber.common.sensitive.entity.UserDO.phone`。目前仅支持字符串类型的属性。
 - `value` 为敏感数据处理类 bean name 的后缀，加上 `dataSensitiveHandler-` 前缀组成完整 bean name。
@@ -342,6 +345,7 @@ com.amber.common.sensitive.com.amber.common.sensitive.entity.UserDO.password=md5
 ```
 
 ## 单元测试
+通过单元测试验证 `Interceptor` 的功能，确保敏感数据在存储和检索过程中能够正确地被加密和解密。
 
 ```groovy
 @Sql
@@ -409,11 +413,13 @@ class DataSensitiveTest extends BaseApplicationTests {
 }
 ```
 
-通过使用 Interceptor，开发者可以更加灵活、统一地处理敏感数据，提高应用程序的数据安全性。
-
-## 注意
+## 注意事项
 
 - 通过 MyBatis 新增或保存实体时，传入的实体在方法调用后，配置为敏感数据的属性会变成应用了敏感处理器 `encrypt` 方法之后的值
 - 通过 MyBatis 查询实体时，检索出的实体对象中，配置了敏感数据的属性会变成应用了敏感处理器 `decrypt` 方法之后的值
 - 不通过 MyBatis 操作的数据，不会应用敏感数据处理器处理数据
 - **存入数据库中的数据在执行了敏感处理后将丧失按照处理前的数据进行查询的能力，只能按照处理后的数据进行查询**
+
+# 结论
+通过 MyBatis 的 Interceptor 机制，开发者可以有效地处理敏感数据，提高应用程序的安全性。
+合理地配置和使用 Interceptor，可以在不改变原有业务逻辑的情况下，增强数据保护措施。
