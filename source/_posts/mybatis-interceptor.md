@@ -1,5 +1,5 @@
 ---
-title: MyBatis Interceptor 工作原理及示例
+title: MyBatis 拦截器介绍及自定义示例
 date: 2024.02.01
 tags: 
    - Mybatis
@@ -8,15 +8,13 @@ categories: Technology
 mathjax: true 
 comments: true
 toc: true
-description: 本文介绍如何基于拦截处理敏感数据并支持在配置文件中可配置实体类中字段进行处理。
+description: 本文探讨了 MyBatis 拦截器在处理敏感数据中的重要性。通过深入分析，我们提供了一种有效的方法来确保数据安全，同时保持 MyBatis 框架的灵活性和性能。文章详细介绍了拦截器的机制、设计思路、实现方法以及其在特定场景中的应用。
 ---
 
 # 引言
-在软件开发中，保护敏感数据是至关重要的。
-特别是在处理敏感信息，如个人身份信息、财务数据等时，开发者必须确保数据在存储和传输过程中的安全性。
-`MyBatis` 作为一个流行的持久层框架，提供了拦截器 `Interceptor` 机制，允许开发者在 `SQL` 执行过程中插入自定义逻辑，从而实现对敏感数据的加密和解密处理的同时支持通过实体字段可配置。
+`MyBatis` 作为一个流行的持久层框架，提供了拦截器 `Interceptor` 机制，允许开发者在 `SQL` 执行过程中插入自定义逻辑。本文将深入探讨如何利用 `MyBatis` 的拦截器 `Interceptor` 来处理敏感数据，确保数据在传输和存储过程中的安全性。
 
-# Interceptor 工作原理
+# Interceptor 介绍
 [MyBatis 官网中 Interceptor 的介绍：](https://mybatis.org/mybatis-3/zh_CN/configuration.html#%E6%8F%92%E4%BB%B6%EF%BC%88plugins%EF%BC%89)
 
 > MyBatis 允许你在映射语句执行过程中的某一点进行拦截调用。默认情况下，MyBatis 允许使用插件来拦截的方法调用包括：
@@ -129,7 +127,7 @@ public interface Interceptor {
 
 3. 插件将会拦截在 `Executor` 实例中所有的 `update` 方法调用，这里的 `Executor` 是负责执行底层映射语句的内部对象。
 
-# 敏感数据处理的场景
+# 处理敏感数据的场景
 
 ## 场景描述
 在处理敏感数据时，我们希望数据在数据库中加密存储，而在系统中以明文展示。同时，为了保护隐私，我们计划对数据进行脱敏处理，例如隐藏部分敏感信息。为了降低对现有代码的修改，我们将通过配置文件来管理哪些字段需要加密或脱敏。
@@ -155,62 +153,75 @@ public interface Interceptor {
 @Component
 public class DataSensitiveInterceptor implements Interceptor {
 
-    private final Map<String, String> configs;
+   private final Map<String, String> configs;
 
-    public DataSensitiveInterceptor(DataSensitiveConfig config) {
-        this.configs = config.getSensitive();
-    }
+   /**
+    * 获取配置文件中需要加密的属性
+    *
+    * @param config DataSensitiveConfig
+    */
+   public DataSensitiveInterceptor(DataSensitiveConfig config) {
+      this.configs = config.getSensitive();
+   }
 
-    @Override
-    public Object intercept(Invocation invocation) throws Throwable {
-        if (invocation.getTarget() instanceof Executor) {
-            Object object = invocation.getArgs()[1];
-            if (object instanceof Map) {
-                Map<String, Object> map = (Map<String, Object>) object;
-                for (Map.Entry<String, Object> entry : map.entrySet()) {
-                    if (!entry.getKey().startsWith("param")) {
-                        handleEncrypt(entry.getValue());
-                    }
-                    continue;
-                }
-            } else {
-                handleEncrypt(object);
+   /**
+    * 通过拦截器处理
+    *
+    * @param invocation invocation
+    * @return Object
+    * @throws Throwable 异常
+    */
+   @Override
+   public Object intercept(Invocation invocation) throws Throwable {
+      if (invocation.getTarget() instanceof Executor) {
+         Object object = invocation.getArgs()[1];
+         if (object instanceof Map) {
+            Map<String, Object> map = (Map<String, Object>) object;
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+               if (!entry.getKey().startsWith("param")) {
+                  handleEncrypt(entry.getValue());
+               }
+               continue;
             }
-            return invocation.proceed();
-        } else if (invocation.getTarget() instanceof ResultSetHandler) {
-            ResultSetHandler resultSetHandler = (ResultSetHandler) invocation.getTarget();
-            Statement statement = (Statement) invocation.getArgs()[0];
-            List<Object> resultList = resultSetHandler.handleResultSets(statement);
-            resultList.forEach(this::handleDecrypt);
-            return resultList;
-        }
-        return invocation.proceed();
-    }
+         } else {
+            handleEncrypt(object);
+         }
+         return invocation.proceed();
+      } else if (invocation.getTarget() instanceof ResultSetHandler) {
+         ResultSetHandler resultSetHandler = (ResultSetHandler) invocation.getTarget();
+         Statement statement = (Statement) invocation.getArgs()[0];
+         List<Object> resultList = resultSetHandler.handleResultSets(statement);
+         resultList.forEach(this::handleDecrypt);
+         return resultList;
+      }
+      return invocation.proceed();
+   }
 
-    private void handleEncrypt(Object object) {
-        handleObject(object, true);
-    }
+   private void handleEncrypt(Object object) {
+      handleObject(object, true);
+   }
 
-    private void handleDecrypt(Object object) {
-        handleObject(object, false);
-    }
+   private void handleDecrypt(Object object) {
+      handleObject(object, false);
+   }
 
-    private void handleObject(Object object, boolean encrypt) {
-        for (Map.Entry<String, String> config : configs.entrySet()) {
-            int lastPoint = config.getKey().lastIndexOf('.');
-            String className = config.getKey().substring(0, lastPoint);
-            if (object.getClass().getName().equals(className)) {
-                String property = config.getKey().substring(lastPoint + 1);
-                String handlerName = config.getValue();
-                DataSensitiveHandler handler = SpringContextHolder.getBean("dataSensitiveHandler-" + handlerName);
-                BeanWrapper wrapper = new BeanWrapperImpl(object);
-                wrapper.setPropertyValue(property,
-                        encrypt ? handler.encrypt(String.valueOf(wrapper.getPropertyValue(property))) :
-                                handler.decrypt(String.valueOf(wrapper.getPropertyValue(property)))
-                );
-            }
-        }
-    }
+   private void handleObject(Object object, boolean encrypt) {
+      for (Map.Entry<String, String> config : configs.entrySet()) {
+         int lastPoint = config.getKey().lastIndexOf('.');
+         String className = config.getKey().substring(0, lastPoint);
+         if (object.getClass().getName().equals(className)) {
+            String property = config.getKey().substring(lastPoint + 1);
+            String handlerName = config.getValue();
+            DataSensitiveHandler handler = SpringContextHolder.getBean("dataSensitiveHandler-" + handlerName);
+            BeanWrapper wrapper = new BeanWrapperImpl(object);
+            wrapper.setPropertyValue(property,
+                    wrapper.getPropertyValue(property) == null ? null :
+                            encrypt ? handler.encrypt(String.valueOf(wrapper.getPropertyValue(property))) :
+                                    handler.decrypt(String.valueOf(wrapper.getPropertyValue(property)))
+            );
+         }
+      }
+   }
 }
 ```
 
@@ -234,9 +245,27 @@ public class DataSensitiveConfig {
 ```java
 public interface DataSensitiveHandler {
 
-    String encrypt(String str);
+   /**
+    * 在写入数据时对数据做的处理
+    * 默认为不进行任何操作
+    *
+    * @param str 将要写入的数据
+    * @return 实际写入的数据
+    */
+   default String encrypt(String str) {
+      return str;
+   }
 
-    String decrypt(String str);
+   /**
+    * 在读取数据时对数据做的处理
+    * 默认为不进行任何操作
+    *
+    * @param str 实际读到的数据
+    * @return 返回给调用者的数据
+    */
+   default String decrypt(String str) {
+      return str;
+   }
 
 }
 ```
@@ -246,34 +275,61 @@ public interface DataSensitiveHandler {
 
 - `abb`：对字符串中间部分使用 `*` 遮挡，仅对读取到的数据执行操作
 - `md5`：对字符串进行 md5 摘要，仅在写入数据时执行操作
-- `sm4`：使用国密 SM4 算法进行对称加解密，在写入及读取时均执行
+- `sm4hex`：使用国密 SM4 算法进行对称加解密，以 16 进制表示加密结果，在写入及读取时均执行
 
 ```java
 /**
- * 自定义处理器注册 bean，”dataSensitiveHandler-“ 为固定前缀
- * 自定义后缀：abb 对字符串中间部分使用 `*` 遮挡，仅对读取到的数据执行操作
+ * 敏感数据处理器：使用 * 遮挡明文中间部分，保留前后内容。
+ * <p>
+ * 仅在读取明文数据并返回时，进行遮挡处理；
+ * 存入明文数据时，不对存入内容进行变更。
+ * <p>
+ * 遮挡方式为：<p>
+ * 1. 明文长度为 1 时，不遮挡<p>
+ * 2. 明文长度为 2 时，遮挡第二位<p>
+ * 3. 明文长度大于 2 时，将明文分成三部分，遮挡中间部分；不能整除时，尽可能使遮挡部分较多<p>
+ * 遮挡后内容长度与明文保持一致。
+ * 如：<p>
+ * 明文                   | 遮挡后<p>
+ * 'a'                   | 'a'<p>
+ * 'ab'                  | 'a*'<p>
+ * 'abc'                 | 'a*c'<p>
+ * 'abcd'                | 'a**d'<p>
+ * '13012345678'         | '130*****678'<p>
+ * '123456789012345678'  | '123456******345678'<p>
+ * '这是一段测试文字'       | '这是****文字'<p>
+ * 注册 bean 使用 ”dataSensitiveHandler-“ 固定前缀，abb 为后缀，意为 abbreviation
  */
 @Component("dataSensitiveHandler-abb")
 public class DataSensitiveAbbHandler implements DataSensitiveHandler {
 
-    @Override
-    public String encrypt(String str) {
-        return str;
-    }
+   private static final char MASK = '*';
 
-    @Override
-    public String decrypt(String str) {
-       int length = str.length();
-       if (length < 2){
-          return str;
-       } else if (length % 2 == 0) {
-          int midIndex = length / 2 - 1;
-          return str.substring(0, midIndex) + "****" + str.substring(midIndex + 2);
-       }else {
-          int midIndex = length / 2;
-          return str.substring(0, midIndex - 2) + "****" + str.substring(midIndex + 2);
-       }
-    }
+   /**
+    * 实现解密方法，对字符串中间部分使用 `*` 遮挡
+    *
+    * @param str str
+    * @return String
+    */
+   @Override
+   public String decrypt(String str) {
+      if (StringUtils.isBlank(str)) {
+         return str;
+      }
+      int len = str.length();
+      switch (len) {
+         case 1:
+            return str;
+         case 2:
+            return str.substring(0, 1) + MASK;
+         default:
+            int oriLen = len / 3;
+            int maskLen = len - oriLen * 2;
+            return str.substring(0, oriLen) +
+                    StringUtils.repeat(MASK, maskLen) +
+                    str.substring(oriLen + maskLen);
+      }
+   }
 }
 ```
 
@@ -303,21 +359,33 @@ public class DataSensitiveMd5Handler implements DataSensitiveHandler {
  * 自定义后缀：sm4 使用国密 SM4 算法进行对称加解密，在写入及读取时均执行
  * 条件注册 Bean
  */
-@ConditionalOnClass(name = "org.bouncycastle.crypto.Digest")
-@Component("dataSensitiveHandler-sm4")
-public class DataSensitiveSm4Handler implements DataSensitiveHandler {
+@ConditionalOnClass(name = {"org.bouncycastle.crypto.Digest", "org.bouncycastle.asn1.gm.GMNamedCurves"})
+@Component("dataSensitiveHandler-sm4hex")
+public class DataSensitiveSm4HexHandler implements DataSensitiveHandler {
 
-    private static final SymmetricCrypto SM4 = SmUtil.sm4();
+   private static final SymmetricCrypto SM4 = SmUtil.sm4();
 
-    @Override
-    public String encrypt(String str) {
-        return SM4.encryptHex(str);
-    }
+   /**
+    * 使用国密 SM4 算法进行加密
+    *
+    * @param str 明文
+    * @return 密文 16 进制表示
+    */
+   @Override
+   public String encrypt(String str) {
+      return SM4.encryptHex(str);
+   }
 
-    @Override
-    public String decrypt(String str) {
-        return SM4.decryptStr(str, CharsetUtil.CHARSET_UTF_8);
-    }
+   /**
+    * 使用国密 SM4 算法进行解密
+    *
+    * @param str 密文
+    * @return 明文
+    */
+   @Override
+   public String decrypt(String str) {
+      return SM4.decryptStr(str, CharsetUtil.CHARSET_UTF_8);
+   }
 }
 ```
 
@@ -336,7 +404,7 @@ com:
     common:
       sensitive:
         com.amber.common.sensitive.entity.UserDO.phone: abb
-        com.amber.common.sensitive.entity.UserDO.idCard: sm4
+        com.amber.common.sensitive.entity.UserDO.idCard: sm4hex
 ```
 
 ```properties
@@ -351,67 +419,173 @@ com.amber.common.sensitive.com.amber.common.sensitive.entity.UserDO.password=md5
 
 ```groovy
 @Sql
+@Transactional
 class DataSensitiveTest extends BaseApplicationTests {
 
-    @Autowired
-    UserDAO userDAO
-
-    @Autowired
-    RoleServiceImpl roleService
+   @Autowired
+   UserDAO userDAO
+   
+   @Autowired
+   RoleDAO roleDAO
+   
+   @Autowired
+   UserService userService
+   
+   @Autowired
+   RoleService roleService
+   
+   @Autowired
+   UserRoleService userRoleService
+   
+   @Autowired
+   UserHistoryService userHistoryService
 
    @Autowired
    JdbcTemplate jdbcTemplate
 
+   def static final MD5_LEN = 32
+   def name = 'user name'
+   def phone = '12345678901'
+   def idCard = '234098uzxcv'
+   def pwd = '123456'
+
    @Test
-   void test() {
+   void cruTest() {
+      def user = testCreate()
+      def retrievedUser = testRetrieve(user.getId())
+      testUpdate(retrievedUser)
+   }
+
+   def testCreate() {
       assert jdbcTemplate.queryForObject('select count(*) from userinfo', Integer) == 0
 
-      // Create
       UserDO user = new UserDO()
-      user.setName('user name')
-      user.setPhone('12345678901')
-      user.setIdCard('234098uzxcv')
-      user.setPassword('123456')
+      user.setName(name)
+      user.setPhone(phone)
+      user.setIdCard(idCard)
+      user.setPassword(pwd)
 
       assert userDAO.insert(user) == 1
       assert user.getId() > ''
-      assert user.getPhone() == '12345678901'
-      assert user.getPassword() == 'e10adc3949ba59abbe56e057f20f883e'
-      assert user.getIdCard() != '234098uzxcv'
-      // str.length <15  sm4 length 32
-      // str.length >15  sm4 length 64
-      // str.length >32 sm4 length 96
-      // sm4 length 128 160 192 ...
-      def sm4ValueLen = 32
-      assert user.getIdCard().length() == sm4ValueLen
+      // abb handler
+      assert user.getPhone() == phone
+      // md5 handler
+      assert user.getPassword().length() == MD5_LEN
+      // sm4hex handler
+      assert user.getIdCard() != idCard && user.getIdCard().length() == getSm4HexLen(idCard)
 
       assert jdbcTemplate.queryForObject('select count(*) from userinfo', Integer) == 1
-      assert jdbcTemplate.queryForObject('select phone from userinfo', String) == '12345678901'
-      assert jdbcTemplate.queryForObject('select password from userinfo', String) == 'e10adc3949ba59abbe56e057f20f883e'
+      assert jdbcTemplate.queryForObject('select phone from userinfo', String) == phone
+      assert jdbcTemplate.queryForObject('select password from userinfo', String).length() == MD5_LEN
       assert jdbcTemplate.queryForObject('select id_card from userinfo', String) != '234098uzxcv'
-      assert jdbcTemplate.queryForObject('select id_card from userinfo', String).length() == sm4ValueLen
+      assert jdbcTemplate.queryForObject('select id_card from userinfo', String).length() == getSm4HexLen(idCard)
 
-      // Retrieve
-
-      UserDO retrievedUser = userDAO.selectById(user.getId())
-      assert retrievedUser.getPhone() == '123****8901'
-      assert retrievedUser.getIdCard() == '234098uzxcv'
-
-      // Update
-      retrievedUser.setPhone('01234567890')
-      retrievedUser.setIdCard('210103')
-      userDAO.updateById(retrievedUser)
-      assert retrievedUser.getPhone() == '01234567890'
-      assert retrievedUser.getIdCard() != '210103'
-      assert retrievedUser.getIdCard().length() == sm4ValueLen
-
-      assert jdbcTemplate.queryForObject('select phone from userinfo', String) == '01234567890'
-      assert jdbcTemplate.queryForObject('select id_card from userinfo', String) != '210103'
-
-      retrievedUser = userDAO.selectById(user.getId())
-      assert retrievedUser.getPhone() == '012****7890'
-      assert retrievedUser.getIdCard() == '210103'
+      return user
    }
+
+   static int getSm4HexLen(String str) {
+      // SM4算法的块大小为16字节
+      int blockSize = 16
+      str > '' ?
+              ((int) (str.getBytes(StandardCharsets.UTF_8).length / blockSize) + 1) * blockSize * 2 :
+              0
+   }
+
+   def testRetrieve(String userId) {
+      UserDO retrievedUser = userDAO.selectById(userId)
+      assert retrievedUser.getPhone() != phone
+      assert retrievedUser.getPhone() == '123*****901'
+      assert retrievedUser.getIdCard() == idCard
+      return retrievedUser
+   }
+
+   def testUpdate(UserDO userToUpdate) {
+      def newPhone = '01234567890'
+      def newIdCard = '12345678901234567'
+
+      userToUpdate.setPhone(newPhone)
+      userToUpdate.setIdCard(newIdCard)
+      userDAO.updateById(userToUpdate)
+
+      assert userToUpdate.getPhone() == newPhone
+      assert userToUpdate.getIdCard() != newIdCard
+      assert userToUpdate.getIdCard().length() == getSm4HexLen(newIdCard)
+
+      assert jdbcTemplate.queryForObject('select phone from userinfo', String) == newPhone
+      assert jdbcTemplate.queryForObject('select id_card from userinfo', String) != newIdCard
+
+      def retrievedUser = userDAO.selectById(userToUpdate.getId())
+      assert retrievedUser.getPhone() == '012*****890'
+      assert retrievedUser.getIdCard() == newIdCard
+   }
+
+   @Test
+   void batchTest() {
+      testBatchInsert()
+      List<UserDO> retrievedUsers = testBatchRetrieve()
+      testBatchUpdate(retrievedUsers)
+   }
+
+   def testBatchInsert() {
+      assert jdbcTemplate.queryForObject('select count(*) from userinfo', Integer) == 0
+
+      List<UserDO> users = new ArrayList<>()
+      3.times {
+         UserDO user = new UserDO()
+         user.setName("${name}${it+1}")
+         user.setPhone("${phone}${it+1}")
+         user.setPassword("${pwd}${it+1}")
+         user.setIdCard("${idCard}${it+1}")
+         users.add(user)
+      }
+      userService.saveBatch(users)
+
+      assert jdbcTemplate.queryForObject('select count(*) from userinfo', Integer) == 3
+      // sm4hex handler
+      assert users.get(0).getIdCard() != idCard
+      assert users.get(0).getIdCard().length() == getSm4HexLen(idCard)
+      // abb handler
+      assert jdbcTemplate.queryForList('select phone from userinfo', String) == ["${phone}1", "${phone}2", "${phone}3"]
+      assert users.get(0).getPhone() == "${phone}1"
+      // sm4hex handler
+      def queriedIdCard = jdbcTemplate.queryForObject("select id_card from userinfo where user_name='${name}2'", String)
+      assert queriedIdCard != "${idCard}2"
+      assert queriedIdCard.length() == getSm4HexLen("${idCard}2")
+   }
+
+   def testBatchRetrieve() {
+      List<UserDO> retrievedUsers = userService.list()
+      assert retrievedUsers.size() == 3
+      assert retrievedUsers[0].getPhone() == '1234****9011'
+      assert retrievedUsers[1].getPhone() == '1234****9012'
+      assert retrievedUsers[2].getPhone() == '1234****9013'
+      assert retrievedUsers[0].getIdCard() == "${idCard}1"
+      assert retrievedUsers[1].getIdCard() == "${idCard}2"
+      assert retrievedUsers[2].getIdCard() == "${idCard}3"
+      return retrievedUsers
+   }
+
+   def testBatchUpdate(List<UserDO> retrievedUsers) {
+      List<UserDO> usersToUpdate = new ArrayList<UserDO>()
+      for (UserDO user : retrievedUsers) {
+         user.setPhone(phone.reverse())
+         user.setIdCard(idCard.reverse())
+         usersToUpdate.add(user)
+      }
+      userService.updateBatchById(usersToUpdate)
+
+      assert jdbcTemplate.queryForObject("select count(*) from userinfo where phone = '${phone.reverse()}'", Integer) == 3
+      assert jdbcTemplate.queryForObject("select id_card from userinfo where user_name='${name}3'", String).length() == getSm4HexLen("${idCard.reverse()}")
+
+      QueryWrapper<UserDO> wrapper = new QueryWrapper()
+      wrapper.eq('phone', phone.reverse())
+      retrievedUsers = userService.list(wrapper)
+      assert retrievedUsers.size() == 3
+      assert retrievedUsers[0].getPhone() == '109*****321'
+      assert retrievedUsers[1].getIdCard() == idCard.reverse()
+   }
+   
+   // ...
 }
 ```
 
@@ -425,4 +599,6 @@ class DataSensitiveTest extends BaseApplicationTests {
 - **存入数据库中的数据在执行了敏感处理后将丧失按照处理前的数据进行查询的能力，只能按照处理后的数据进行查询**
 
 # 结论
-通过 MyBatis 的 Interceptor 机制，开发者可以有效地处理敏感数据，提高应用程序的安全性。合理地配置和使用 Interceptor，可以在不改变原有业务逻辑的情况下，增强数据保护措施。
+通过 `MyBatis` 的 `Interceptor` 机制，开发者能够增强对敏感数据的保护，提升应用的安全性。
+`Interceptor` 允许在不改动原有业务逻辑的情况下，实施额外数据保护措施。
+在处理个人身份信息、财务数据等敏感信息时，`Interceptor` 尤为关键，确保数据存储和传输的安全。
