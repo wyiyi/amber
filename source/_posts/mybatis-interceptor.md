@@ -73,6 +73,7 @@ public interface Interceptor {
 ## Simple Example
 
 1. 创建并实现 `org.apache.ibatis.plugin.Interceptor` 接口的类：
+
 ```
 // ExamplePlugin.java
 @Intercepts({@Signature(
@@ -116,6 +117,7 @@ public interface Interceptor {
 ```
 
 2. 在 `MyBatis` 的配置文件中注册 `Interceptor`：
+
 ```
 <!-- mybatis-config.xml -->
 <plugins>
