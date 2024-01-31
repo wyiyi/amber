@@ -270,7 +270,7 @@ public interface DataSensitiveHandler {
 }
 ```
 
-### 3.内置敏感数据处理器 abb、sm4、md5
+### 3.内置敏感数据处理器 abb、sm4hex、md5
 目前内置三种敏感数据处理器：
 
 - `abb`：对字符串中间部分使用 `*` 遮挡，仅对读取到的数据执行操作
