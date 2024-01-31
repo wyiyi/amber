@@ -393,7 +393,7 @@ public class DataSensitiveSm4HexHandler implements DataSensitiveHandler {
 
 配置参数以 `com.amber.common.sensitive` 为前缀，后面配置格式为 `key : value`，其中：
 
-- `key` 为 MyBatis Mapper 实体类全名及要处理敏感数据的属性，如 `UserDO` 的 `phone` 属性设置为：`com.amber.common.sensitive.entity.UserDO.phone`。目前仅支持字符串类型的属性。
+- `key` 为 MyBatis Mapper 实体类全名及要处理敏感数据的属性，如 `UserDO` 的 `phone` 属性设置为：`com.amber.common.sensitive.mock.entity.UserDO.phone`。目前仅支持字符串类型的属性。
 - `value` 为敏感数据处理类 bean name 的后缀，加上 `dataSensitiveHandler-` 前缀组成完整 bean name。
 
 支持 `yml` 和 `properties` 文件格式：
@@ -403,12 +403,12 @@ com:
   amber:
     common:
       sensitive:
-        com.amber.common.sensitive.entity.UserDO.phone: abb
-        com.amber.common.sensitive.entity.UserDO.idCard: sm4hex
+        com.amber.common.sensitive.mock.entity.UserDO.phone: abb
+        com.amber.common.sensitive.mock.entity.UserDO.idCard: sm4hex
 ```
 
 ```properties
-com.amber.common.sensitive.com.amber.common.sensitive.entity.UserDO.password=md5
+com.amber.common.sensitive.com.amber.common.sensitive.mock.entity.UserDO.password=md5
 ```
 
 ### 5.单元测试
