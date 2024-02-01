@@ -143,8 +143,8 @@ public interface Interceptor {
 ## 设计思路
 为了实现上述需求，我们可以使用 `MyBatis` 的拦截器机制，自定义一个拦截器来处理敏感数据。选择拦截 `Executor` 的 `update` 方法和 `ResultSetHandler` 的 `handleResultSets` 方法作为拦截点。
 
-为了满足上述需求，我们计划使用MyBatis的拦截器机制。具体来说，我们将创建一个自定义拦截器来处理敏感数据。
-我们将选择拦截Executor的update方法和ResultSetHandler的handleResultSets方法作为拦截点。
+为了满足上述需求，我们计划使用 `MyBatis` 的拦截器机制。具体来说，我们将创建一个自定义拦截器来处理敏感数据。
+我们将选择拦截 `Executor` 的 `update` 方法和 `ResultSetHandler` 的 `handleResultSets` 方法作为拦截点。
 
 - `Executor` 的 update 方法用于执行 `insert、update 和 delete` 操作，可以在这里对写入数据库的数据进行加密处理。
 - `ResultSetHandler` 的 `handleResultSets` 方法用于处理查询结果集，可以在这里对从数据库中读取的数据进行解密处理。
@@ -155,7 +155,7 @@ public interface Interceptor {
 
 通过参考在配置文件中设置日志级别（ `logging.level.com.example.demo.mapper=debug`）的方法，其中 `key` 和 `value` 都是可配置的。
 为了保证注册 `Bean` 的唯一性， 配置参数以前缀 `com.amber.common.sensitive` 开头。其中：
-* `key` 设置为 MyBatis Mapper 实体类全名及要处理敏感数据的属性
+* `key` 设置为 MyBatis Mapper 实体类全名及要处理敏感数据的属性，如 `UserDO` 的 `phone` 属性设置为：`com.amber.common.sensitive.mock.entity.UserDO.phone`
 * `value` 设置为敏感数据处理类 `bean name` 的后缀，并加上 `dataSensitiveHandler-` 前缀组成完整 `bean name`
 
 在 `intercept` 方法中通过配置文件中的 `key` 能够获取到 `dataSensitiveHandler-` 为前缀的 `Bean`。然后根据 `Bean` 的后缀找到对应拦截器并按照敏感数据处理的要求（如中间部分用*代替、显示密文处理后的结果等）进行处理。
@@ -407,11 +407,6 @@ public class DataSensitiveSm4HexHandler implements DataSensitiveHandler {
 ```
 
 4. 配置
-
-配置参数以 `com.amber.common.sensitive` 为前缀，后面配置格式为 `key : value`，其中：
-
-- `key` 为 MyBatis Mapper 实体类全名及要处理敏感数据的属性，如 `UserDO` 的 `phone` 属性设置为：`com.amber.common.sensitive.mock.entity.UserDO.phone`。目前仅支持字符串类型的属性。
-- `value` 为敏感数据处理类 bean name 的后缀，加上 `dataSensitiveHandler-` 前缀组成完整 bean name。
 
 支持 `yml` 和 `properties` 文件格式：
 
