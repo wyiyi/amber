@@ -1,5 +1,5 @@
 ---
-title: MyBatis 拦截器介绍及自定义示例
+title: 基于 MyBatis 拦截器机制实现一个敏感数据处理组件
 date: 2024.02.01
 tags: 
    - Mybatis
@@ -8,13 +8,15 @@ categories: Technology
 mathjax: true 
 comments: true
 toc: true
-description: 本文探讨了 MyBatis 拦截器在处理敏感数据中的重要性。通过深入分析，我们提供了一种有效的方法来确保数据安全，同时保持 MyBatis 框架的灵活性和性能。文章详细介绍了拦截器的机制、设计思路、实现方法以及其在特定场景中的应用。
+description: 本文探讨了 MyBatis 拦截器的用法和使用场景，并以处理敏感数据场景为例实现了一个自定义拦截器。
 ---
 
 # 引言
-`MyBatis` 作为一个流行的持久层框架，提供了拦截器 `Interceptor` 机制，允许开发者在 `SQL` 执行过程中插入自定义逻辑。本文将深入探讨如何利用 `MyBatis` 的拦截器 `Interceptor` 来处理敏感数据，确保数据在传输和存储过程中的安全性。
+
+`MyBatis` 作为一个流行的持久层框架，提供了拦截器 `Interceptor` 机制，允许开发者在 `SQL` 执行过程中插入自定义逻辑。本文将深入探讨 `MyBatis` 拦截器的用法和使用场景，并以处理敏感数据场景为例实现了一个自定义拦截器。
 
 # Interceptor 介绍
+
 [MyBatis 官网中 Interceptor 的介绍：](https://mybatis.org/mybatis-3/zh_CN/configuration.html#%E6%8F%92%E4%BB%B6%EF%BC%88plugins%EF%BC%89)
 
 > MyBatis 允许你在映射语句执行过程中的某一点进行拦截调用。默认情况下，MyBatis 允许使用插件来拦截的方法调用包括：
@@ -23,48 +25,51 @@ description: 本文探讨了 MyBatis 拦截器在处理敏感数据中的重要�
 > * ResultSetHandler (handleResultSets, handleOutputParameters)
 > * StatementHandler (prepare, parameterize, batch, update, query)
 >
->通过 MyBatis 提供的强大机制，使用插件是非常简单的，只需实现 Interceptor 接口，并指定想要拦截的方法签名即可。
+> 通过 MyBatis 提供的强大机制，使用插件是非常简单的，只需实现 Interceptor 接口，并指定想要拦截的方法签名即可。
 
-可见这些方法是在不同的执行阶段被调用的—[MyBatis从入门到精通](https://book.douban.com/subject/27074809/)。
+## Signature 介绍
 
-## Signature 签名介绍
+在 [《MyBatis从入门到精通》](https://book.douban.com/subject/27074809/) 一书中，关于拦截器签名 `@Signature` 注解中可以使用的接口和方法相关描述如下：
+
 1. **Executor**：
-    - update: 当执行 INSERT、UPDATE、DELETE 操作时调用。
-    - query: 在 SELECT 查询方法执行时调用。
-    - flushStatements: 在通过 SqlSession 方法调用 flushStatements 方法或执行的接口方法中带有 @Flush 注解时才被调用。
-    - commit: 在通过 SqlSession 方法调用 commit 方法时被调用。
-    - rollback: 在通过 SqlSession 方法调用 rollback 方法时被调用。                                                                                 
-    - getTransaction: 在通过 SqlSession 方法获取数据库连接时被调用。
-    - close: 在延迟加载获取新的 Executor 后才会被执行。
-    - isClosed: 在延迟加载执行查询方法前被执行。
+   - update: 当执行 INSERT、UPDATE、DELETE 操作时调用。
+   - query: 在 SELECT 查询方法执行时调用。
+   - flushStatements: 在通过 SqlSession 方法调用 flushStatements 方法或执行的接口方法中带有 @Flush 注解时才被调用。
+   - commit: 在通过 SqlSession 方法调用 commit 方法时被调用。
+   - rollback: 在通过 SqlSession 方法调用 rollback 方法时被调用。
+   - getTransaction: 在通过 SqlSession 方法获取数据库连接时被调用。
+   - close: 在延迟加载获取新的 Executor 后才会被执行。
+   - isClosed: 在延迟加载执行查询方法前被执行。
 
 2. **ParameterHandler**：
-    - getParameterObject: 在执行存储过程处理出参的时候被调用。
-    - setParameters: 在所有数据库方法设置 SQL 参数时被调用。
+   - getParameterObject: 在执行存储过程处理出参的时候被调用。
+   - setParameters: 在所有数据库方法设置 SQL 参数时被调用。
 
 3. **ResultSetHandler**：
-    - handleResultSets: 处理查询结果集。
-    - handleOutputParameters: 使用存储过程处理出参时被调用。
+   - handleResultSets: 处理查询结果集。
+   - handleOutputParameters: 使用存储过程处理出参时被调用。
 
 4. **StatementHandler**：
-    - prepare: 在数据库执行前被调用，优先于当前接口中其他方法而被执行。
-    - parameterize: 在 prepare 方法后执行，用于处理参数信息。
-    - batch: 在全局设置配置 defaultExecutorType="BATCH" 时执行数据操作才会调用。
-    - update: 用于执行更新类型的 SQL 语句。
-    - query: 用于获取查询返回的结果集。
+   - prepare: 在数据库执行前被调用，优先于当前接口中其他方法而被执行。
+   - parameterize: 在 prepare 方法后执行，用于处理参数信息。
+   - batch: 在全局设置配置 defaultExecutorType="BATCH" 时执行数据操作才会调用。
+   - update: 用于执行更新类型的 SQL 语句。
+   - query: 用于获取查询返回的结果集。
 
 ## Interceptor 接口
 
-通过实现 `Interceptor` 接口并指定想要拦截的方法签名，可以轻松地使用这一机制。
+通过实现 `Interceptor` 接口并指定想要拦截的方法签名，可以轻松地实现对 SQL 执行过程的拦截。
 `Interceptor` 接口包含以下方法：（Mybatis-3.5.1 版本）
 
 ```java
 public interface Interceptor {
+
     Object intercept(Invocation invocation) throws Throwable;
 
-    Object plugin(Object var1);
+    Object plugin(Object target);
 
-    void setProperties(Properties var1);
+    void setProperties(Properties properties);
+
 }
 ```
 
@@ -72,19 +77,24 @@ public interface Interceptor {
 * `plugin(Object target)`: 这个方法用于生成一个代理对象。需要判断目标对象是否需要被拦截，如果需要则返回一个代理对象，否则返回 null。
 * `setProperties(Properties properties)`: 这个方法用于设置属性。获取配置文件中的属性，并进行相应的设置。
 
-在 `MyBatis` 的配置文件中注册 `Interceptor` 后，框架会在执行相应的操作时自动调用自定义逻辑。
+在 `MyBatis` 的配置文件中注册自定义 `Interceptor` 后，框架会在执行相应的操作时自动调用自定义逻辑。
 
 ## Simple Example
 
-1. 创建并实现 `org.apache.ibatis.plugin.Interceptor` 接口的类：
+1. 创建 `ExamplePlugin` 类实现 `org.apache.ibatis.plugin.Interceptor` 接口：
 
-```
+```java
 // ExamplePlugin.java
-@Intercepts({@Signature(
-  type= Executor.class,
-  method = "update",
-  args = {MappedStatement.class,Object.class})})
+@Intercepts({
+   @Signature(type= Executor.class,
+              method = "update",
+              args = {MappedStatement.class,Object.class}),
+   @Signature(type = ResultSetHandler.class, 
+              method = "handleResultSets", 
+              args = {Statement.class})
+})
 public class ExamplePlugin implements Interceptor {
+
   private Properties properties = new Properties();
 
   @Override
@@ -99,10 +109,11 @@ public class ExamplePlugin implements Interceptor {
   public void setProperties(Properties properties) {
     this.properties = properties;
   }
+  
 }
 ```
 
-**Tips**：在 [Mybatis-3.5.2 版本后 Interceptor](https://github.com/mybatis/mybatis-3/blob/mybatis-3.5.2/src/main/java/org/apache/ibatis/plugin/Interceptor.java) 接口中定义的方法已给出了默认实现，只需按需求实现 `intercept` 方法，这是 `Java 8` 默认方法特性的一种应用，旨在简化接口的实现。
+**Tips**：在 [Mybatis-3.5.2 版本后 Interceptor](https://github.com/mybatis/mybatis-3/blob/mybatis-3.5.2/src/main/java/org/apache/ibatis/plugin/Interceptor.java) 接口中定义的方法已给出了默认实现，如无特殊需求，只需实现 `intercept` 方法，这是 `Java 8` 默认方法特性的一种应用，旨在简化接口的实现。
 
 ```java
 public interface Interceptor {
@@ -120,7 +131,7 @@ public interface Interceptor {
 }
 ```
 
-2. 在 `MyBatis` 的配置文件中注册 `Interceptor`：
+2. 在 `MyBatis` 的配置文件中注册 `ExamplePlugin`：
 
 ```
 <!-- mybatis-config.xml -->
@@ -131,40 +142,43 @@ public interface Interceptor {
 </plugins>
 ```
 
-3. 插件将会拦截在 `Executor` 实例中所有的 `update` 方法调用，这里的 `Executor` 是负责执行底层映射语句的内部对象。
-
-# 处理敏感数据的场景
+# 敏感数据处理组件
 
 ## 场景描述
-在处理敏感数据时，我们希望数据在数据库中加密存储，而在系统中以明文展示。
-同时，为了保护隐私，我们计划对数据进行脱敏处理，例如隐藏部分敏感信息。
-为了降低对现有代码的修改，我们将通过配置文件来管理哪些字段需要加密或脱敏。
+
+在持久化的数据涉及敏感内容时，假设有如下三种场景：
+
+1. 为避免拖库造成的数据泄露风险，敏感数据希望以密文形式存储在数据库中，通过系统读取时可以读取到明文；
+1. 密码类数据在存储前希望进行不可逆的加密处理，读取时也是使用密文进行对比，无需恢复出明文内容；
+1. 展示如手机号等数据时，希望对部分内容进行遮挡，使数据仅保留核对用途。
 
 ## 设计思路
-为了实现上述需求，我们可以使用 `MyBatis` 的拦截器机制，自定义一个拦截器来处理敏感数据。选择拦截 `Executor` 的 `update` 方法和 `ResultSetHandler` 的 `handleResultSets` 方法作为拦截点。
 
-为了满足上述需求，我们计划使用 `MyBatis` 的拦截器机制。具体来说，我们将创建一个自定义拦截器来处理敏感数据。
-我们将选择拦截 `Executor` 的 `update` 方法和 `ResultSetHandler` 的 `handleResultSets` 方法作为拦截点。
+上面假设的三种场景可以分为数据的 `读取` 和 `写入` 两类操作：
 
-- `Executor` 的 update 方法用于执行 `insert、update 和 delete` 操作，可以在这里对写入数据库的数据进行加密处理。
-- `ResultSetHandler` 的 `handleResultSets` 方法用于处理查询结果集，可以在这里对从数据库中读取的数据进行解密处理。
+- 场景 1 需要在数据写入时加密，读取数据时解密；
+- 场景 2 在数据写入时加密，读取时无需处理；
+- 场景 3 在数据读取时进行遮挡，写入时无需处理。
 
-这两个方法可以满足我们对敏感数据处理的需求，包括加密写入、解密读取，加密写入、不解密读取，以及不加密写入、加密读取等场景。
+`MyBatis` 的拦截器签名中，可以选择 `Executor` 的 `update` 方法拦截 `写入` 动作，`ResultSetHandler` 的 `handleResultSets` 方法拦截 `读取` 动作。
 
-为了尽可能少地修改原有代码，希望在配置文件中实现对表中特定字段的敏感数据处理。这种方式增加了系统的灵活性和可维护性。
+为满足不同类型的敏感数据处理需求，设计一个 `DataSensitiveHandler` 接口，接口中包含两个方法：
 
-通过参考在配置文件中设置日志级别（ `logging.level.com.example.demo.mapper=debug`）的方法，其中 `key` 和 `value` 都是可配置的。
-为了保证注册 `Bean` 的唯一性， 配置参数以前缀 `com.amber.common.sensitive` 开头。其中：
-* `key` 设置为 MyBatis Mapper 实体类全名及要处理敏感数据的属性，如 `UserDO` 的 `phone` 属性设置为：`com.amber.common.sensitive.mock.entity.UserDO.phone`
-* `value` 设置为敏感数据处理类 `bean name` 的后缀，并加上 `dataSensitiveHandler-` 前缀组成完整 `bean name`
+- `encrypt`：实现写入数据前要执行的操作
+- `decrypt`：实现读取数据后（返回数据前）要执行的操作
 
-在 `intercept` 方法中通过配置文件中的 `key` 能够获取到 `dataSensitiveHandler-` 为前缀的 `Bean`。然后根据 `Bean` 的后缀找到对应拦截器并按照敏感数据处理的要求（如中间部分用*代替、显示密文处理后的结果等）进行处理。
+可以注册不同的 `DataSensitiveHandler` 实现类，并为实体中的属性（表中字段）配置使用哪个实现进行敏感数据的处理。
 
-最后，提供一个基础接口，默认实现写入和读取的加密和解密的方法，开发人员根据自定义 `Handler` 处理敏感数据。
+为了尽可能少地修改原有代码，以统一的配置方式实现属性（字段）和处理类的映射。
 
-## 实现
+具体配置形式参考日志级别配置方式（如：`logging.level.com.example.demo.mapper=debug`），
+以 `固定前缀`.`实体package.实体名.属性名` = `具体处理类唯一标识` 进行设置。
 
-1. 自定义敏感数据处理器
+## 参考实现
+
+### 自定义敏感数据处理拦截器 `DataSensitiveInterceptor`
+
+在 `intercept` 方法中根据配置找到需要处理的属性的处理类（`dataSensitiveHandler-` 为前缀的 `Bean`），并根据拦截的写入和读取操作调用对应处理方法，以实现敏感数据处理的要求（如中间部分用*代替、显示密文处理后的结果等）。
 
 ```java
 @Slf4j
@@ -247,6 +261,13 @@ public class DataSensitiveInterceptor implements Interceptor {
 }
 ```
 
+### 配置类 `DataSensitiveConfig`
+
+配置参数以前缀 `com.amber.common.sensitive` 开头，以 Map 形式存储相关参数配置，其中：
+
+* `key` 设置为 MyBatis Mapper 实体类全名及要处理敏感数据的属性，如 `UserDO` 的 `phone` 属性设置为：`com.amber.common.sensitive.mock.entity.UserDO.phone`
+* `value` 设置为敏感数据处理类 `bean name` 的后缀，查找 bean 时加上 `dataSensitiveHandler-` 前缀组成完整 `bean name`
+
 ```java
 @Component
 @ConfigurationProperties("com.amber.common")
@@ -260,9 +281,7 @@ public class DataSensitiveConfig {
 }
 ```
 
-2. 实现敏感数据加密和解密接口
-
-实现 `DataSensitiveHandler` 接口，定义具体的加密和解密方法。
+### 敏感数据处理接口 `DataSensitiveHandler`
 
 ```java
 public interface DataSensitiveHandler {
@@ -292,10 +311,11 @@ public interface DataSensitiveHandler {
 }
 ```
 
-3. 内置敏感数据处理器 abb、sm4hex、md5
-目前内置三种敏感数据处理器：
+### 内置敏感数据处理实现
 
-- `abb`：对字符串中间部分使用 `*` 遮挡，仅对读取到的数据执行操作
+为每类场景提供一个内置敏感数据处理实现：
+
+- `abb`：对字符串中间部分使用 `*` 遮挡，仅在读取数据时执行操作
 - `md5`：对字符串进行 md5 摘要，仅在写入数据时执行操作
 - `sm4hex`：使用国密 SM4 算法进行对称加解密，以 16 进制表示加密结果，在写入及读取时均执行
 
@@ -406,7 +426,9 @@ public class DataSensitiveSm4HexHandler implements DataSensitiveHandler {
 }
 ```
 
-4. 配置
+需要其他类型的处理类时，注册一个实现了 `DataSensitiveHandler` 的 bean 即可。
+
+### 配置
 
 支持 `yml` 和 `properties` 文件格式：
 
@@ -423,7 +445,8 @@ com:
 com.amber.common.sensitive.com.amber.common.sensitive.mock.entity.UserDO.password=md5
 ```
 
-5. 单元测试
+## 单元测试
+
 - 加密和解密：确保敏感数据在写入数据库时被正确加密，并在从数据库读取时被正确解密。
 - 配置解析：验证配置文件中的敏感字段是否正确地被解析并应用到拦截器中。
 - 不同处理器的应用：测试不同的敏感数据处理器（如 abb、md5、sm4）是否按照预期工作。
@@ -603,13 +626,9 @@ class DataSensitiveTest extends BaseApplicationTests {
 
 完整实例可见[仓库](https://github.com/wyiyi/bronze)
 
-**【注意事项】**
+## 注意事项
+
 - 通过 MyBatis 新增或保存实体时，传入的实体在方法调用后，配置为敏感数据的属性会变成应用了敏感处理器 `encrypt` 方法之后的值
 - 通过 MyBatis 查询实体时，检索出的实体对象中，配置了敏感数据的属性会变成应用了敏感处理器 `decrypt` 方法之后的值
 - 不通过 MyBatis 操作的数据，不会应用敏感数据处理器处理数据
 - **存入数据库中的数据在执行了敏感处理后将丧失按照处理前的数据进行查询的能力，只能按照处理后的数据进行查询**
-
-# 结论
-通过 `MyBatis` 的 `Interceptor` 机制，开发者能够增强对敏感数据的保护，提升应用的安全性。
-`Interceptor` 允许在不改动原有业务逻辑的情况下，实施额外数据保护措施。
-在处理个人身份信息、财务数据等敏感信息时，`Interceptor` 尤为关键，确保数据存储和传输的安全。
