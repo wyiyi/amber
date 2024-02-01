@@ -25,13 +25,15 @@ description: 本文探讨了 MyBatis 拦截器在处理敏感数据中的重要�
 >
 >通过 MyBatis 提供的强大机制，使用插件是非常简单的，只需实现 Interceptor 接口，并指定想要拦截的方法签名即可。
 
-可见这些方法是在不同的执行阶段被调用的—[MyBatis从入门到精通](https://book.douban.com/subject/27074809/)：
+可见这些方法是在不同的执行阶段被调用的—[MyBatis从入门到精通](https://book.douban.com/subject/27074809/)。
+
+## Signature 签名介绍
 1. **Executor**：
     - update: 当执行 INSERT、UPDATE、DELETE 操作时调用。
     - query: 在 SELECT 查询方法执行时调用。
     - flushStatements: 在通过 SqlSession 方法调用 flushStatements 方法或执行的接口方法中带有 @Flush 注解时才被调用。
     - commit: 在通过 SqlSession 方法调用 commit 方法时被调用。
-    - rollback: 在通过 SqlSession 方法调用 rollback 方法时被调用。
+    - rollback: 在通过 SqlSession 方法调用 rollback 方法时被调用。                                                                                 
     - getTransaction: 在通过 SqlSession 方法获取数据库连接时被调用。
     - close: 在延迟加载获取新的 Executor 后才会被执行。
     - isClosed: 在延迟加载执行查询方法前被执行。
@@ -50,6 +52,8 @@ description: 本文探讨了 MyBatis 拦截器在处理敏感数据中的重要�
     - batch: 在全局设置配置 defaultExecutorType="BATCH" 时执行数据操作才会调用。
     - update: 用于执行更新类型的 SQL 语句。
     - query: 用于获取查询返回的结果集。
+
+## Interceptor 接口
 
 通过实现 `Interceptor` 接口并指定想要拦截的方法签名，可以轻松地使用这一机制。
 `Interceptor` 接口包含以下方法：（Mybatis-3.5.1 版本）
@@ -132,19 +136,35 @@ public interface Interceptor {
 # 处理敏感数据的场景
 
 ## 场景描述
-在处理敏感数据时，我们希望数据在数据库中加密存储，而在系统中以明文展示。同时，为了保护隐私，我们计划对数据进行脱敏处理，例如隐藏部分敏感信息。为了降低对现有代码的修改，我们将通过配置文件来管理哪些字段需要加密或脱敏。
+在处理敏感数据时，我们希望数据在数据库中加密存储，而在系统中以明文展示。
+同时，为了保护隐私，我们计划对数据进行脱敏处理，例如隐藏部分敏感信息。
+为了降低对现有代码的修改，我们将通过配置文件来管理哪些字段需要加密或脱敏。
 
 ## 设计思路
 为了实现上述需求，我们可以使用 `MyBatis` 的拦截器机制，自定义一个拦截器来处理敏感数据。选择拦截 `Executor` 的 `update` 方法和 `ResultSetHandler` 的 `handleResultSets` 方法作为拦截点。
 
-## 原因
+为了满足上述需求，我们计划使用MyBatis的拦截器机制。具体来说，我们将创建一个自定义拦截器来处理敏感数据。
+我们将选择拦截Executor的update方法和ResultSetHandler的handleResultSets方法作为拦截点。
+
 - `Executor` 的 update 方法用于执行 `insert、update 和 delete` 操作，可以在这里对写入数据库的数据进行加密处理。
 - `ResultSetHandler` 的 `handleResultSets` 方法用于处理查询结果集，可以在这里对从数据库中读取的数据进行解密处理。
 
-这两个方法可以满足我们对敏感数据处理的需求，包括加密写入、解密读取，加密写入、不解密读取，以及不加密写入、加密读取的场景。通过自定义拦截器，我们可以在不修改原有代码的情况下，实现对敏感数据的处理。同时，通过配置文件来配置敏感字段，增加了系统的灵活性和可维护性。
+这两个方法可以满足我们对敏感数据处理的需求，包括加密写入、解密读取，加密写入、不解密读取，以及不加密写入、加密读取等场景。
+
+为了尽可能少地修改原有代码，希望在配置文件中实现对表中特定字段的敏感数据处理。这种方式增加了系统的灵活性和可维护性。
+
+通过参考在配置文件中设置日志级别（ `logging.level.com.example.demo.mapper=debug`）的方法，其中 `key` 和 `value` 都是可配置的。
+为了保证注册 `Bean` 的唯一性， 配置参数以前缀 `com.amber.common.sensitive` 开头。其中：
+* `key` 设置为 MyBatis Mapper 实体类全名及要处理敏感数据的属性
+* `value` 设置为敏感数据处理类 `bean name` 的后缀，并加上 `dataSensitiveHandler-` 前缀组成完整 `bean name`
+
+在 `intercept` 方法中通过配置文件中的 `key` 能够获取到 `dataSensitiveHandler-` 为前缀的 `Bean`。然后根据 `Bean` 的后缀找到对应拦截器并按照敏感数据处理的要求（如中间部分用*代替、显示密文处理后的结果等）进行处理。
+
+最后，提供一个基础接口，默认实现写入和读取的加密和解密的方法，开发人员根据自定义 `Handler` 处理敏感数据。
 
 ## 实现
-### 1.自定义敏感数据处理器
+
+1. 自定义敏感数据处理器
 
 ```java
 @Slf4j
@@ -240,7 +260,7 @@ public class DataSensitiveConfig {
 }
 ```
 
-### 2.实现敏感数据加密和解密接口
+2. 实现敏感数据加密和解密接口
 
 实现 `DataSensitiveHandler` 接口，定义具体的加密和解密方法。
 
@@ -272,7 +292,7 @@ public interface DataSensitiveHandler {
 }
 ```
 
-### 3.内置敏感数据处理器 abb、sm4hex、md5
+3. 内置敏感数据处理器 abb、sm4hex、md5
 目前内置三种敏感数据处理器：
 
 - `abb`：对字符串中间部分使用 `*` 遮挡，仅对读取到的数据执行操作
@@ -347,11 +367,6 @@ public class DataSensitiveMd5Handler implements DataSensitiveHandler {
     public String encrypt(String str) {
         return DigestUtils.md5Hex(str);
     }
-
-    @Override
-    public String decrypt(String str) {
-        return str;
-    }
 }
 ```
 
@@ -391,7 +406,7 @@ public class DataSensitiveSm4HexHandler implements DataSensitiveHandler {
 }
 ```
 
-### 4.配置
+4. 配置
 
 配置参数以 `com.amber.common.sensitive` 为前缀，后面配置格式为 `key : value`，其中：
 
@@ -413,7 +428,7 @@ com:
 com.amber.common.sensitive.com.amber.common.sensitive.mock.entity.UserDO.password=md5
 ```
 
-### 5.单元测试
+5. 单元测试
 - 加密和解密：确保敏感数据在写入数据库时被正确加密，并在从数据库读取时被正确解密。
 - 配置解析：验证配置文件中的敏感字段是否正确地被解析并应用到拦截器中。
 - 不同处理器的应用：测试不同的敏感数据处理器（如 abb、md5、sm4）是否按照预期工作。
@@ -593,8 +608,7 @@ class DataSensitiveTest extends BaseApplicationTests {
 
 完整实例可见[仓库](https://github.com/wyiyi/bronze)
 
-### 注意事项
-
+**【注意事项】**
 - 通过 MyBatis 新增或保存实体时，传入的实体在方法调用后，配置为敏感数据的属性会变成应用了敏感处理器 `encrypt` 方法之后的值
 - 通过 MyBatis 查询实体时，检索出的实体对象中，配置了敏感数据的属性会变成应用了敏感处理器 `decrypt` 方法之后的值
 - 不通过 MyBatis 操作的数据，不会应用敏感数据处理器处理数据
