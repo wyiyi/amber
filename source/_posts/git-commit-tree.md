@@ -61,7 +61,7 @@ Press left/right arrow to navigate, or Enter to jump to a file:
 
 可以使用以下方式导航：
 
-* 使用左右箭头键在不同的 `commit` 之间切换。
-* 按 `Enter` 键，然后输入文件名，直接跳转到特定的 `commit`。
+* 使用左右箭头键在不同的 `commit` 之间切换
+* 按 `Enter` 键，然后输入文件名，直接跳转到特定的 `commit`
 
 **小工具会继续丰富功能，请期待~~~**
