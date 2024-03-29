@@ -22,7 +22,7 @@ description: 安利一个小工具
 
 **安装前提**：确保你的系统已安装 `Git`、`Tree`（用于生成目录树结构） 命令。
 
-从[GitHub 仓库](https://github.com/AlphaHinex/git-commit-tree-browser)下载到本地。
+从[GitHub仓库](https://github.com/AlphaHinex/git-commit-tree-browser)下载到本地。
 
 ### 执行 prepare.sh 脚本：
 
@@ -32,7 +32,7 @@ description: 安利一个小工具
 $ ./prepare.sh /path/to/your/git/repo
 ```
 
-脚本将遍历指定Git仓库的所有 `commit`，并为每个 `commit` 生成文件目录树，结果存储为文本文件（`.txt`文件）。
+脚本将遍历指定 Git 仓库的所有 `commit`，并为每个 `commit` 生成文件目录树，结果存储为文本文件（`.txt`文件）。
 
 ### 执行 browser.sh 脚本
 
