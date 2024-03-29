@@ -11,7 +11,7 @@ toc: true
 description: 安利一个小工具：Git 仓库 Commit 文件树查看器。
 ---
 
-![](C:/Users/Administrator/Desktop/20240329-213045.gif)
+![](https://wyiyi.github.io/amber/contents/2024/git.gif)
 
 ## 背景
 在`Git`项目中，代码的频繁迭代会使得追踪特定变更的`commit`变得复杂。为了解决这个问题，`Git Commit Tree Browser` 提供了一个高效的解决方案。
