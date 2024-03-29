@@ -54,17 +54,19 @@ $ ./browser.sh
 脚本将显示第一个`commit`的文件目录树（示例）：
 
 ```
-File: da38390.txt
+File: 808097d.txt
 .
-|-- project
-|   |-- demo1
-|   |   `-- scripts
-|   `-- demo2
-|       `-- src
+|-- bronze
+|   |-- gradle
+|   |   `-- wrapper
+|   |-- src
+|   |   |-- main
+|   |   `-- test
+|   `-- test
 `-- git-commit-tree-browser
 
-6 directories
-da38390
+8 directories
+808097d
 Press left/right arrow to navigate, or Enter to jump to a file:
 ```
 
