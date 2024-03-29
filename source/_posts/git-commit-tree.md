@@ -6,7 +6,7 @@ categories: Technology
 mathjax: true
 comments: true
 toc: true
-description: 安利一个小工具
+description: 安利一个小工具：Git 仓库 Commit 文件树查看器。
 ---
 
 ## 简介
