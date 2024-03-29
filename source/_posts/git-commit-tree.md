@@ -42,7 +42,7 @@ $ ./prepare.sh /path/to/your/git/repo
 $ ./browser.sh
 ```
 
-脚本将显示第一个 `commit` 的文件目录树：
+脚本将显示第一个 `commit` 的文件目录树（示例）：
 
 ```
 File: da38390.txt
