@@ -25,7 +25,7 @@ description: 安利一个小工具：Git 仓库 Commit 文件树查看器。
 
 ## 效果
 
-![](https://wyiyi.github.io/amber/contents/2024/git.gif)
+![](https://wyiyi.github.io/amber/contents/2024/git-demo.gif)
 
 ## 功能特点
 
