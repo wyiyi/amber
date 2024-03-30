@@ -11,7 +11,7 @@ toc: true
 description: 安利一个小工具：Git 仓库 Commit 文件树查看器。
 ---
 
-![](https://wyiyi.github.io/amber/contents/2024/git-cover.gif)
+![](https://wyiyi.github.io/amber/contents/2024/git-cover.png)
 
 ## 痛点
 
@@ -26,7 +26,6 @@ description: 安利一个小工具：Git 仓库 Commit 文件树查看器。
 ## 效果
 
 ![](https://wyiyi.github.io/amber/contents/2024/git.gif)
-
 
 ## 功能特点
 
