@@ -32,7 +32,6 @@ Comparator<Apple> byWeight = new Comparator<Apple>() {
 ```
 
 - 使用 lambda 表达式：
-
 ```java
 Comparator<Apple> byWeight = (Apple a1, Apple a2) -> a1.getWeight().compareTo(a2.getWeight());
 ```
