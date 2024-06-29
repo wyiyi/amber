@@ -42,7 +42,7 @@ Comparator<Apple> byWeight = (Apple a1, Apple a2) -> a1.getWeight().compareTo(a2
 [引用 Java 8 inAction：](https://livebook.manning.com/book/java-8-in-action/chapter-3/ "引用 Java 8 inAction：")
 > A lambda expression is composed of parameters, an arrow, and a body.
 
-![img.png](https://wyiyi.github.io/amber/contents/2024/lambda.png)
+![](https://wyiyi.github.io/amber/contents/2024/lambda.png)
 
 * 参数列表：在这个例子中，它反映了`Comparator`的`compare`方法的参数（两个`Apple`对象）。
 * 箭头：箭头`->`将参数列表与`lambda`的函数体分隔开。
