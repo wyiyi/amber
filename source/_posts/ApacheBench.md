@@ -11,34 +11,63 @@ toc: true
 description: 使用Postman和ApacheBench上传文件至服务器
 ---
 
-## 引言
+## 摘要
 
 在 `Web` 开发过程中，文件上传功能是常见的需求。对于开发者而言，确保上传功能的稳定性和性能至关重要。
-本文将带你了解如何使用`Postman` 和 `ApacheBench`进行文件上传测试，并对比两者在实际应用中的优劣。
+本文将带你了解如何使用`ApacheBench`，对文件上传功能进行性能测试，以评估和提高服务器在高并发情况下的处理能力。
 
-## ApacheBench：性能测试利器
+## ApacheBench 简介
 
-`ApacheBench` 是 `Apache` 服务器自带的一个性能测试工具，它能够模拟多用户并发请求，从而评估服务器在高负载下的性能表现。
-若未安装 `Apache` 服务器，可前往 [Apache 官网](https://httpd.apache.org/)下载安装，请参考：[ApacheBench 简介](https://mp.weixin.qq.com/s/5lqaOphTwsWhGHT-VSH0Tg)。
+`ApacheBench`（简称`ab`）是 `Apache` 服务器自带的一个性能测试工具，它能够模拟多用户并发请求，从而评估服务器在高负载下的性能表现。
+若系统中未安装 `Apache` 服务器，可前往 [Apache 官网](https://httpd.apache.org/)下载和安装，请参考：[ApacheBench 简介](https://mp.weixin.qq.com/s/5lqaOphTwsWhGHT-VSH0Tg)。
 
-打开命令行工具：
+在操作系统中，可按以下方式打开命令行工具：
+
 - 在 `Windows` 系统中，可以使用 `CMD` 或 `PowerShell`
 - 在 `Linux` 系统中，可以使用终端
 
-1、编写测试脚本：创建一个文本文件`upload.txt`，包含`HTTP`请求的详细信息，内容如下：
+## ApacheBench 文件上传测试脚本构建步骤
+
+### 1. 准备测试文件
+
+首先，需要准备一个用于上传的文件。如：创建一个名为`test.jpg`的图片文件作为测试对象。
+
+### 2. 编写测试脚本文件
+
+创建一个`test.txt`文件，该文件是一个包含`HTTP`请求的文本文件，需要按照规范在文件中定义好请求体信息前半部分，如：
+
+```
+ -----WebKitFormBoundary7MA4YWxkTrZu0gW Content-Disposition: form-data; name="file"; filename="test.txt"
+```
+
+### 3. 添加文件内容到测试脚本
+
+使用以下命令将`test.jpg`文件的内容追加到`test.txt`文件中，并正确添加请求结束标记。
+
+```
+# 将 test.jpg 文件内容追加到 test.txt 
+$ cat test.jpg >> test.txt
+
+# 将文件结尾添加到 test.txt
+$ echo -e "\r\n-----WebKitFormBoundary7MA4YWxkTrZu0gW--\r\n" >> 
+```
+
+完成后的`test.txt`文件结构如下：
+
 ```
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="file"; filename="upload.txt"
-Content-Type: text/plain
+Content-Disposition: form-data; name="file"; filename="test.txt"
 
-
+[文件内容]
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 ```
-【注意】：文件内容需替换为实际要上传的文件内容。
 
-2、执行命令：
+## 执行文件上传测试命令
+
+使用以下命令执行文件上传测试：
+
 ```
-$ ab -n 100 -c 10 -p upload.txt -T "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW" http://localhost:8080/upload
+$ ab -n 1 -c 1 -p upload.txt -T "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW" http://localhost:8080/upload
 ```
 
 其中：[ApacheBench 简介](https://mp.weixin.qq.com/s/5lqaOphTwsWhGHT-VSH0Tg) 具体介绍了执行命令中参数及返回参数的含义：
@@ -47,13 +76,15 @@ $ ab -n 100 -c 10 -p upload.txt -T "multipart/form-data; boundary=----WebKitForm
 * -T 表示请求类型
 * -p 表示上传文件的路径
 * 最后一个参数为上传接口的 URL
-* .....
+* ...
 
-3、发送请求：
+## 文件上传的 Base64 编码问题
+在文件上传过程中，使用`Base64`编码传输文件可能会导致接收端接收到的是`Base64`编码的文本内容，而不是原始文件。为了避免这个问题，建议使用[流的形式进行文件上传](https://gist.github.com/chiller/dec373004894e9c9bb38ac647c7ccfa8)。
 
-在命令行工具中执行命令，`ApacheBench` 将自动上传文件至服务器，在命令行输出中，可以查看服务器返回的结果：
-- 每秒请求数（Requests per second）: 4656.58 [#/sec] (mean)
-- 请求平均响应时间（第一个 Time per request）： 2.147 [ms] (mean)
+### 使用流形式上传文件
+流形式上传文件可以避免`Base64`编码带来的额外处理开销，并且能够直接传输原始文件数据。
+
+## 测试结果分析
 
 ```
 Server Software:
@@ -86,25 +117,10 @@ Waiting:        0    2   0.8      1       4
 Total:          0    2   0.9      2       5
 ```
 
+可看出：
 
-## Postman：接口调试与测试专家
-
-打开 [Postman](https://www.postman.com/)：
-- 在地址栏输入上传接口的 `URL`，如：`http://localhost:8080/upload`，
-- 选择请求类型： `POST` ，
-- 在 `Headers` 部分添加一个键值对，键名为 `Content-Type`，值为 `multipart/form-data`，
-- 在 `Body` 部分选择 `form-data` 类型，然后添加一个键值对，键名为 `file`，选择要上传的文件。
-
-发送请求，`Postman` 将自动上传文件至服务器，在 `Response`部分，可以查看服务器返回的结果。
-
-## 二者对比
-
-| 特性          | Postman                       | ApacheBench |
-|:------------|:------------------------------|:-----------|
-| 易用性    | 直观的图形界面                       | 命令行工具      |
-| 功能丰富度 | 支持多种HTTP请求方法，添加、修改请求参数和Header | 主要用于性能测试，功能相对单一 |
-| 测试场景 | 适合进行接口功能测试和调试                 | 适合进行大规模并发测试，评估服务器在高负载下的性能|
-| 适用范围 | 适用于接口开发和测试                    |服务器性能评估|
+- 每秒请求数（Requests per second）: 4656.58 [#/sec] (mean)
+- 请求平均响应时间（第一个 Time per request）： 2.147 [ms] (mean)
 
 ## 总结
 
