@@ -1,5 +1,5 @@
 ---
-title: 如何使用 ApacheBench 上传文件
+title: 如何构建 ApacheBench 请求体上传文件
 date: 2024.08.01
 tags:
   - Postman
@@ -8,7 +8,7 @@ categories: Technology
 mathjax: true
 comments: true
 toc: true
-description: 如何使用 ApacheBench 上传文件
+description: 如何构建 ApacheBench 请求体上传文件
 ---
 
 ## 摘要
