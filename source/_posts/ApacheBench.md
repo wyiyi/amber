@@ -82,8 +82,8 @@ Content-Type: image/jpeg
  ------WebKitFormBoundary7MA4YWxkTrZu0gW
 Content-Disposition: form-data; name="file"; filename="test.jpg"
 Content-Type: image/jpeg
-```
 
+```
 > 依据规范描述，Content-Type 头字段非必要。
 
 **此处需注意：**
@@ -93,6 +93,7 @@ Content-Type: image/jpeg
 ```Bash
 $ echo -e '------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name="file"; filename="test.jpg"\r\nContent-Type: image/jpeg\r\n\r' > postfile.txt
 ```
+> 通过 `>`、`>>`向文件中添加内容时，会自动在最后追加一个 LR（`\n`），所以省略最后一个 `\n`。
 
 使用 `cat -e` 可验证换行符，每行结尾是 `^M$` 代表 `CRLF`换行符：
 
@@ -111,11 +112,7 @@ Content-Type: image/jpeg^M$
 # 将 test.jpg 文件内容追加到 postfile.txt
 $ cat test.jpg >> postfile.txt
 ```
-
 > Windows 系统中可在 `git bash` 中使用 `cat` 命令。
-
-- **使用 Windows 系统**
-在 `git bash` 或其他命令行工具中，执行以下命令：
 
 ### 5. 添加结束标记
 
@@ -125,7 +122,6 @@ $ cat test.jpg >> postfile.txt
 # 将结束标记添加到 postfile.txt
 $ echo -e "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--" >> postfile.txt
 ```
-
 > 因为在将文件流内容追加至 `postfile.txt` 文件后，已无法使用文本编辑器直接打开此文件，故继续使用命令追加文件内容，同样在 Windows 环境中可以通过 `git bash` 使用 `echo` 命令。
 
 ## 执行 ab 命令
@@ -140,12 +136,9 @@ http://localhost:8080/upload \
 
 - `-n 1` 表示总共发送 1 个请求（根据实际测试需求进行调整）。
 - `-c 1` 表示同时并发 1 个请求（根据实际测试需求进行调整）。
-- `-p postfile.txt` 指定包含 POST数据的文件。
+- `-p postfile.txt` 指定包含`POST`数据的文件。
 - `-T "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"` 指定请求的内容类型，包括之前定义的边界分隔符。
 - `-v verbosity`用于设置 `ApacheBench` 的详细输出级别。在详细输出级别 `2` 下，`ApacheBench`会打印出警告信息和信息信息，如：请求和响应的头部信息。
-
->  Set verbosity level - 4 and above prints information on headers, 3 and above prints response codes (404, 200, etc.), 2 and above
-prints warnings and info.
 
 执行命令后，在控制台中，可以在 `LOG: header received:` 消息之后找到响应状态码和响应内容。如果状态码为 `200`且和预期值一致，表示服务器成功处理了请求。
 
@@ -213,3 +206,43 @@ Total:         56   56   0.0     56      56
 `ApacheBench (ab)` 同样适用于测试 `PUT`接口。构造`putfile`的方法与`POST`接口类似，只需确保请求体的内容和头部信息符合`PUT`请求的要求。
 
 > -u putfile File containing data to PUT. Remember also to set -T
+
+## 附录
+### 单个文件
+
+构造命令：
+
+```Bash
+echo -e '------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name="file"; filename="file1.jpg"\r\n\r' > postfile.txt
+cat 1.jpg >> postfile.txt
+echo -e "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--" >> postfile.txt
+```
+
+发送请求：
+
+```Bash
+ab -n 1 -c 1 -p postfile.txt -v 2 \
+-T "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW" \
+http://localhost:8080/upload
+```
+
+### 多个文件
+
+构造命令：
+
+```Bash
+echo -e '------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name="file1"; filename="file1.jpg"\r\n\r' > postfile.txt
+cat 1.jpg >> postfile.txt
+echo -e "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r" >> postfile.txt
+echo -e 'Content-Disposition: form-data; name="file2"; filename="file2.zip"\r\n\r' >> postfile.txt
+cat demo.zip >> postfile.txt
+echo -e "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--" >> postfile.txt
+```
+
+发送请求：
+
+```Bash
+ab -n 1 -c 1 -p postfile.txt -v 2 \
+-T "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW" \
+http://localhost:8080/upload2
+```
