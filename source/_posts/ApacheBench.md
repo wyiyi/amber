@@ -1,5 +1,5 @@
 ---
-title: 如何构建 ApacheBench 的请求体上传文件
+title: 构造 ApacheBench 可用的 postfile
 date: 2024.08.01
 tags:
   - Postman
@@ -8,7 +8,7 @@ categories: Technology
 mathjax: true
 comments: true
 toc: true
-description: 如何构建 ApacheBench 的请求体上传文件
+description: 构造 ApacheBench 可用的 postfile
 ---
 
 ## 摘要
@@ -22,11 +22,6 @@ description: 如何构建 ApacheBench 的请求体上传文件
 `ApacheBench`（简称`ab`）是 `Apache` 服务器自带的一个性能测试工具，它能够模拟多用户并发请求，从而评估服务器在高负载下的性能表现。
 若系统中未安装 `Apache` 服务器，可前往 [Apache 官网](https://httpd.apache.org/)下载和安装。
 更多关于 ApacheBench 的信息，请参考：[ApacheBench 简介](https://mp.weixin.qq.com/s/5lqaOphTwsWhGHT-VSH0Tg)。
-
-在操作系统中，可按以下方式打开命令行工具：
-
-- 在 `Windows` 系统中，可以使用 `CMD` 或 `PowerShell`
-- 在 `Linux` 系统中，可以使用终端
 
 ## 前置条件
 假设有一个文件上传 `POST` 接口 http://localhost:8080/upload ，在请求体中接受 `key` 为 `file` 的文件，并返回上传的文件名和文件大小：
@@ -52,7 +47,7 @@ Content-Type: image/jpeg
 ## 问题
 当需要使用 `ApacheBench` 测试上传文件的 `POST` 接口时，`ab -h` 中只写到了通过 `-p` 参数指定 `postfile`：
 
-    -p postfile     File containing data to POST. Remember also to set -T
+> -p postfile     File containing data to POST. Remember also to set -T
 
 那么这个 `postfile` 中包含哪些内容呢？应该如何构造一个 `ApacheBench` 可用的 `postfile` 呢？
 
@@ -63,23 +58,25 @@ Content-Type: image/jpeg
 1. 请求头必须包含 `Content-Type: multipart/form-data; boundary=边界分隔符`；
 2. 多部分文件需要组合成一个单个的请求体，`边界分隔符` 字符串需保证在整个请求体内唯一，不会出现在分割行以外的其他部分；
 3. 请求体必须包含一个或多个部分，每部分一个实体（如：文件）；
-4. 各部分使用 `CRLF`，`--` ，`边界分隔符`作为一行进行分隔，最后一部分后面使用 `--边界分隔符--` 表示结束；
+4. 各部分使用 [CRLF](https://developer.mozilla.org/zh-CN/docs/Glossary/CRLF) +`--` +`边界分隔符`作为一个`边界分割行`进行分隔，最后一部分后面使用 `边界分隔行` +`--`表示结束；换行符均需使用 CRLF（即 `\r\n`，即使在非 Windows 环境中）；
 5. 每部分在边界分隔行之间，又由三部分组成：头区域、空白行、内容区域；
 6. 每部分头区域必须包含 `Content-Disposition`  头字段，类型为 `form-data`；同时必须包含 `name` 参数，值为 `form` 中的原始字段名；当内容区域表示的是文件时，还应该提供 `filename` 参数。
 
 更详细的内容可参考上面引用的 `RFC` 规范文档。
 
 ## 构造 postfile
+下面依照规范中格式要求，构造一个只发送一个文件的 `postfile`。
 
-### 1. 准备测试文件
+### 1. 准备 postfile 文件
+- 准备要上传的文件：如：`test.jpg`；
+- 新建一个文本文件，命名为`postfile.txt`。
 
-首先，需要准备一个用于上传的文件。如：创建一个名为`test.jpg`的图片文件作为测试对象。
+### 2. 确定边界分隔符
+选择一个不会在文件内容中出现的字符串作为边界分隔符，例如：`----WebKitFormBoundary7MA4YWxkTrZu0gW`。
 
-### 2. 编写测试脚本文件
-创建一个`test.txt`文件，该文件包含`HTTP`请求的 `body` 部分，在 `Postman` 图中右侧我们可以看到请求体部分包含了
-`Content-Disposition`为`form-data`，`name`为`file`，`filename`为`test.jpg`和`Content-Type`为`image/jpeg`等信息。
-
-以下是如何定义请求体信息前半部分的示例：
+### 3. 编写 postfile 头区域及空白行
+在 `postfile.txt` 中写入以下内容，这些内容构成了请求体的头部信息，
+其中 `name` 应该与服务器端接收的字段名一致，`filename` 是要上传的文件的名称。
 
 ```
  ------WebKitFormBoundary7MA4YWxkTrZu0gW
@@ -87,56 +84,74 @@ Content-Disposition: form-data; name="file"; filename="test.jpg"
 Content-Type: image/jpeg
 ```
 
-### 3. 添加文件内容到测试脚本
+> 依据规范描述，Content-Type 头字段非必要。
 
-接下来，我们需要按照规范将文件内容添加到请求体中，并正确添加请求结束标记。
+**此处需注意：**
 
-#### 使用 Windows 系统
+因为规范要求使用`CRLF`作为换行符，在`非 Windows` 环境中，不能直接使用文本编辑器输入上面内容，可以按如下方式通过命令构造此部分内容：
+
+```Bash
+$ echo -e '------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name="file"; filename="test.jpg"\r\nContent-Type: image/jpeg\r\n\r' > postfile.txt
+```
+
+使用 `cat -e` 可验证换行符，每行结尾是 `^M$` 代表 `CRLF`换行符：
+
+```Bash
+$ cat -e postfile.txt
+------WebKitFormBoundary7MA4YWxkTrZu0gW^M$
+Content-Disposition: form-data; name="file"; filename="test.jpg"^M$
+Content-Type: image/jpeg^M$
+^M$
+```
+
+### 4. 添加文件内容至 postfile 内容区域
+由于文件内容通常是二进制数据，不能直接在文本编辑器中粘贴，可使用 `cat` 命令将文件内容追加至 `postfile` 中：
+
+```Bash
+# 将 test.jpg 文件内容追加到 postfile.txt
+$ cat test.jpg >> postfile.txt
+```
+
+> Windows 系统中可在 `git bash` 中使用 `cat` 命令。
+
+- **使用 Windows 系统**
 在 `git bash` 或其他命令行工具中，执行以下命令：
 
-```
-# 将 test.jpg 文件内容追加到 test.txt
-$ cat test.jpg >> test.txt
+### 5. 添加结束标记
 
-# 将文件结尾添加到 test.txt
-$ echo -e "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--\r\n" >> test.txt
-```
+最后以 [CRLF](https://developer.mozilla.org/zh-CN/docs/Glossary/CRLF)+`--` +`边界分隔符`+`--` 标记结束：
 
-#### 使用 Linux 系统
-在 `Linux` 系统中，可以使用以下命令：
-
-```
-# 将 test.jpg 文件内容追加到 test.txt
-$ cat test.jpg >> test.txt
-
-# 将文件结尾添加到 test.txt
-$ echo -e "\n------WebKitFormBoundary7MA4YWxkTrZu0gW--\n" >> test.txt
+```shell
+# 将结束标记添加到 postfile.txt
+$ echo -e "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--" >> postfile.txt
 ```
 
-确保在 `test.txt` 文件中的 `Content-Type` 和 `filename` 与实际文件类型和名称相匹配。
+> 因为在将文件流内容追加至 `postfile.txt` 文件后，已无法使用文本编辑器直接打开此文件，故继续使用命令追加文件内容，同样在 Windows 环境中可以通过 `git bash` 使用 `echo` 命令。
 
-## 执行文件上传测试命令
-
+## 执行 ab 命令
 使用以下命令执行文件上传测试：
 
+```Text
+$ ab -n 1 -c 1 -p postfile.txt -v 2 \
+-T "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW" \
+http://localhost:8080/upload \
+-v 2
 ```
-$ ab -n 1 -c 1 -p test.txt -T "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW" http://localhost:8080/upload
-```
 
-其中：[ApacheBench 简介](https://mp.weixin.qq.com/s/5lqaOphTwsWhGHT-VSH0Tg) 具体介绍了执行命令中参数及返回参数的含义：
-* -n 表示请求次数
-* -c 表示并发数
-* -T 表示请求类型
-* -p 表示上传文件的路径
-* 最后一个参数为上传接口的 URL
-* ...
+- `-n 1` 表示总共发送 1 个请求（根据实际测试需求进行调整）。
+- `-c 1` 表示同时并发 1 个请求（根据实际测试需求进行调整）。
+- `-p postfile.txt` 指定包含 POST数据的文件。
+- `-T "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"` 指定请求的内容类型，包括之前定义的边界分隔符。
+- `-v verbosity`用于设置 `ApacheBench` 的详细输出级别。在详细输出级别 `2` 下，`ApacheBench`会打印出警告信息和信息信息，如：请求和响应的头部信息。
 
-## 测试结果分析
+>  Set verbosity level - 4 and above prints information on headers, 3 and above prints response codes (404, 200, etc.), 2 and above
+prints warnings and info.
 
-执行命令后，`ApacheBench` 输出测试结果，包括每秒请求数、请求平均响应时间等关键指标。
-这些数据将帮助你分析文件上传的性能。
+执行命令后，在控制台中，可以在 `LOG: header received:` 消息之后找到响应状态码和响应内容。如果状态码为 `200`且和预期值一致，表示服务器成功处理了请求。
 
-```
+在控制台中还会提供一系列关键指标，如每秒请求数、请求平均响应时间等关键指标。这些数据可以帮助分析文件上传的性能表现，并为优化提供依据。
+
+```Text
 This is ApacheBench, Version 2.3 <$Revision: 1901567 $>
 Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
 Licensed to The Apache Software Foundation, http://www.apache.org/
@@ -161,7 +176,7 @@ Content-Length: 113
 Date: Wed, 31 Jul 2024 13:37:18 GMT
 Connection: close
 
-File uploaded successfully: 123.txt with size: 24072 bytes and content written to: C:\Users\admin\Desktop\
+File uploaded successfully: postfile.txt with size: 24072 bytes
 ..done
 
 
@@ -192,5 +207,9 @@ Connect:        0    0   0.0      0       0
 Processing:    56   56   0.0     56      56
 Waiting:       53   53   0.0     53      53
 Total:         56   56   0.0     56      56
-
 ```
+
+## 扩展 putfile
+`ApacheBench (ab)` 同样适用于测试 `PUT`接口。构造`putfile`的方法与`POST`接口类似，只需确保请求体的内容和头部信息符合`PUT`请求的要求。
+
+> -u putfile File containing data to PUT. Remember also to set -T
