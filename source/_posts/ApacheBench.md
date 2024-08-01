@@ -24,7 +24,7 @@ description: 构造 ApacheBench 可用的 postfile
 更多关于 ApacheBench 的信息，请参考：[ApacheBench 简介](https://mp.weixin.qq.com/s/5lqaOphTwsWhGHT-VSH0Tg)。
 
 ## 前置条件
-假设有一个文件上传 `POST` 接口 http://localhost:8080/upload ，在请求体中接受 `key` 为 `file` 的文件，并返回上传的文件名和文件大小：
+假设有一个文件上传 `POST` 接口 `http://localhost:8080/upload` ，在请求体中接受 `key` 为 `file` 的文件，并返回上传的文件名和文件大小：
 
 ![](https://wyiyi.github.io/amber/contents/2024/apache-bench.png)
 
