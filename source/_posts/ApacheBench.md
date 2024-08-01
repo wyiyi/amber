@@ -14,15 +14,8 @@ description: 如何构建 ApacheBench 的请求体上传文件
 ## 摘要
 
 在 `Web` 开发过程中，文件上传功能是常见的需求。对于开发者而言，确保上传功能的稳定性和性能至关重要。
-本文将带你了解如何使用`ApacheBench`文件上传功能进行性能测试，以评估和提高服务器在高并发情况下的处理能力。
-特别是如何按照规范构造上传文件的请求体。
 
-## 引言
-![](https://wyiyi.github.io/amber/contents/2024/apache-bench.png)
-
-通过 `Postman` 工具，我们可以直观地看到上传文件的请求体部分。
-然而，当使用 `Apache Bench` 上传文件时，直接将文件内容以 `Base64` 编码后写入请求体并不会生效。
-那么，我们该如何构造一个与 `Postman` 中相同的请求体呢？
+本文将带你了解如何使用`ApacheBench`性能测试工具对文件上传功能进行性能测试，特别是如何按照规范构造上传文件的请求体，以便评估和提高服务器在高并发情况下的处理能力。
 
 ## ApacheBench 简介
 
@@ -35,20 +28,48 @@ description: 如何构建 ApacheBench 的请求体上传文件
 - 在 `Windows` 系统中，可以使用 `CMD` 或 `PowerShell`
 - 在 `Linux` 系统中，可以使用终端
 
-## 构造请求体规范
+## 前置条件
+假设有一个文件上传 `POST` 接口 http://localhost:8080/upload ，在请求体中接受 `key` 为 `file` 的文件，并返回上传的文件名和文件大小：
 
-在构造文件上传请求体时，我们需要遵循 `multipart/form-data` 协议的要求。
-这种协议通常用于上传文件，它将请求体分为多个部分，每个部分都包含一个特定的头部信息，这些头部信息定义了每个部分的内容。
-以下是构造请求体的规范步骤：
+![](https://wyiyi.github.io/amber/contents/2024/apache-bench.png)
 
-* 定义边界：首先，我们需要定义一个边界字符串，这个字符串将用于分隔请求体的各个部分。边界字符串应该是一个唯一的字符串，通常由 `WebKitFormBoundary` 开头，后面跟上一系列随机字符。
-* 设置 `Content-Type`：在请求头中，我们需要设置 `Content-Type` 为 `multipart/form-data`，并使用 `boundary` 参数引用我们定义的边界字符串。
-* 构造请求体：请求体由多个部分组成，每个部分以边界字符串开始，以 `--` 字符串结束。每个部分都包含一个头部，定义了该部分的内容类型、名称、文件名等信息，然后是文件内容的 `Base64` 编码。
-* 添加文件内容：将文件内容转换为 `Base64` 编码，并将其添加到请求体的相应部分中。
-* 添加结束标记：在最后一个部分之后，我们需要添加一个结束标记，表示请求体的结束。
-* 检查完整性：确保所有部分都正确无误，并且边界字符串在请求体中正确使用。
+通过 `Postman` 等工具，我们可以直观地看到上传文件的请求内容：
 
-## 构造请求体步骤
+```
+POST /upload HTTP/1.1
+Host: localhost:8080
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Length: 204
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="/C:/Users/admin/Desktop/test.jpg"
+Content-Type: image/jpeg
+
+(data)
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+```
+
+## 问题
+当需要使用 `ApacheBench` 测试上传文件的 `POST` 接口时，`ab -h` 中只写到了通过 `-p` 参数指定 `postfile`：
+
+    -p postfile     File containing data to POST. Remember also to set -T
+
+那么这个 `postfile` 中包含哪些内容呢？应该如何构造一个 `ApacheBench` 可用的 `postfile` 呢？
+
+## 有关 `multipart/form-data` 的规范
+
+[RFC 7578 第4节](https://www.rfc-editor.org/rfc/rfc7578#section-4) 中关于 `multipart/form-data` 的定义提到：`multipart/form-data` 遵循 [RFC 2046 第 5.1 节](https://www.rfc-editor.org/rfc/rfc2046#section-5.1) 中定义的多部分 `MIME` 数据流结构，并有一些变化，大致的结构要求如下：
+
+1. 请求头必须包含 `Content-Type: multipart/form-data; boundary=边界分隔符`；
+2. 多部分文件需要组合成一个单个的请求体，`边界分隔符` 字符串需保证在整个请求体内唯一，不会出现在分割行以外的其他部分；
+3. 请求体必须包含一个或多个部分，每部分一个实体（如：文件）；
+4. 各部分使用 `CRLF`，`--` ，`边界分隔符`作为一行进行分隔，最后一部分后面使用 `--边界分隔符--` 表示结束；
+5. 每部分在边界分隔行之间，又由三部分组成：头区域、空白行、内容区域；
+6. 每部分头区域必须包含 `Content-Disposition`  头字段，类型为 `form-data`；同时必须包含 `name` 参数，值为 `form` 中的原始字段名；当内容区域表示的是文件时，还应该提供 `filename` 参数。
+
+更详细的内容可参考上面引用的 `RFC` 规范文档。
+
+## 构造 postfile
 
 ### 1. 准备测试文件
 
