@@ -32,14 +32,13 @@ Comparator<Apple> byWeight = new Comparator<Apple>() {
 ```
 
 - 使用 lambda 表达式：
-
 ```java
 Comparator<Apple> byWeight = (Apple a1, Apple a2) -> a1.getWeight().compareTo(a2.getWeight());
 ```
 
 必须承认，代码看起来变得更清晰了。
 
-[引用 Java 8 inAction：](https://livebook.manning.com/book/java-8-in-action/chapter-3/ "引用 Java 8 inAction：")
+[引用 Java 8 inAction：](https://book.douban.com/subject/25912747/)
 > A lambda expression is composed of parameters, an arrow, and a body.
 
 ![](https://wyiyi.github.io/amber/contents/2024/lambda.png)
