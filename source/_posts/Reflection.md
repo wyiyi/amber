@@ -31,19 +31,16 @@ description: 掌握 Java 反射机制
 可以通过以下几种方式获取：
 
 1. 使用`Class.forName()` 通过类的全限定名：
-
 ```Java
 Class<?> cls = Class.forName("java.lang.String");
 ```
 
 2. 使用`.class`语法：
-
 ```Java
 Class<?> cls = String.class;
 ```
 
 3. 使用`object.getClass()`方法：
-
 ```Java
 String s = "Hello";  
 Class<?> cls = s.getClass();
@@ -138,7 +135,6 @@ Object returnValue = method.invoke(obj, 10); // 假设方法需要一个 int 类
 ### 获得自定义注解标记点属性并赋值
 
 1. 自定义注解类 `MyAnnotation`
-
 ```Java
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -153,7 +149,6 @@ public @interface MyAnnotation {
 ```
 
 2. 定义一个类，在类的属性上使用注解 `MyClass`
-
 ```Java
 public class MyClass {
     @MyAnnotation(value = "initialValue")
@@ -174,7 +169,6 @@ public class MyClass {
 ```
 
 3. 获得自定义注解标记点属性并赋值
-
 ```Java
  import java.lang.reflect.Field;
 
@@ -205,11 +199,8 @@ public class ReflectionExample {
 }
 ```
 
-
-
 ### 使用反射创建接口的动态代理类
 1. 定义一个接口（不定义实现类）`SimpleInterface`
-
 ```Java
 public interface SimpleInterface {
 
@@ -218,7 +209,6 @@ public interface SimpleInterface {
 ```
 
 2. 创建动态代理类，实现SimpleProxyHandler 接口，用于修改方法的返回值
-
 ```Java
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -245,7 +235,6 @@ public class SimpleProxyHandler implements InvocationHandler {
 ```
 
 3. 使用反射创建接口的动态代理类，并调用接口方法得到结果
-
 ```Java
 public static void main(String[] args) {
         SimpleInterface proxyInstance = (SimpleInterface) Proxy.newProxyInstance(
@@ -275,7 +264,6 @@ public interface SimpleInterface {
     int performOperation(int a, int b);
 }
 ```
-
 ```Java
 public class SimpleInterfaceImpl implements SimpleInterface{
     @Override
@@ -291,7 +279,6 @@ public class SimpleInterfaceImpl implements SimpleInterface{
 ```
 
 2. 创建一个动态代理类，实现`InvocationHandler`接口，用于修改方法的返回值
-
 ```Java
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -318,7 +305,6 @@ public class SimpleInterfaceHandler implements InvocationHandler {
 ```
 
 3. 使用动态代理来修改实现类中的方法行为
-
 ```Java
 public static void main(String[] args) {
         SimpleInterface implementation = new SimpleInterfaceImpl();
