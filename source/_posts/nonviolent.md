@@ -7,7 +7,6 @@ mathjax: true
 comments: true
 toc: true
 description: 开始时，我并不指望能学到多少东西。可是，读完这本书后，我发现，我激励自己的方式无意中促成了自我憎恨。由于认为自己‘应该’做到许多事情，我不停地指责自己、命令自己、要求自己。这不可避免地导致内在的分裂与不满。而非暴力沟通提醒我倾听内心中不同的声音，以及它们所反映的需要——这促进了自我理解和内心的和谐。
-
 ---
 
 ![](https://wyiyi.github.io/amber/contents/2024/nonviolent.jpg)
