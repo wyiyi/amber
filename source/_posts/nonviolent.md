@@ -1,5 +1,5 @@
 ---
-title: 非暴力沟通[美]马歇尔·卢森堡
+title: 非暴力沟通
 date: 2024.10.01
 tags: Books
 categories: Books  
