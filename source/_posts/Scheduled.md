@@ -1,9 +1,10 @@
 ---
 title:  解析 Spring 计划任务执行多次之谜及解决方案
-date: 2022.04.01 
+date: 2024.11.01 
 tags: 
     - Java
     - Spring
+    - Scheduled
 categories:  
     - Technology
 toc: true
