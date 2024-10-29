@@ -9,11 +9,15 @@ categories:
 toc: true
 mathjax: true 
 comments: true
-description: 在`Spring`项目中，计划任务（`Scheduled Tasks`）是一种常用的功能，用于定期执行特定操作。然而，在实际使用过程中，可能会遇到计划任务执行多次的现象。本文将深入探讨这一现象背后的原因，并提供有效的解决方案。
+description: 在`Spring`项目中，`@Scheduled`注解配置的计划任务（`Scheduled Tasks`）可能会出现执行多次的情况
 ---
 
-在`Spring`项目中，计划任务（`Scheduled Tasks`）是一种常用的功能，用于定期执行特定操作。然而，在实际使用过程中，可能会遇到计划任务执行多次的现象。本文将深入探讨这一现象背后的原因，并提供有效的解决方案。
+在`Spring`项目中，`@Scheduled`注解配置的计划任务（`Scheduled Tasks`）可能会出现执行多次的情况，尤其是在以下场景中：
 
+- 一个父类定义了`@Scheduled`注解的方法，且被多个子类继承。
+- 父类或子类被`Spring`容器错误地实例化为多个`Bean`实例。
+
+本文将针对该特定场景，剖析导致计划任务重复执行的原因，并针对性地提出解决措施。
 
 ## 一、现象描述
 
@@ -60,20 +64,16 @@ ScheduledTaskParent 执行计划任务
 
 ## 二、原因分析
 
-### 1. 继承关系导致的问题
+> As of Spring Framework 4.3, @Scheduled methods are supported on beans of any scope.
+> 
+> Make sure that you are not initializing multiple instances of the same @Scheduled annotation class at runtime, unless you do want to schedule callbacks to each such instance. Related to this, make sure that you do not use @Configurable on bean classes that are annotated with @Scheduled and registered as regular Spring beans with the container. Otherwise, you would get double initialization (once through the container and once through the @Configurable aspect), with the consequence of each @Scheduled method being invoked twice.
 
-在`Java`中，子类会继承父类的所有属性和方法。在本例中，`FirstChild`和`SecondChild`继承了`ScheduledTaskParent`类，同时也继承其计划任务方法。由于，`ScheduledTaskParent`和其子类都被标记为`@Component`，`Spring`容器会将它们都注册为`Bean`，并调度其中的计划任务。
+[Spring 官方文档 ](https://docs.spring.io/spring-framework/reference/integration/scheduling.html)提到，从`Spring Framework 4.3`开始，`@Scheduled`注解支持任何作用域的`bean`。但是，文档也警告，不应该在运行时初始化同一`@Scheduled`注解类的多个实例，除非希望每个实例都调度回调。
 
-根据`Spring`官方文档，组件扫描会自动检测`Bean`，无需手动注册。这意味着，如果父类中有`@Scheduled`注解的方法，它会被视为一个独立的`Bean`并执行，而子类同样会执行这些继承来的方法。
+在例子中，`ScheduledTaskParent`被标记为`@Component`，因此`Spring`容器会为其创建一个`bean`。由于`FirstChild`和`SecondChild`都继承了`ScheduledTaskParent`，并且它们也被标记为`@Component`，`Spring`容器为每个子类也创建了`bean`。每个`bean`都包含`performTask`方法上的`@Scheduled`注解，因此每个`bean`都会触发该任务的调度。
 
-> Spring’s component scanning feature enables you to automatically detect your beans, as opposed to manually registering them. This feature is particularly useful when you are developing larger applications because it lets you define beans with annotations and without having to write any XML configuration.
-
-
-### 2. Spring 容器管理问题
-`Spring`官方文档指出，要使用计划任务功能，需要在配置类中声明`@EnableScheduling`。这会使得`Spring`容器检测所有`Spring`管理的`Bean`中的`@Scheduled`注解，并将它们作为计划任务调度。因此，如果父类和子类都被注册为`Bean`，它们的方法都会被调度，导致重复执行。
-
-> To use this capability, you must declare @EnableScheduling in one of your @Configuration classes. This will enable detection of @Scheduled annotations on any Spring-managed bean in the container.
-
+这就是为什么`performTask`被执行了三次：
+一次来自`ScheduledTaskParent`的`bean`，一次来自`FirstChild`的`bean`，还有一次来自`SecondChild`的`bean`。
 
 ## 三、解决方案
 
@@ -106,4 +106,4 @@ public class SecondChild extends ScheduledTaskParent {
 }
 ```
 
-通过这种方式，每个子类只负责自己的计划任务，而不会继承父类的计划任务。
+通过这种方式，确保每个计划任务只被调度一次，即使有多个子类继承了父类。
