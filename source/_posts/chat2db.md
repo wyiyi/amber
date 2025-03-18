@@ -28,14 +28,14 @@ description: 随着人工智能技术的飞速发展，数据库管理领域也�
 
 ## AI 驱动的核心功能
 ### 1. 自然语言查询
-在应用开发时，用户只需简单描述需求，`Chat2DB` 就能自动生成并执行相应的`SQL`查询。例如，你可以直接输入：“帮我找出上个月销售额超过10000的订单”，`Chat2DB` 会自动解析并执行查询。
+在应用开发时，用户只需简单描述需求，`Chat2DB` 就能自动生成并执行相应的`SQL`查询。例如，你可以直接输入：“帮我分析2023年上海市出生率变化”，`Chat2DB` 会自动解析并执行查询。
 
 ![](https://wyiyi.github.io/amber/contents/2024/chat2db_sql.gif)
 
 ### 2. 智能表结构创建
 在设计数据库表时，通常需要逐个输入字段，同时还要考虑命名、长度设置和索引建立等问题，费时费力。`Chat2DB` 能够在几秒钟内完成这些设计，让你有更多时间专注于业务逻辑。只需简单描述表的功能，`Chat2DB` 就能自动生成完整的表结构。
 
-![](https://wyiyi.github.io/amber/contents/2024/chat2db_create_table.gif)
+![](https://wyiyi.github.io/amber/contents/2024/chat2db_create_table.png)
 
 ### 3. 智能报表生成
 `Chat2DB` 不仅可以帮助你查询数据，还能进行智能分析。通过简单的指令，可以让`Chat2DB` 生成数据报表、绘制图表，甚至进行趋势预测。例如：“分析过去一年的销售趋势，并生成柱状图”。
@@ -54,6 +54,8 @@ description: 随着人工智能技术的飞速发展，数据库管理领域也�
 
 ## ER 图生成
 `Chat2DB` 还支持自动生成数据库的实体关系图（`ER 图`），帮助用户直观地理解数据库结构。通过 ER 图，用户可以快速查看表之间的关系，优化数据库设计。也可以直接复制到技术文档中，作为技术文档。
+
+![](https://wyiyi.github.io/amber/contents/2024/chat2db_er.png)
 
 
 - GitHub：https://github.com/codePhiliaX/chat2db
