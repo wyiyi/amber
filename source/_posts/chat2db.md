@@ -13,7 +13,7 @@ description: 随着人工智能技术的飞速发展，数据库管理领域也�
 随着人工智能技术的飞速发展，数据库管理领域也迎来了全新的变革。[**Chat2DB**](https://chat2db-ai.com/)，一款基于`AI`的智能数据库管理工具，正在彻底改变我们与数据库交互的方式。
 
 # 介绍
-目前，[Chat2DB](https://github.com/codePhiliaX/chat2db) 在 `Github` 上已经累计了 21k Star，在开发者社区中很受欢迎和认可。
+目前，`Chat2DB` 在 [Github](https://github.com/codePhiliaX/chat2db) 上已经累计了 21k Star，在开发者社区中很受欢迎和认可。
 
 `Chat2DB` 是一款开源的、`AI`驱动的数据库工具和`SQL`客户端，它提供现代化的图形界面，旨在加速`SQL`查询的编写、简化数据库管理、促进报告生成、数据探索以及与多种数据库的交互。该工具的核心宗旨是使数据库管理更加智能高效，同时降低技术门槛，让数据处理变得触手可及。
 
