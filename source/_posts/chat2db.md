@@ -1,5 +1,5 @@
 ---
-title: Chat2DB —— 集成 AI 功能的新一代数据库管理工具
+title: Chat2DB—集成AI功能的新一代数据库管理工具
 date: 2025.03.20
 tag: DB
 categories: Technology  
