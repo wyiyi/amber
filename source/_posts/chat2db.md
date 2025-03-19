@@ -43,11 +43,11 @@ description: 随着人工智能技术的飞速发展，数据库管理领域也�
 点击 `Table Copilot`，用户只需输入自定义的表名及列名并回车执行，点击`Run`执行`sql`语句，即可快速生成表结构。
 在执行过程中，若遇到格式不支持的情况，`Chat2DB`会自动转换对应数据库格式进行处理。
 
-![](../contents/2024/chat2db_create_table.png)
+![](https://wyiyi.github.io/amber/contents/2024/chat2db_create_table.png)
 
 ## 2. 帮我生成后端代码：代码自动生成
 
-![](../contents/2024/chat2db_code_generate.png)
+![](https://wyiyi.github.io/amber/contents/2024/chat2db_code_generate.png)
 
 - 能够根据数据库表结构，自动生成增删改查`（CRUD）`操作的代码，覆盖常见开发场景，助力开发者快速构建基础功能。
 - 支持`Java`、`Python`、`C`、`C++`等多种语言，满足不同开发需求。
@@ -58,12 +58,12 @@ description: 随着人工智能技术的飞速发展，数据库管理领域也�
 
 例如，描述“PERSON表与ORG表按ORG_ID关联，分组统计人员姓名name的数量，并生成折线图”，`Chat2DB`即可实现。
 
-![](../contents/2024/chat2db_sql.gif)
+![](https://wyiyi.github.io/amber/contents/2024/chat2db_sql.gif)
 
 ## 4. 帮我优化SQL语句
 `Chat2DB`还能智能分析并优化`SQL`语句，提高查询效率。用户只需提供原始`SQL`语句，`Chat2DB`便会给出优化建议。
 
-![](../contents/2024/chat2db_sql_yh.gif)
+![](https://wyiyi.github.io/amber/contents/2024/chat2db_sql_yh.gif)
 
 AI SQL 优化能够自动调整查询执行计划、索引设计和数据存储方式，以最大程度地减少查询时间和资源消耗。 
 通过机器学习算法的学习能力，系统能够根据历史数据和当前查询模式自动调整这些参数，从而确保查询执行的高效性和准确性。
@@ -71,7 +71,7 @@ AI SQL 优化能够自动调整查询执行计划、索引设计和数据存储�
 ## 5. 智能报表生成
 在数据展示方面，Chat2DB 提供了图形化报表的自动生成功能，使得数据的呈现更加直观和易于理解。
 
-![](../contents/2024/chat2db_dashboard.png)
+![](https://wyiyi.github.io/amber/contents/2024/chat2db_dashboard.png)
 
 `Chat2DB` 不仅执行数据查询，还能进行智能分析。通过简单的指令，即可生成数据报表、绘制图表，甚至进行趋势预测。
 
