@@ -1,5 +1,5 @@
 ---
-title: 取代传统数据库工具，一款集成AI功能的新一代数据库管理工具
+title: Chat2DB - AI驱动的数据库管理工具
 date: 2025.03.20
 tag: DB
 categories: Technology  
