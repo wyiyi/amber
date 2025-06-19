@@ -689,5 +689,4 @@ description: 如果想让自己的软件既领先于时代又易于维护，就�
 
 ## 提示99 不要助纣为虐
 
-![the-pragmatic-programmer.png](../contents/2025/the-pragmatic-programmer.png)
 ![](https://wyiyi.github.io/amber/contents/2025/the-pragmatic-programmer.png)
