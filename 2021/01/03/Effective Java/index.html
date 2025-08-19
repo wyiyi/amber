@@ -1,0 +1,450 @@
+<!DOCTYPE html><html lang="en"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="记录点点滴滴"><title>Effective Java | Amber</title><link rel="stylesheet" type="text/css" href="/amber/css/style.css?v=1.0.0"><link rel="stylesheet" type="text/css" href="/amber/css/dark.css?v=1.0.0"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/amber/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/amber/favicon.ico"><link rel="apple-touch-icon" href="/amber/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/amber/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/amber/atom.xml"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/clipboard/dist/clipboard.min.js"></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.js"></script><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+var toggle = document.querySelector('.darkmode-toggle');
+var html = document.querySelector('html');
+
+html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+
+toggle.addEventListener('click', () => {
+localStorage.dark = !(html.dataset.dark == 'true');
+html.dataset.dark = localStorage.dark;
+});</script><meta name="generator" content="Hexo 6.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Effective Java</h1><a id="logo" href="/amber/.">Amber</a><p class="description">一天进步一点</p></div><div id="nav-menu"><a class="current" href="/amber/."><i class="fa fa-home"> Home</i></a><a href="/amber/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/amber/about/"><i class="fa fa-user"> About</i></a><a href="/amber/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Effective Java</h1><div class="post-meta">2021-01-03<span> | </span><span class="category"><a href="/amber/categories/Books/">Books</a></span><span class="post-time"><span class="post-meta-item-text"> | </span><span class="post-meta-item-icon"><i class="fa fa-keyboard-o"></i><span class="post-count"> 6.9k</span><span class="post-meta-item-text"> Words</span></span></span><span class="post-time"> | <span class="post-meta-item-icon"><i class="fa fa-clock-o"></i><span class="post-count"> 23</span><span class="post-meta-item-text"> Minutes</span></span></span></div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">Contents</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81%E5%AF%B9%E8%B1%A1"><span class="toc-number">1.</span> <span class="toc-text">创建和销毁对象:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E4%BA%8E%E6%89%80%E6%9C%89%E5%AF%B9%E8%B1%A1%E9%83%BD%E9%80%9A%E7%94%A8%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">2.</span> <span class="toc-text">对于所有对象都通用的方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B1%BB%E5%92%8C%E6%8E%A5%E5%8F%A3%E7%B1%BB%E5%92%8C%E6%8E%A5%E5%8F%A3%E6%98%AF%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E8%AF%AD%E8%A8%80%E7%9A%84%E6%A0%B8%E5%BF%83-%E4%B8%BB%E8%A6%81%E6%98%AF%E4%BE%9B%E7%A8%8B%E5%BA%8F%E5%91%98%E6%9D%A5%E8%AE%BE%E8%AE%A1%E7%B1%BB%E5%92%8C%E6%8E%A5%E5%8F%A3"><span class="toc-number">3.</span> <span class="toc-text">类和接口类和接口是程序设计语言的核心,主要是供程序员来设计类和接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%9B%E5%9E%8B%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E6%B3%9B%E5%9E%8B-%E4%BD%BF%E5%85%B6%E5%B0%BD%E5%8F%AF%E8%83%BD%E7%9A%84%E7%AE%80%E5%8C%96"><span class="toc-number">4.</span> <span class="toc-text">泛型如何处理泛型,使其尽可能的简化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9E%9A%E4%B8%BE%E5%92%8C%E6%B3%A8%E8%A7%A3%E4%B8%BB%E8%A6%81%E4%BB%8B%E7%BB%8D%E4%BA%86%E4%B8%A4%E7%A7%8D%E7%B1%BB%E5%9E%8B-%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B-%E6%B3%A8%E8%A7%A3%E7%B1%BB%E5%9E%8B"><span class="toc-number">5.</span> <span class="toc-text">枚举和注解主要介绍了两种类型: 枚举类型,注解类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95"><span class="toc-number">6.</span> <span class="toc-text">方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E6%98%AF%E6%96%B9%E6%B3%95%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%87%A0%E4%B8%AA%E6%96%B9%E9%9D%A2-%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%8F%82%E6%95%B0%E5%92%8C%E8%BF%94%E5%9B%9E%E5%80%BC-%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95%E7%AD%BE%E5%90%8D-%E5%A6%82%E4%BD%95%E6%9C%AA%E6%96%B9%E6%B3%95%E7%BC%96%E5%86%99%E6%96%87%E6%A1%A3"><span class="toc-number">6.1.</span> <span class="toc-text">主要是方法设计的几个方面: 如何处理参数和返回值, 如何设计方法签名, 如何未方法编写文档</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%AC%E7%AB%A0%E5%A4%A7%E5%A4%9A%E6%95%B0%E9%80%82%E7%94%A8%E4%BA%8E%E6%9E%84%E9%80%A0%E5%99%A8%E5%92%8C%E6%99%AE%E9%80%9A%E6%96%B9%E6%B3%95"><span class="toc-number">6.2.</span> <span class="toc-text">本章大多数适用于构造器和普通方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%84%A6%E7%82%B9%E9%9B%86%E4%B8%AD%E5%9C%A8%E5%8F%AF%E7%94%A8%E6%80%A7%E3%80%81%E5%81%A5%E5%A3%AE%E6%80%A7%E5%92%8C%E7%81%B5%E6%B4%BB%E6%80%A7"><span class="toc-number">6.3.</span> <span class="toc-text">焦点集中在可用性、健壮性和灵活性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%9A%E7%94%A8%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E4%B8%BB%E8%A6%81%E6%98%AF-Java-%E8%AF%AD%E8%A8%80%E7%9A%84%E5%85%B7%E4%BD%93%E7%BB%86%E8%8A%82-%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E3%80%81%E6%8E%A7%E5%88%B6%E7%BB%93%E6%9E%84%E3%80%81%E7%B1%BB%E5%BA%93%E7%9A%84%E7%94%A8%E6%B3%95%E3%80%81%E5%90%84%E7%A7%8D%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%9A%84%E7%94%A8%E6%B3%95-%E4%BB%A5%E5%8F%8A%E4%B8%A4%E7%A7%8D%E4%B8%8D%E6%98%AF%E8%AF%AD%E8%A8%80%E6%9C%AC%E8%BA%AB%E6%8F%90%E4%BE%9B%E7%9A%84%E6%9C%BA%E5%88%B6%EF%BC%88%E5%8F%8D%E5%B0%84%E5%92%8C%E6%9C%AC%E5%9C%B0%E6%96%B9%E6%B3%95%EF%BC%89%E7%9A%84%E7%94%A8%E6%B3%95"><span class="toc-number">7.</span> <span class="toc-text">通用程序设计主要是 Java 语言的具体细节, 局部变量、控制结构、类库的用法、各种数据类型的用法, 以及两种不是语言本身提供的机制（反射和本地方法）的用法.</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%82%E5%B8%B8"><span class="toc-number">8.</span> <span class="toc-text">异常</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8D%E5%BA%94%E8%AF%A5%E7%94%A8%E4%BA%8E%E6%AD%A3%E5%B8%B8%E7%9A%84%E6%8E%A7%E5%88%B6%E6%B5%81%E3%80%81%E8%89%AF%E5%A5%BD%E7%9A%84API%E4%B8%8D%E5%9B%A0%E8%AF%A5%E5%BC%BA%E8%BF%AB%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%B8%BA%E4%BA%86%E6%AD%A3%E5%B8%B8%E7%9A%84%E6%8E%A7%E5%88%B6%E6%B5%81%E8%80%8C%E4%BD%BF%E7%94%A8%E5%BC%82%E5%B8%B8"><span class="toc-number">8.1.</span> <span class="toc-text">不应该用于正常的控制流、良好的API不因该强迫客户端为了正常的控制流而使用异常</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B9%B6%E5%8F%91"><span class="toc-number">9.</span> <span class="toc-text">并发</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BD%93%E5%A4%9A%E4%B8%AA%E7%BA%BF%E7%A8%8B%E5%85%B1%E4%BA%AB%E5%8F%AF%E5%8F%98%E6%95%B0%E6%8D%AE%E7%9A%84%E6%97%B6%E5%80%99-%E6%AF%8F%E4%B8%AA%E8%AF%BB%E6%88%96%E8%80%85%E5%86%99%E6%95%B0%E6%8D%AE%E7%9A%84%E7%BA%BF%E7%A8%8B%E9%83%BD%E5%BF%85%E9%A1%BB%E6%89%A7%E8%A1%8C%E5%90%8C%E6%AD%A5"><span class="toc-number">9.1.</span> <span class="toc-text">当多个线程共享可变数据的时候, 每个读或者写数据的线程都必须执行同步</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8-Thread-stop"><span class="toc-number">9.2.</span> <span class="toc-text">不要使用 Thread.stop</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-number">10.</span> <span class="toc-text">序列化</span></a></li></ol></div></div><div class="post-content"><p>本书介绍了在Java编程中78条极具实用价值的经验规则, 这些经验规则涵盖了大多数开发人员每天所面临的问题的解决方案。通过对Java平台设计专家所使用的技术的全面描述, 揭示了应该做什么, 不应该做什么才能产生清晰、健壮和高效的代码。<br>本书中的每条规则都以简短、独立的小文章形式出现，并通过例子代码加以进一步说明。可作为技术人员的参考用书。<br><a target="_blank" rel="noopener" href="https://book.douban.com/subject/27047716/">第二版</a> 78条,含盖了5.0和6.0。</p>
+<h2 id="创建和销毁对象"><a href="#创建和销毁对象" class="headerlink" title="创建和销毁对象:"></a>创建和销毁对象:</h2><ol>
+<li>考虑用静态工厂方法代替构造器</li>
+<li>遇到多个构造器参数时要考虑用构建器</li>
+<li>用私有构造器或者枚举类型强化<code>Singleton</code>属性</li>
+<li>通过私有构造器强化不可实例化的能力</li>
+<li>避免创建不必要的对象</li>
+<li>消除过期的对象引用</li>
+<li>避免使用终结方法</li>
+</ol>
+<h2 id="对于所有对象都通用的方法"><a href="#对于所有对象都通用的方法" class="headerlink" title="对于所有对象都通用的方法"></a>对于所有对象都通用的方法</h2><ol start="8">
+<li>覆盖 <code>equals</code> 时请遵守通用约定</li>
+<li>覆盖 <code>equals</code> 时总要覆盖 <code>hashCode</code></li>
+<li>始终覆盖 <code>toString</code></li>
+<li>谨慎的覆盖 <code>clone</code></li>
+<li>考虑实现 <code>Comparable</code> 接口</li>
+</ol>
+<h2 id="类和接口类和接口是程序设计语言的核心-主要是供程序员来设计类和接口"><a href="#类和接口类和接口是程序设计语言的核心-主要是供程序员来设计类和接口" class="headerlink" title="类和接口类和接口是程序设计语言的核心,主要是供程序员来设计类和接口"></a>类和接口类和接口是程序设计语言的核心,主要是供程序员来设计类和接口</h2><ol start="13">
+<li><p>使类和成员的可访问性最小化</p>
+</li>
+<li><p>在共有类中使用访问方法而非公有域</p>
+</li>
+<li><p>使可变性最小化为了使类成为不可变, 遵循五条规则</p>
+<ul>
+<li>不要提供任何会修改对象的方法</li>
+<li>保证类不会被扩展</li>
+<li>使所有域都是final</li>
+<li>是所有域都是私有的</li>
+<li>确保对任何可变组件的互斥访问</li>
+</ul>
+</li>
+<li><p>复合优先于继承</p>
+</li>
+<li><p>要么为继承而设计, 并提供文档说明, 要么禁止继承说明文档应以 <code>This implenmentation...</code></p>
+</li>
+<li><p>接口优于抽象类  接口和抽象类: 抽象类允许包含某些方法的实现, 但接口不允许</p>
+<ul>
+<li>现有的类可以很容易被更新, 以实现新的接口</li>
+<li>接口是定义混合类型的理想选择</li>
+<li>接口允许我们构造非层次结构的类型框架: <code>public interface SingerDancer extend Singer,Dancer&#123;&#125;</code></li>
+</ul>
+</li>
+<li><p>接口只用于定义类型</p>
+<ul>
+<li>常量接口是对接口的不良使用( <code>java.io.ObjectIntreamContast</code> 一个接口只定义了一个静态的变量）</li>
+</ul>
+</li>
+<li><p>类层次优于标签类</p>
+<ul>
+<li>标签类包含了枚举声明, 标签域以及条件语句乱七八糟挤在一个类中, 可读性差, 效率低, 用类层次代替, 更好的反应类型本质上的层次挂系</li>
+</ul>
+</li>
+<li><p>用函数对象表示策略</p>
+<ul>
+<li>通过传递不同比较器函数, 就可以获得各种不同排列顺序是策略模式的例子之一</li>
+<li>函数指针的用途主要是实现策略模式</li>
+</ul>
+</li>
+<li><p>优先考虑静态成员类</p>
+<ul>
+<li>嵌套类有四种: 静态成员类、非静态成员类、匿名类和局部类</li>
+<li>如果嵌套类在单个方法之可见的, 需要用成员类</li>
+<li>如果每个成员类的每个实例都需要指向其外围实例的引用,就用成员类的非静态的, 否则用静态的</li>
+<li>假设一个嵌套类属于一个方法的内部, 只在一个地方创建实例, 且已有一个预置类型可以说明这个类的特征, 就用做匿名类, 否则用局部类</li>
+</ul>
+</li>
+</ol>
+<h2 id="泛型如何处理泛型-使其尽可能的简化"><a href="#泛型如何处理泛型-使其尽可能的简化" class="headerlink" title="泛型如何处理泛型,使其尽可能的简化"></a>泛型如何处理泛型,使其尽可能的简化</h2><ol start="23">
+<li><p>请不要在新代码中使用原生态类型</p>
+<ul>
+<li>原生态类型在运行时容易异常, 例: <code>Set&lt;Object&gt; </code> 参数化类型,表示包含任何对象类型的集合; <code>Set&lt;?&gt;</code> 通配符类型,表示只能包含某种未知对象类型的一个集合; <code>Set</code> 是原生态类型, 脱离了泛型系统; 前两者安全</li>
+<li>有个例外: 泛型在运行中可被擦除,在”类文字”中必须使用原生态类型,不能使用参数化类型<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">例如: </span><br><span class="line">  list.class, String[].class, 和int.class 合法,</span><br><span class="line">  但是List&lt;String.class&gt;和List&lt;?&gt;.class 不合法 </span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>消除非受检警告</p>
+<ul>
+<li>非受检强制化警告, 非受检方法调用警告, 非受检普通数组创建警告, 以及非受检转换警告</li>
+<li>如果无法消除警告, 用 <code>@SuppressWarings(&quot;unchecked&quot;)</code>, 该注解可以用在任何粒度的级别中, 尽可能在小的范围使用,把注释原因记录下来</li>
+</ul>
+</li>
+<li><p>列表优先于数组</p>
+<ul>
+<li>数组和反省有不同的类型规则: 数组是协变且具体化的;泛型是不可边的饿且可以被擦除; 数组和泛型提供了运行时的类型安全但没有编译时的类型安全, 数组和泛型不能很好的混合使用, 第一反应应该是用列表代替数组</li>
+</ul>
+</li>
+<li><p>优先考虑泛型</p>
+<ul>
+<li><code>&lt;E extends Delayed&gt;</code> 泛型, 比进行转换的类型来的更安全, 也更容易, 把类做成泛型</li>
+</ul>
+</li>
+<li><p>优先考虑泛型方法</p>
+<ul>
+<li>泛型方法显著特征: 不许明确指定类型参数的值, 不像调用泛型构造器的时候必须指定</li>
+<li>泛型方法像泛型一样, 比转换输入参数并返回值的方法更安全</li>
+</ul>
+</li>
+<li><p>利用有限制通配符来提升API的灵活性</p>
+<ul>
+<li>如果类型参数只在方法生命中出现一次, 可以用通配符取代: 如果是无限制的类型参数, 就用无限制的通配符取代, 反之, 用有限制的通配符</li>
+</ul>
+</li>
+<li><p>优先考虑类型安全的异构容器</p>
+<ul>
+<li>限制每个容器只能有固定数目的类型参数, 可以通过将类型参数放在键上而不是容器上. 对于安全的异构容器,可将 <code>class</code> 对象作为键, 以使用的 class 对象称作类型令牌<br>例如: 用 <code>DatabaseRow</code> 类型表示一个数据行(容器),用泛型 <code>Column&lt;T&gt;</code> 作为它的键</li>
+</ul>
+</li>
+</ol>
+<h2 id="枚举和注解主要介绍了两种类型-枚举类型-注解类型"><a href="#枚举和注解主要介绍了两种类型-枚举类型-注解类型" class="headerlink" title="枚举和注解主要介绍了两种类型: 枚举类型,注解类型"></a>枚举和注解主要介绍了两种类型: 枚举类型,注解类型</h2><ol start="30">
+<li><p>用 <code>enum</code> 代替 <code>int</code> 常量</p>
+<ul>
+<li>如果多个枚举同时共享相同行为, 考虑枚举策略</li>
+</ul>
+</li>
+<li><p>用实例域代替序数</p>
+<ul>
+<li>不要根据枚举的序数导出与它关联的值, 而是将它保存在一个实例域中</li>
+</ul>
+</li>
+<li><p>用EnumSet代替位域</p>
+<ul>
+<li>位域: 将几个常量合并到一个集合中, 称为位域</li>
+<li>因为枚举类型要用在集合Set中, 所以不用位域表示</li>
+</ul>
+</li>
+<li><p>用EnumMap代替序数索引</p>
+<ul>
+<li>不要使用序数来索引数组,使用 <code>EnumMap</code>, 例如: 当你表现的 关系是多维的使用 <code>EnumMap&lt;...,EnumMap&lt;...&gt;&gt;</code></li>
+</ul>
+</li>
+<li><p>用接口模拟可伸缩的枚举</p>
+<ul>
+<li>虽然不能编写可扩展的枚举类型,但是可以通过编写接口实现该接口的基础枚举类型</li>
+</ul>
+</li>
+<li><p>注解优先于命名模式</p>
+<ul>
+<li>命名模式的缺点: 拼写错误、无法确保它们只用于响应的程序元素上. 未提供将参数值与程序元素关联起来的好方法</li>
+<li>只需使用 java 平台提供的注解类型</li>
+</ul>
+</li>
+<li><p>坚持使用Override注解</p>
+<ul>
+<li>在每个方法声明使用 <code>Override</code> 注解来覆盖超类声明</li>
+</ul>
+</li>
+<li><p>用标记接口定义类型</p>
+<ul>
+<li>标记接口: 不包含方法声明的接口,只是声明一个类实现了某种属性的接口</li>
+<li>标记接口胜过标记注解:<br>① 标记接口定义的类型是由标记类的实例实现的; 标记注解没有定义这样的类型<br>② 标记接口更加精确的进行锁定</li>
+<li>标记注解的胜过标记接口的优点: <pre><code>① 通过默认的方式添加一个或者多个注解类型元素, 给已被使用的注解类型添加更多信息
+② 是注解机制的一部分, 在支持注解在框架中具有一致性
+</code></pre>
+</li>
+<li>定义一个新方法且没有关联, 使用标记接口</li>
+<li>想要标记程序元素而非类和接口, 考虑以后要添加其他信息或者标记要适合广泛使用了注解类型的框架, 使用标记注解</li>
+<li>主要表明了, 要想定义类型, 一定使用接口</li>
+</ul>
+</li>
+</ol>
+<h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><ul>
+<li><h3 id="主要是方法设计的几个方面-如何处理参数和返回值-如何设计方法签名-如何未方法编写文档"><a href="#主要是方法设计的几个方面-如何处理参数和返回值-如何设计方法签名-如何未方法编写文档" class="headerlink" title="主要是方法设计的几个方面: 如何处理参数和返回值, 如何设计方法签名, 如何未方法编写文档"></a>主要是方法设计的几个方面: 如何处理参数和返回值, 如何设计方法签名, 如何未方法编写文档</h3></li>
+<li><h3 id="本章大多数适用于构造器和普通方法"><a href="#本章大多数适用于构造器和普通方法" class="headerlink" title="本章大多数适用于构造器和普通方法"></a>本章大多数适用于构造器和普通方法</h3></li>
+<li><h3 id="焦点集中在可用性、健壮性和灵活性"><a href="#焦点集中在可用性、健壮性和灵活性" class="headerlink" title="焦点集中在可用性、健壮性和灵活性"></a>焦点集中在可用性、健壮性和灵活性</h3></li>
+</ul>
+<ol start="38">
+<li><p>检查参数的有效性</p>
+<ul>
+<li>编写方法或者构造器时, 需考虑参数有哪些限制, 把限制写在文档中, 在这个方法的开头处, 通过显示的检查实施这些限制</li>
+</ul>
+</li>
+<li><p>必要时进行保护性拷贝</p>
+<ul>
+<li>如果类具有客户端得到或者返回到客户端的可变组件, 类就必须保护性地拷贝这些组件. 如果拷贝的成本受限, 并且类信任它的客户端不会不恰当的修改组件, 就可以在文档中指明客户端的职责是不得修改受到影响的组件, 来代替保护性的拷贝</li>
+</ul>
+</li>
+<li><p>谨慎设计方法签名</p>
+<ul>
+<li>谨慎地选择方法的名称: 易于理解, 在同一个包中的其他名称风格一致的名称, 大家都认可的名称</li>
+<li>不要过于追求提供便利的方法</li>
+<li>避免过长的参数列表: 缩短长参数列表有三种方法:<br>① 把方法分解成多个方法, 每个方法只需这些参数的一个子集, 例如: <code>List</code> 接口,提供了 <code>sublist</code> 方法, 这个方法有两个参数, 并返回列表的一个视图,可以与 <code>indexOf</code> 或者 <code>lastIndexOf</code> 结合起来<br>② 创建辅助类: 用来保存参数的分组, 辅助类一般未静态成员类,若一个频繁出现的参数序列可以被看做是代表某个独特的实体, 建议使用这种方法<br>③ 从对象构建到方法调用都用 <code>Builder</code> 模式: 如果方法中有多个参数最好定义一个对象表示所有参数</li>
+<li>对于参数类型, 优先使用接口而不是类</li>
+<li>对于 <code>boolean</code> 参数,优先使用两个元素的枚举类型</li>
+</ul>
+</li>
+<li><p>慎用重载</p>
+<ul>
+<li>一般情况下, 对于多个具有相同参数数目的方法来说,尽量避免重载方法</li>
+<li>至少应该避免: 同一组参数只需经过类型转换就可以传递给不同的重载方法</li>
+<li>如果不能避免, 例如正在改造一个现有的类以实现新的接口, 应保证: 当传递同样的参数时, 所有重载方法的行为必须一致</li>
+</ul>
+</li>
+<li><p>慎用可变参数</p>
+<ul>
+<li>可变参数的灵活性: 如确定某个方法95%的调用会有3个或者更少的参数, 就应声明方法的5个重载, 每个重载方法带有0到3个普通参数, 参数超过3个就可以使用可变参数的方法</li>
+</ul>
+</li>
+<li><p>返回零长度的数组或者集合,而不是 null</p>
+<ul>
+<li>返回类型为数组或集合的方法没理由返回 null, 而不是返回一个零长度的数组或者集合</li>
+</ul>
+</li>
+<li><p>为所有导出的API元素编写文档注释</p>
+<ul>
+<li>为了正确的编写API文档,必须在每个被导出的类、接口、构造器、方法和域声明之前增加一个文档注释</li>
+<li>方法的文档注释应该简洁的描述出它与客户端之间的约定. 应该列举出这个方法的前提条件和后置条件(一般情况下前提条件是由@throws标签针对 未受检的异常描述,也可以在@params标记中指定前提条件;后置条件: 调用成功完成之后,哪些条件必须满足).还应该描述它的副作用,以及描述类或者方法的线程安全性</li>
+<li>类、接口和域,概要描述应该是一个名词短语, 描述了该类或者接口的实例, 或者域本身所代表的事物</li>
+<li>需注意的: 泛型、枚举和注解: 泛型或者方法编写文档时, 确保在文档中说明所有的类型参数; 为枚举类型编写文档时, 确保在文档中说明常量、以及类型和任何公有的方法; 为注解类型编写文档时, 确保在文档中说明所有成员和类型本身</li>
+<li>类的导出 API 的两个特征即安全性和可序列化性</li>
+<li>采用一致性的风格来遵循标准的约定(在文档注释内部出现任何HTML标签都是允许的,但是HTML元字符必须要经过转义)</li>
+</ul>
+</li>
+</ol>
+<h2 id="通用程序设计主要是-Java-语言的具体细节-局部变量、控制结构、类库的用法、各种数据类型的用法-以及两种不是语言本身提供的机制（反射和本地方法）的用法"><a href="#通用程序设计主要是-Java-语言的具体细节-局部变量、控制结构、类库的用法、各种数据类型的用法-以及两种不是语言本身提供的机制（反射和本地方法）的用法" class="headerlink" title="通用程序设计主要是 Java 语言的具体细节, 局部变量、控制结构、类库的用法、各种数据类型的用法, 以及两种不是语言本身提供的机制（反射和本地方法）的用法."></a>通用程序设计主要是 Java 语言的具体细节, 局部变量、控制结构、类库的用法、各种数据类型的用法, 以及两种不是语言本身提供的机制（反射和本地方法）的用法.</h2><p>45、将局部变量的作用域最小化<br>    * 要使局部变量的作用域最小化, 最有理的方法是在第一次使用它的地方声明, 使方法小而集中<br>    * 几乎每个局部变量的声明都应该包含一个初始化的表达式<br>    * 在循环变量和块区域外不要再次使用该变量</p>
+<ol start="46">
+<li><p>for-each循环优先于传统的for循环</p>
+<ul>
+<li>如果编写的类型是一组元素,要选择的接口: <code>Collection</code>、<code>Iterable</code></li>
+<li>有三种情况无法使用 <code>for-each</code>: 过滤(遍历集合删除指定元素, 要使用显示迭代器)、转换(若要遍历, 取代它部分或者全部的元素值, 需要使用列表迭代器或者数组索引, 以便设定元素的值)、平行迭代(若需要并行地遍历多个集合, 需要显示的控制迭代器或者索引变量, 以便所有迭代器和索引变量都可以得到同步前移)</li>
+</ul>
+</li>
+<li><p>了解和使用类库</p>
+<ul>
+<li>使用标准类库的好处: 正确性、时间花在程序上而不是底层细节、性能不断提高、是自己的代码融入主流</li>
+<li>不要重新发明轮子</li>
+</ul>
+</li>
+<li><p>如果需要精确的答案,请避免使用 <code>float</code> 和 <code>double</code></p>
+<ul>
+<li><code>float</code> 和 <code>double</code> 类型不适合用于货币计算, 需要正确的解决需要使用 <code>BigDecimal</code>, int 或者 long 进行货币计算( <code>BigDecimal</code> 缺点: 与基本类型相比不方便)</li>
+<li>若性能很关键, 不介意自己记录十进制小数点,使用 int; 如果不超过18位使用 <code>long</code>; 若超过18位,使用 <code>BigDecimal</code></li>
+</ul>
+</li>
+<li><p>基本类型优于装箱基本类型</p>
+<ul>
+<li>区别: ① 基本类型只有值,而装箱基本类型具有与他们的值不同的同一性<pre><code>  ② 基本类型只有功能完备的值而每个装箱基本类型除了他对应的基本类型的所有功能值之外, 还有非功能值 `null` 
+  ③基本类型通常比装箱基本类型更节省空间和时间
+</code></pre>
+</li>
+<li>使用装箱基本类型的情境: 作为集合中的元素、键和值, 不能将基本类型放在集合中, 所以要使用基本类型; 在参数化类型中, 要使用装箱基本类型作为类型参数, 因为Java不允许使用基本类型</li>
+<li>在可以选择的时候基本类型优于装箱基本类型</li>
+</ul>
+</li>
+<li><p>如果其他类型更合适,则尽量避免使用字符串</p>
+<ul>
+<li>字符串不适合代替其他的值类型、字符串不适合代替枚举类型、字符串不适合代替聚集类型(实体)、字符串不适合代替能力表(利用提供的字符串键, 对每个线程局部变量的内容进行访问授权)</li>
+</ul>
+</li>
+<li><p>当心字符串连接的性能</p>
+<ul>
+<li>将多个字符串合并为一个这字符串来表示一个较小的大小固定的对象, 使用操作符很合适;但不适合大规模的场景中, 例如为连接n个字符串而重复的使用字符串操作符, 需要n的平方级的时间</li>
+<li>若数量大, 考虑性能, 使用 <code>StringBuilder</code>(的 <code>append</code> 方法)代替 <code>String</code></li>
+</ul>
+</li>
+<li><p>通过接口引用对象</p>
+<ul>
+<li>若有合适的接口类型在, 对于参数、返回值、变量和域来说, 都应该使用接口类型进行声明</li>
+<li>若没有合适的接口在, 完全可以用类而不是接口来引用对象</li>
+</ul>
+</li>
+<li><p>接口优于反射机制</p>
+<ul>
+<li>反射机制的缺点: 丧失了编译时检查的好处、执行反射访问所需要的代码非常笨拙和冗长、性能损失</li>
+<li>使用反射机制场景: 类浏览器、对象监视器、代码分析工具、解释性的内嵌式系统以及远程调用</li>
+</ul>
+</li>
+<li><p>谨慎的使用本地方法</p>
+<ul>
+<li>本地方法指: 用本地的程序设计语言编写的特殊方法</li>
+</ul>
+</li>
+<li><p>谨慎的进行优化</p>
+<ul>
+<li>要努力编写好的程序而不是快的程序、在未绝对清晰的优化方案前,不要优化、避免那些限制性能的设计决策、考虑API设计决策的性能后果、在每次试图优化前和后,要对性能进行测量</li>
+</ul>
+</li>
+<li><p>遵守普遍接受的命名惯例</p>
+<ul>
+<li>包名应该是层次状的用句号分隔每个部分, 每个部分包括小写子母和数字, 很少使用数字, 包名包括一个或者多个描述该包的组成,但组成应简短, 通常不超过8个字符, 使用缩写也可以接受</li>
+<li>类和接口的名称, 包括枚举和注解类型的名称都应该包括一个或者多个单词,每个单词的首字母大写</li>
+<li>方法和域的名称与类和接口的名称一样, 只不过方法或者域名第一个字母小写; 特例: 常量包含一个或者多个大写的单词并用下划线分隔</li>
+<li>参数类型名城管通常由单个字符组成, <code>T</code> 表示任意的类型, <code>E</code> 表示集合的元素类型, <code>KV</code> 表示映射的键值, <code>X</code> 表示异常</li>
+<li>执行动作的方法通常用动词或动词短语命名</li>
+<li>返回布尔值, 名称可以 <code>is</code> 开头, 很少用 has, 后面跟名词或名词短语….</li>
+</ul>
+</li>
+</ol>
+<h2 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h2><h3 id="不应该用于正常的控制流、良好的API不因该强迫客户端为了正常的控制流而使用异常"><a href="#不应该用于正常的控制流、良好的API不因该强迫客户端为了正常的控制流而使用异常" class="headerlink" title="不应该用于正常的控制流、良好的API不因该强迫客户端为了正常的控制流而使用异常"></a>不应该用于正常的控制流、良好的API不因该强迫客户端为了正常的控制流而使用异常</h3><ol start="57">
+<li><p>只针对异常情况才使用异常 </p>
+</li>
+<li><p>对可恢复的情况使用受检异常, 对编程错误使用运行时异常</p>
+<ul>
+<li>受检异常: 期望调用者能够适当的恢复</li>
+<li>运行时异常和错误: 用运行时异常表明编程错误</li>
+</ul>
+</li>
+<li><p>避免不必要的使用受检异常</p>
+<ul>
+<li>过分使用受检异常会使 <code>API</code> 使用不方便</li>
+</ul>
+</li>
+<li><p>优先使用标准的异常</p>
+<ul>
+<li>重用现有异常的好处: 使 API 更加易于学习和使用、可读性更好、异常类越少, 意味着内存印迹就越小, 装载这些类的时间开销也越少</li>
+<li>经常重用的异常: <code>IllegalStateException</code> (参数值不合适)、 <code>IllegalStateException</code> (接受对象的状态使调用非法)、 <code>NullPointerException</code>、 <code>IllegalArgumentException</code>; <code>ConcurrentModificationException</code>(如果对象被设计为专用于单线程或者外部同步机制配合使用,一旦被并发的修改,会抛出此异常); <code>UnsupportedOperationException</code>(对象不支持所请求的操作)</li>
+</ul>
+</li>
+<li><p>抛出与抽象相对应的异常</p>
+<ul>
+<li>现象: 若抛出的异常与所执行的任务没有任何联系, 当方法传递由低层抽象抛出的异常</li>
+<li>异常转译: 更高层的实现应该捕获低层的异常, 同时抛出可以按照高层抽象进行解释的异常</li>
+<li>若不能阻止或处理来自低层的异常, 一般做法是异常转译, 除非低层方法可以保证它抛出的所有异常对高层也合适将异常从低层传播到高层</li>
+</ul>
+</li>
+<li><p>每个方法抛出的异常都要有文档</p>
+<ul>
+<li>声明受检异常, 并利用 <code>Javadoc</code> 的 <code>@throws</code> 标记,准确的记录抛出异常的异常条件</li>
+</ul>
+</li>
+<li><p>在细节消息中包含能捕获失败的信息</p>
+<ul>
+<li>异常的细节信息应该包含所有 “对该异常有贡献”的参数和域的值</li>
+</ul>
+</li>
+<li><p>努力使失败保持原子性</p>
+<ul>
+<li>现象: 对象抛出异常后,希望这个对象仍然保持良好的可用状态中, 即使是发生在某个操作的过程中</li>
+<li>失败的方法调用应该使对象保持在被调用之前的状态, 具有这种属性的方法被称为失败原子性</li>
+<li>途径: 在执行操作前检查参数的有效性, 总之, 产生的异常应该让对象保持在该方法调用之前的状态</li>
+</ul>
+</li>
+<li><p>不要忽略异常</p>
+<ul>
+<li>空的catch块使异常达不到应有的目的</li>
+<li>可以忽略异常的情况: 关闭 <code>FileInputStream</code> 的时候, 因为未改变文件状态, 不必执行任何恢复动作</li>
+</ul>
+</li>
+</ol>
+<h2 id="并发"><a href="#并发" class="headerlink" title="并发"></a>并发</h2><h3 id="当多个线程共享可变数据的时候-每个读或者写数据的线程都必须执行同步"><a href="#当多个线程共享可变数据的时候-每个读或者写数据的线程都必须执行同步" class="headerlink" title="当多个线程共享可变数据的时候, 每个读或者写数据的线程都必须执行同步"></a>当多个线程共享可变数据的时候, 每个读或者写数据的线程都必须执行同步</h3><h3 id="不要使用-Thread-stop"><a href="#不要使用-Thread-stop" class="headerlink" title="不要使用 Thread.stop"></a>不要使用 Thread.stop</h3><ol start="66">
+<li><p>同步访问共享的可变数据</p>
+</li>
+<li><p>避免过度同步</p>
+<ul>
+<li>会导致性能降低、死锁、不确定行为</li>
+</ul>
+</li>
+<li><p><code>executor</code> 和 <code>task</code> 优先于线程</p>
+<ul>
+<li>线程池: 想让不止一个线程处理队列的请求, 只要调用一个不同的静态工厂, 这个工厂创建了一种不同的 <code>executor service</code>, 称作线程池</li>
+<li>小程序或轻载的服务器,使用 <code>Executors.newCachedThreadPool</code> 是个不错的选择, 不需要配置;大负载的服务器缓存的线程池就不是很好的选择, 直接使用 <code>ThreadPoolExecutor</code> 的类</li>
+<li>Task 有两种: <code>Runnable</code> 及近亲 <code>Callable</code> (与Runable类似,但有返回值), 执行任务的机制是 <code>exector service</code>, 有很大的灵活性</li>
+<li><code>Executor Feamework</code> 可以代替 <code>Timer</code> 即<code>ScheduledThreadPoolExecutor</code>, 区别: 被调度的线程池executor更灵活, <code>timer</code> 只用一个线程执行任务, 面对长期运行的任务时,会影响定时的准确性</li>
+</ul>
+</li>
+<li><p>并发工具优先于 <code>wait</code> 和 <code>notify</code></p>
+<ul>
+<li><code>java.util.concurrent</code> 更高级的工具分成三类: <code>Executor Framewok</code>、并发集合(<code>Concurrent Collection</code>)以及同步器(<code>Synchronizer</code>)</li>
+<li><code>ConcurrentHashMap</code> 提供并发性外速度也快; 同步器 <code>Synchronizer</code> 是一些使线程能够等待另一个线程的对象, 允许协调运作, 常用的同步器是 <code>CountDownLatch</code> 和 <code>Semaphore</code></li>
+<li>倒计数锁存器是一次性障碍, 允许一个或多个线程等一个或多个线程做某些事, 唯一的构造器带有int类型参数</li>
+<li>对于间歇式定时, 始终应该优先使用 <code>System.nanoTime</code>, 不受系统实时时钟的调整所影响,而不是 <code>System.currentTimeMills</code></li>
+<li>务必确保始终是利用标准的模式从 <code>while</code> 循环内部调用 <code>wait</code>, 一般情况使用 <code>notifyAll</code>, 使用 <code>notify</code> 要小心</li>
+</ul>
+</li>
+<li><p>线程安全性的文档化</p>
+<ul>
+<li>不可变(<code>immutable</code>)、无条件的线程安全(<code>unconditionally thread-safe</code>)、有条件的线程安全(<code>conditionally thread-safe</code>)、非线程安全(<code>not thread-safe</code>)、线程对立的(<code>thread-hostile</code>)</li>
+<li>有条件的线程安全类必须在文档中说明 “哪个方法调用序列需要外部同步, 以及在执行这些序列的时候要获得哪把锁”</li>
+</ul>
+</li>
+<li><p>慎用延迟初始化</p>
+<ul>
+<li>延迟初始化: 是延迟到需要域的值时才将它初始化的这种行为, 它像一把双刃剑降低了初始化类或者创建实例的开销但却增加了访问延迟初始化的域的开销</li>
+<li>对于实例域, 使用双重检查模式, 对于静态域, 使用延迟初始化域<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">   private final FiledType filed = computerFileValue();</span><br><span class="line">或 private FiledType filed;</span><br><span class="line">   synchronized FiledType getFiled（）&#123;  </span><br><span class="line">     if(filed == null)&#123;     </span><br><span class="line">         filed = computerFiledValue（）;</span><br><span class="line">         return filed;</span><br><span class="line">  &#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>不要依赖于线程调度器</p>
+<ul>
+<li>不要依赖 <code>Thread.yield</code> 或者线程优先级</li>
+</ul>
+</li>
+<li><p>避免使用线程组</p>
+<ul>
+<li>线程组的初衷是作为一种隔离 <code>applet</code>(小程序)的机制</li>
+<li>线程不推荐使用, 若设计的类需要处理线程的逻辑组, 使用线程池的 <code>executor</code></li>
+</ul>
+</li>
+</ol>
+<h2 id="序列化"><a href="#序列化" class="headerlink" title="序列化"></a>序列化</h2><ol start="74">
+<li>谨慎地实现Serializable<ul>
+<li>实现 <code>Serializable</code> 接口而付出的最大的代价, 一旦一个类被发布, 就大大降低了”改变这个类的实现”的灵活性</li>
+<li>实现 <code>Serializable</code> 的第二个代价, 增加了出现 bug 和安全漏洞的可能性</li>
+<li>实现 <code>Serializable</code> 的第三个代价, 随着类发行新的版本, 相关的测试负担也增加了</li>
+<li>内部类不应该实现 <code>Serializable</code></li>
+<li>提供一个可访问的无参构造器, 这种允许子类实现 <code>Serializable</code></li>
+</ul>
+</li>
+</ol>
+<ol start="75">
+<li>考虑使用自定义的序列化形式<ul>
+<li>如果没有认真考虑默认的序列化形式是否合适, 不要贸然接受</li>
+<li>如果一个对象的物理表示法等同于它的逻辑内容, 可能就适合默认的序列化形式</li>
+<li>如果有实质性区别时,有很多缺点: 它使这个类的导出API永远地束缚在该类的内部表示法上; 消耗过多的空间、消耗过多的时间、引起栈溢出</li>
+<li>当决定类可实例化的时候, 确认好要采用什么样的序列化形式, 只有当默认的序列化形式能够合理地描述对象的逻辑状态时, 才使用默认的序列化形式, 否则就要设计一个自定义的序列化形式, 合理的描述对象的状态</li>
+</ul>
+</li>
+</ol>
+<ol start="76">
+<li>保护性的编写 <code>readObject</code> 方法<ul>
+<li>当一个对象被反序列化的时候, 对于客户端不应该拥有的对象引用, 如果哪个域包含了这样的对象引用, 就必须要做保护性的拷贝, 这是非常重要的</li>
+<li>健壮readObject的方法:<br>  ① 对于对象引用域必须保持为私有的类, 要保护性的拷贝这些域中的每个对象, 不可变类的可变组件属于这一类别<br>  ② 对于任何约束条件, 若检查失败, 抛出一个 <code>InvalidObjectException</code> 异常, 检查动作应跟在所有的保护性拷贝之后<br>  ③ 若整个对象图在被反序列化后, 必须进行验证, 应该使用 <code>ObjectInputValidation</code> 接口</li>
+</ul>
+</li>
+</ol>
+<ol start="77">
+<li>对于实例控制, 枚举类优于 <code>readResolve</code><ul>
+<li>尽可能使用枚举类型来实施实例控制的约束条件, 若做不到, 同时又需要一个即可序列化又是实例受控的类, 就必须提供一个 <code>readResolver</code> 方法, 确保该类的所有实例域都为基本类型或者 <code>transient</code></li>
+</ul>
+</li>
+</ol>
+<ol start="78">
+<li>考虑用序列化代理代替序列化实例<ul>
+<li>序列化代理模式也有局限性</li>
+<li>当你发现必须在一个不能被客户端扩展的类上编写 <code>readObject</code> 或者 <code>writeObject</code> 方法的时候,应该考虑使用序列化代理模式</li>
+</ul>
+</li>
+</ol>
+</div><div class="post-copyright"><script type="text/javascript" src="/js/copyright.js" successtext="Copy Successed!"></script><link rel="stylesheet" type="text/css" href="/css/copyright.css"><p><span>Title: </span>Effective Java</p><p><span>Author: </span>Amber</p><p><span>Date: </span>2021-01-03</p><p><span>Last Update: </span>2025-08-19</p><p><span>Blog Link: </span><a href="/2021/01/03/Effective Java/">https://wyiyi.github.io/amber/2021/01/03/Effective%20Java/</a><span class="copy-path"><i class="fa fa-clipboard" data-clipboard-text="https://wyiyi.github.io/amber/2021/01/03/Effective%20Java/"></i></span></p><p><span>Copyright Declaration: </span>Copyright © 2022 Amber.</p></div><br><div class="tags"><a href="/amber/tags/Java/"><i class="fa fa-tag"></i>Java</a></div><div class="post-nav"><a class="pre" href="/amber/2021/01/04/Clean%20Code/">Clean Code</a><a class="next" href="/amber/2021/01/02/Head%20First%20SQL/">Head First SQL</a></div><div id="container"></div><link rel="stylesheet" type="text/css" href="//unpkg.com/gitalk/dist/gitalk.css?v=1.0.0"><script type="text/javascript" src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js?v=1.0.0"></script><script type="text/javascript" src="//unpkg.com/gitalk/dist/gitalk.min.js?v=1.0.0"></script><script>var gitalk = new Gitalk({
+  clientID: '14ea65cf426ef8f465fb',
+  clientSecret: '1a449fb0cec00ee09ae36f1f4bd2efc486d7ac8d',
+  repo: 'amber',
+  owner: 'Amber',
+  admin: ['Amber'],
+  id: md5(location.pathname),
+  distractionFreeMode: false
+})
+gitalk.render('container')
+</script></div></div></div><div class="pure-u-1 pure-u-md-1-4"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="https://wyiyi.github.io/amber"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Categories</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/amber/categories/Books/">Books</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/amber/categories/Technology/">Technology</a><span class="category-list-count">32</span></li><li class="category-list-item"><a class="category-list-link" href="/amber/categories/%E5%B0%8F%E7%A8%8B%E5%BA%8F%EF%BC%8C%E7%94%9F%E6%B4%BB/">小程序，生活</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/amber/categories/%E5%B7%A5%E4%BD%9C/">工作</a><span class="category-list-count">1</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Tags</i></div><div class="tagcloud"><a href="/amber/tags/2022/" style="font-size: 15px;">2022</a> <a href="/amber/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/" style="font-size: 15px;">小程序</a> <a href="/amber/tags/2021/" style="font-size: 15px;">2021</a> <a href="/amber/tags/Postman/" style="font-size: 15px;">Postman</a> <a href="/amber/tags/Apache-Bench/" style="font-size: 15px;">Apache Bench</a> <a href="/amber/tags/Java/" style="font-size: 15px;">Java</a> <a href="/amber/tags/BigDecimal/" style="font-size: 15px;">BigDecimal</a> <a href="/amber/tags/CORS/" style="font-size: 15px;">CORS</a> <a href="/amber/tags/Maven/" style="font-size: 15px;">Maven</a> <a href="/amber/tags/Gradle/" style="font-size: 15px;">Gradle</a> <a href="/amber/tags/Wechat/" style="font-size: 15px;">Wechat</a> <a href="/amber/tags/%E5%85%AC%E4%BC%97%E5%8F%B7/" style="font-size: 15px;">公众号</a> <a href="/amber/tags/Git/" style="font-size: 15px;">Git</a> <a href="/amber/tags/%E5%8F%8D%E5%B0%84/" style="font-size: 15px;">反射</a> <a href="/amber/tags/Spring/" style="font-size: 15px;">Spring</a> <a href="/amber/tags/Scheduled/" style="font-size: 15px;">Scheduled</a> <a href="/amber/tags/Books/" style="font-size: 15px;">Books</a> <a href="/amber/tags/ResponseEntity/" style="font-size: 15px;">ResponseEntity</a> <a href="/amber/tags/DB/" style="font-size: 15px;">DB</a> <a href="/amber/tags/Servlet%EF%BC%8CFilter/" style="font-size: 15px;">Servlet，Filter</a> <a href="/amber/tags/Servlet%EF%BC%8CFilter%EF%BC%8CInterceptor/" style="font-size: 15px;">Servlet，Filter，Interceptor</a> <a href="/amber/tags/Tools/" style="font-size: 15px;">Tools</a> <a href="/amber/tags/Spring-MVC/" style="font-size: 15px;">Spring MVC</a> <a href="/amber/tags/Interceptor/" style="font-size: 15px;">Interceptor</a> <a href="/amber/tags/Go/" style="font-size: 15px;">Go</a> <a href="/amber/tags/JSON-Lines/" style="font-size: 15px;">JSON Lines</a> <a href="/amber/tags/AI/" style="font-size: 15px;">AI</a> <a href="/amber/tags/Java8/" style="font-size: 15px;">Java8</a> <a href="/amber/tags/Lambda/" style="font-size: 15px;">Lambda</a> <a href="/amber/tags/Stream/" style="font-size: 15px;">Stream</a> <a href="/amber/tags/Java%EF%BC%8CFilter/" style="font-size: 15px;">Java，Filter</a> <a href="/amber/tags/Mybatis-plus/" style="font-size: 15px;">Mybatis-plus</a> <a href="/amber/tags/Ngrok/" style="font-size: 15px;">Ngrok</a> <a href="/amber/tags/JS/" style="font-size: 15px;">JS</a> <a href="/amber/tags/NodeJs/" style="font-size: 15px;">NodeJs</a> <a href="/amber/tags/npm/" style="font-size: 15px;">npm</a> <a href="/amber/tags/this/" style="font-size: 15px;">this</a> <a href="/amber/tags/Java-Web/" style="font-size: 15px;">Java Web</a> <a href="/amber/tags/Thymeleaf/" style="font-size: 15px;">Thymeleaf</a> <a href="/amber/tags/Encoding/" style="font-size: 15px;">Encoding</a> <a href="/amber/tags/BOM/" style="font-size: 15px;">BOM</a> <a href="/amber/tags/Unicode/" style="font-size: 15px;">Unicode</a> <a href="/amber/tags/SQL/" style="font-size: 15px;">SQL</a> <a href="/amber/tags/Mybatis/" style="font-size: 15px;">Mybatis</a> <a href="/amber/tags/openEuler/" style="font-size: 15px;">openEuler</a> <a href="/amber/tags/Java-JDK/" style="font-size: 15px;">Java, JDK</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Recent</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/amber/2025/08/20/java8-24/">Java 8 到 Java 24 新特性一览</a></li><li class="post-list-item"><a class="post-list-link" href="/amber/2025/06/20/the-pragmatic-programmer/">程序员修炼之道：通向务实的最高境界（第2版）</a></li><li class="post-list-item"><a class="post-list-link" href="/amber/2025/03/20/chat2db/">Chat2DB - AI驱动的数据库管理工具</a></li><li class="post-list-item"><a class="post-list-link" href="/amber/2025/02/01/boyilun/">博弈论：每个人都能成为决策高手（《人民日报》推荐）</a></li><li class="post-list-item"><a class="post-list-link" href="/amber/2024/11/01/Scheduled/">解析 Spring 计划任务执行多次之谜及解决方案</a></li><li class="post-list-item"><a class="post-list-link" href="/amber/2024/10/01/nonviolent/">非暴力沟通</a></li><li class="post-list-item"><a class="post-list-link" href="/amber/2024/09/01/Reflection/">掌握 Java 反射机制</a></li><li class="post-list-item"><a class="post-list-link" href="/amber/2024/08/01/ApacheBench/">构造 ApacheBench 可用的 postfile</a></li><li class="post-list-item"><a class="post-list-link" href="/amber/2024/07/01/lambda/">Java 8 In Action Lambda</a></li><li class="post-list-item"><a class="post-list-link" href="/amber/2024/06/01/the-moon-and-sixpence/">月亮与六便士</a></li></ul></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2025 <a href="/amber/." rel="nofollow">Amber.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/amber/js/totop.js?v=1.0.0" async></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/amber/js/fancybox.js?v=1.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.css"><script type="text/javascript" color="100,99,98" opacity="0.7" zIndex="-1" count="150" src="//cdn.jsdelivr.net/npm/canvas-nest.js/dist/canvas-nest.min.js"></script><script type="text/javascript" src="/js/love.js"></script><script type="text/javascript" src="/js/copycode.js" successtext="Copy Successed!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css"><script type="text/x-mathjax-config">MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+</script><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML" async></script><script type="text/javascript" src="/amber/js/codeblock-resizer.js?v=1.0.0"></script><script type="text/javascript" src="/amber/js/smartresize.js?v=1.0.0"></script></div></body></html>
