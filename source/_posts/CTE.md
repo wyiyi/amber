@@ -6,7 +6,7 @@ categories: Technology
 mathjax: true 
 comments: true
 toc: true
-description: 在开发过程中，发现在 `MYSQL` 的 `Mapper` 文件中会用到 `WITH` 关键字，有一些疑问：为什么要用`WITH` 和 `WITH RECURSIVE` ？是什么？有何区别？
+description: 在开发过程中，发现在 MYSQL 的 Mapper 文件中会用到 WITH 关键字，有一些疑问：为什么要用 WITH 和 WITH RECURSIVE ？是什么？有何区别？
 ---
 
 在开发过程中，发现在 `MYSQL` 的 `Mapper` 文件中会用到 `WITH` 关键字，有一些疑问：为什么要用`WITH` 和 `WITH RECURSIVE` ？是什么？有何区别？
