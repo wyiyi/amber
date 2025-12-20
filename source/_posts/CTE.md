@@ -11,6 +11,8 @@ description: 在开发过程中，发现在 MYSQL 的 Mapper 文件中会用到 
 
 在开发过程中，发现在 `MYSQL` 的 `Mapper` 文件中会用到 `WITH` 关键字，有一些疑问：为什么要用`WITH` 和 `WITH RECURSIVE` ？是什么？有何区别？
 
+![](https://wyiyi.github.io/amber/contents/2025/cte-with.png)
+
 ## 一、 CTE 的含义
 `MySQL` 从 `8.0` 开始支持 `WITH` 语法，即：[Common Table Expressions （CTE），公用表表达式](https://dev.mysql.com/doc/refman/8.0/en/with.html#common-table-expressions)。
 
