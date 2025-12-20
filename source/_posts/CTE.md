@@ -1,5 +1,5 @@
 ---
-title: 搞懂 MySQL CTE：WITH 与 WITH RECURSIVE
+title: 解析 MySQL CTE：WITH 与 WITH RECURSIVE
 date: 2025.12.20 
 tags: MYSQL
 categories: Technology  
