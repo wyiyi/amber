@@ -1,5 +1,5 @@
 ---
-title: 解析 MySQL 公用表表达式 (CTE)：非递归与递归的原理与实践
+title: 搞懂 MySQL CTE：WITH 与 WITH RECURSIVE
 date: 2025.12.20 
 tags: MYSQL
 categories: Technology  
