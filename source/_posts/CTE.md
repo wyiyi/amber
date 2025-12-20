@@ -115,7 +115,7 @@ WITH cte AS
 SELECT col1, col2
 FROM cte;
 ```
-### 3.3. 使用上下文：
+### 3.3. 使用上下文
 
 `WITH` 子句非常灵活，可以在多种 `SQL` 语句中使用：
 
